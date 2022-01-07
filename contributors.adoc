@@ -1,0 +1,11 @@
+== Contributors
+
+This RISC-V specification has been contributed to directly or indirectly by:
+
+[%hardbreaks]
+* Kening Zhang
+* Kun Hu
+* Hui Yao
+* *Your name here*
+
+We will be very grateful to the huge number of other people who will have helped to improve this specification through their comments, reviews, feedback and questions.

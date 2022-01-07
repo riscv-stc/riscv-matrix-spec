@@ -1,0 +1,648 @@
+[[intro]]
+== Introduction
+
+This document describes the matrix extension for RISC-V. 
+
+Matrix extension implement matrix multiplications by partitioning the input and output matrix into tiles, which are then stored to matrix registers.
+
+Tile size usually refers to the dimensions of these tiles. For the operation C = AB in figure below, the tile size of C is tile_m × tile_n, the tile size of A is tile_m × tile_k and the tile size of B is tile_k × tile_n. 
+
+image::tiled-matmul.svg[Tiled Matrix Multiplication]
+
+Each matrix multiplication instruction computes its output tile by stepping through the K dimension in tiles, loading the required values from the A and B matrices, and multiplying and accumulating them into the output.
+
+Matrix extension is strongly inspired by the RISC-V Vector "V" extension.
+
+== Implementation-defined Constant Parameters
+
+Each hart supporting a matrix extension defines two parameters:
+
+. The maximum size in bits of a matrix element that any operation can produce or consume, stem:[\rm{ELEN} \ge 8], which must be a power of 2.
+. The number of bits in a single matrix tile register, stem:[\rm{MLEN} \ge \rm{ELEN}], which must be a power of 2, and must be no greater than 2^32^.
+. The number of bits in a row of a single matrix tile register, stem:[\rm{RLEN} \ge \rm{ELEN}, \rm{RLEN} \le \rm{MLEN}], which must be a power of 2, and must be no greater than 2^16^.
+
+
+== Programmer's Model
+
+The matrix extension adds 10 matrix tile registers, and 5 unprivileged CSRs (tile_m, tile_n, tile_k, mtype, mlenb) to the base scalar RISC-V ISA.
+
+.New matrix CSRs
+[cols="^2,^2,^2,10",options="header"]
+|===
+| Address | Privilege | Name   | Description
+
+| 0xC40 | URW | tile_m | Tile length in m direction 
+| 0xC41 | URW | tile_n | Tile length in n direction 
+| 0xC42 | URW | tile_k | Tile length in k direction 
+| 0xC43 | URW | mtype  | Matrix tile data type register
+| 0xC44 | URO | mlenb  | MLEN/8 (matrix tile register length in bytes)
+|===
+
+
+=== Matrix Registers
+
+The matrix extension adds 10 architectural matrix registers, 8 **Tile Registers**(tr0-tr7) for tiles of input matrices, and 2 **Accumulator Registers**(acc0-acc1) for tiles of output matrices.
+
+A **Tile Register** has a fixed MLEN bits of state. 
+
+If a implementation supports using a accumulator data type which is quad-width of the input data type, each **Accumulator Register** would have a MLEN*4 bits of state.
+
+Otherwise, each **Accumulator Register** has a MLEN*2 bits of state, to support a double-width accumulator data type.
+
+image::registers.svg[Matrix Registers]
+
+=== Matrix type register, mtype
+
+The read-only XLEN-wide _matrix_ _type_ CSR, `mtype` provides the
+default type used to interpret the contents of the matrix register
+file, and can only be updated by `msettype{i}` instructions. The
+matrix type determines the organization of elements in each
+matrix register.
+
+NOTE: Allowing updates only via the `msettype{i}` instructions
+simplifies maintenance of the `mtype` register state.
+
+include::mtype.adoc[]
+
+=== Matrix tile configure registers, tile_m/tile_k/tile_n
+
+The XLEN-bit-wide read-only `tile_m/tile_k/tile_n` CSRs can only be updated by the `msettile[m|k|n]{i}` instructions. The registers holds 3 unsigned integers specifying the tile shapes for tiled matrix.
+
+
+== Instructions
+
+=== Instruction Formats
+
+The instructions in the matrix extension use a new major opcode (1110111, which inst[6:5]=11, inst[4:2]=101 is reserved in RISC-V opcode map).
+
+This instruction formats are list below.
+
+Configuration instructions, funct3 = 111
+
+[cols="^2,^2,^2,^2,^2,^2,^3"]
+|===
+| **31 28** 2+| 27      20  | 19 15 | 14  12 | 11 7 | 6    0
+|funct4     3+| imm13               | funct3 | rd   | 1110111
+|funct4     2+| 00000000    | rs1   | funct3 | rd   | 1110111
+|===
+
+Load & Store instructions, eew = 000 - 011
+
+[cols="^3,^1,^2,^2,^2,^2,^3"]
+|===
+| **31  26** | 25   | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
+| funct6     | ls   | rs2   | rs1   | eew    | md   | 1110111
+|===
+
+Arithmetic & Type-Convert instructions, funct3 = 110
+
+[cols="^3,^1,^2,^2,^2,^2,^3"]
+|===
+| **31  26** | 25   | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
+| funct6     | fp   | ms2   | ms1   | funct3 | md   | 1110111
+|===
+
+
+Data Move instructions, funct3 = 101
+
+[cols="^3,^1,^2,^2,^2,^2,^3"]
+|===
+| **31  26** | 25   | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
+| funct6     | di   | rs2   | ms1   | funct3 | md   | 1110111
+|===
+
+
+
+
+
+=== Configuration-Setting Instructions
+
+Due to hardware resource constraints, one of the common ways to handle large-sized matrix multiplications is "tiling", where each iteration of the loop processes a subset of elements, and then continues to iterate until all elements are processed. The Matrix extension provides direct, portable support for this approach.
+
+The block processing of matrix multiplication requires three levels of loops to iterate in the direction of the number of rows of the left matrix (m), the number of columns of the left matrix(k, also the number of rows of the right matrix), and the number of columns of the right matrix(n), given by the application. 
+
+The shapes of the matrix tiles to be processed, m(application tile length m or `ATM`), k(`ATK`), n(`ATN`), is used as candidates for `tile_m/tile_k/tile_n`. Based on microarchitecture implementation and mtype setting, hardware returns a new `tile_m/tile_k/tile_n` value via a general purpose register (usually smaller), also stored in `tile_m/tile_k/tile_n` CSR, which is the shape of tile per iteration handled by hardware. 
+
+For a simple matrix multiplication example, check out the Section Intrinsic Example, which describes how the code keeps track of the matrices processed by the hardware each iteration.
+
+
+A set of instructions is provided to allow rapid configuration of the values in tile_* and mtype to match application needs. 
+
+The `msettype{i}` instructions set the `mtype` CSR based on their arguments, and write the new value of mtype into rd.
+
+```
+msettypei rd, mtypei               # rd = new mtype, mtypei = new mtype setting
+msettype rd, rs1                   # rd = new mtype, rs1 = new mtype value
+```
+
+The `msettile[m|k|n]{i}` instructions set the tile_m/tile_k/tile_n CSRs based on their arguments, and write the new value into rd.
+
+```
+msettilemi rd, mleni               # rd = new tile_m, mleni = ATM
+msettilem rd, rs1                  # rd = new tile_m, rs1 = ATM
+msettileki rd, mleni               # rd = new tile_k, mleni = ATN
+msettilek rd, rs1                  # rd = new tile_k, rs1 = ATN
+msettileni rd, mleni               # rd = new tile_n, mleni = ATK
+msettilen rd, rs1                  # rd = new tile_n, rs1 = ATK
+```
+
+==== `mtype` encoding
+
+include::mtype.adoc[]
+
+The new `mtype` value is encoded in the immediate fields of msettypei, and in the rs1 register for msettype.
+
+```
+Suggested assembler names used for msettypei mtypei immediate
+
+    e8    # SEW = 8b
+    e16   # SEW = 16b
+    e32   # SEW = 32b
+    e64   # SEW = 64b
+
+    accq  # support 32-bit accumulator element
+
+Examples:
+
+    msettypei t0, e8                 # SEW = 8
+    msettypei t0, e32                # SEW = 16
+
+    msettypei t0, e8, accq           # SEW = 8, support 32-bit accumulator element
+```
+
+
+==== `ATM/ATK/ATN` encoding
+
+There are three values, `TMMAX`, `TKMAX`, `TNMAX`, represents the maximum shapes of the matrix
+tiles could be stored in matrix registers, that can be operated on with a single matrix
+instruction given the current SEW settings as shown below.
+
+* TMMAX = MLEN / RLEN
+* TKMAX = min(MLEN / RLEN, RLEN / SEW)
+* TNMAX = RLEN / SEW
+
+For examples, if MLEN=256, RLEN=64, `TMMAX`, `TKMAX`, `TNMAX` values are shown below.
+
+```
+SEW=8,  TMMAX=4, TKMAX=4, TNMAX=8       # 4x4x8 8bit matmul
+SEW=16, TMMAX=4, TKMAX=4, TNMAX=4,      # 4x4x4 16bit matmul
+SEW=32, TMMAX=4, TKMAX=2, TNMAX=2,      # 4x2x2 32bit matmul
+```
+
+The new tile shape settings are based on `ATM/ATK/ATN` values, which for `msettile[m|k|n]{i}` is encoded in the rs1 and rd fields.
+
+[cols="^1,^1,<4,<5"]
+|===
+| rd  | rs1   | `ATM/ATK/ATN` value             | Effect on `tile_m/tile_k/tile_n`
+| -   | !x0   | Value in `x[rs1]`               | Normal tiling
+| !x0 | x0    | ~0                              | Set `tile_m/tile_k/tile_n` to `TMMAX/TKMAX/TNMAX`
+| x0  | x0    | Value in `tile_m/tile_k/tile_n` | Keep existing `tile_m/tile_k/tile_n` if less than `TMMAX/TKMAX/TNMAX`
+|===
+
+For the `msettile[m|k|n]i` instructions, the `ATM/ATK/ATN` is encoded as a 13-bit zero-extended immediate in the rs1.
+
+==== Constraints on Setting `tile_m/tile_k/tile_n`
+
+The `msettile[m|k|n]{i}` instructions first set `TMMAX/TKMAX/TNMAX` according to the mtype CSR, then set `tile_m/tile_k/tile_n` obeying the following constraints(use `tile_m&ATM&TMMAX` as example, same to `tile_k&ATK&TKMAX` and `tile_n&ATN&TNMAX`):
+
+. `tile_m = ATM` if `ATM \<= TMMAX`
+. `ceil(ATM / 2) \<= vl \<= TMMAX` if `ATM < (2 * TMMAX)`
+. `tile_m = TMMAX` if `ATM >= (2 * TMMAX)`
+. Deterministic on any given implementation for same input ATM and TMMAX values
+. These specific properties follow from the prior rules:
+.. `tile_m = 0` if `ATM = 0`
+.. `tile_m > 0` if `ATM > 0`
+.. `tile_m \<= TMMAX`
+.. `tile_m \<= ATM`
+.. a value read from `tile_m` when used as the ATM argument to `msettile[m|k|n]{i}` results in the same
+value in `tile_m`, provided the resultant TMMAX equals the value of TMMAX at the time that `tile_m` was read.
+
+
+Continue to use MLEN=256, RLEN=64 as a example. When SEW=16, TMMAX=4, TKMAX=4, TNMAX=8.
+
+If A is a 7 x 8 matrix and B is a 8 x 14 matrix, we could get `tile_m/tile_k/tile_n` values as show below, in the last loop of tiling.
+
+image::tiled-matmul-example.svg[Tiled Matrix Multiplication Example]
+
+
+=== Load and Store Instructions
+
+==== Load instructions
+
+Load a matrix tile from memory.
+
+```
+# md destination, rs1 base address, rs2 row byte stride
+
+# for left matrix, a
+# tile size = tile_m * tile_k
+mle8.m.a  md, (rs1), rs2 #  8-bit tile load
+mle16.m.a md, (rs1), rs2 # 16-bit tile load
+mle32.m.a md, (rs1), rs2 # 32-bit tile load
+mle64.m.a md, (rs1), rs2 # 64-bit tile load
+
+# for right matrix, b
+# tile size = tile_k * tile_n
+mle8.m.b  md, (rs1), rs2 #  8-bit tile load
+mle16.m.b md, (rs1), rs2 # 16-bit tile load
+mle32.m.b md, (rs1), rs2 # 32-bit tile load
+mle64.m.b md, (rs1), rs2 # 64-bit tile load
+
+# for output matrix, c
+# tile size = tile_m * tile_n
+mle8.m.c  md, (rs1), rs2 #  8-bit acc load
+mle16.m.c md, (rs1), rs2 # 16-bit acc load
+mle32.m.c md, (rs1), rs2 # 32-bit acc load
+mle64.m.c md, (rs1), rs2 # 64-bit acc load
+
+```
+
+Load a matrix tile from memory, the matrix on memory is transposed.
+
+```
+# md destination, rs1 base address, rs2 row byte stride
+
+# for left matrix, a
+# tile size = tile_k * tile_m
+mltre8.m.a  md, (rs1), rs2 #  8-bit tile load
+mltre16.m.a md, (rs1), rs2 # 16-bit tile load
+mltre32.m.a md, (rs1), rs2 # 32-bit tile load
+mltre64.m.a md, (rs1), rs2 # 64-bit tile load
+
+# for right matrix, b
+# tile size = tile_n * tile_k
+mltre8.m.b  md, (rs1), rs2 #  8-bit tile load
+mltre16.m.b md, (rs1), rs2 # 16-bit tile load
+mltre32.m.b md, (rs1), rs2 # 32-bit tile load
+mltre64.m.b md, (rs1), rs2 # 64-bit tile load
+
+# for output matrix, c
+# tile size = tile_n * tile_m
+mltre8.m.c  md, (rs1), rs2 #  8-bit acc load
+mltre16.m.c md, (rs1), rs2 # 16-bit acc load
+mltre32.m.c md, (rs1), rs2 # 32-bit acc load
+mltre64.m.c md, (rs1), rs2 # 64-bit acc load
+
+```
+
+==== Store instructions
+
+Store a matrix tile to memory.
+
+```
+# ms3 store data, rs1 base address, rs2 row byte stride
+
+# for left matrix, a
+# tile size = tile_m * tile_k
+mse8.m.a  ms3, (rs1), rs2 #  8-bit tile store
+mse16.m.a ms3, (rs1), rs2 # 16-bit tile store
+mse32.m.a ms3, (rs1), rs2 # 32-bit tile store
+mse64.m.a ms3, (rs1), rs2 # 64-bit tile store
+
+# for right matrix, b
+# tile size = tile_k * tile_n
+mse8.m.b  ms3, (rs1), rs2 #  8-bit tile store
+mse16.m.b ms3, (rs1), rs2 # 16-bit tile store
+mse32.m.b ms3, (rs1), rs2 # 32-bit tile store
+mse64.m.b ms3, (rs1), rs2 # 64-bit tile store
+
+# for output matrix, c
+# tile size = tile_m * tile_n
+mse8.m.c  ms3, (rs1), rs2 #  8-bit acc store
+mse16.m.c ms3, (rs1), rs2 # 16-bit acc store
+mse32.m.c ms3, (rs1), rs2 # 32-bit acc store
+mse64.m.c ms3, (rs1), rs2 # 64-bit acc store
+
+```
+
+Save a matrix tile to memory, the matrix on memory is transposed.
+
+```
+# ms3 store data, rs1 base address, rs2 row byte stride
+
+# for left matrix, a
+# tile size = tile_k * tile_m
+mstre8.m.a  ms3, (rs1), rs2 #  8-bit tile store
+mstre16.m.a ms3, (rs1), rs2 # 16-bit tile store
+mstre32.m.a ms3, (rs1), rs2 # 32-bit tile store
+mstre64.m.a ms3, (rs1), rs2 # 64-bit tile store
+
+# for right matrix, b
+# tile size = tile_n * tile_k
+mstre8.m.b  ms3, (rs1), rs2 #  8-bit tile store
+mstre16.m.b ms3, (rs1), rs2 # 16-bit tile store
+mstre32.m.b ms3, (rs1), rs2 # 32-bit tile store
+mstre64.m.b ms3, (rs1), rs2 # 64-bit tile store
+
+# for output matrix, c
+# tile size = tile_n * tile_m
+mstre8.m.c  ms3, (rs1), rs2 #  8-bit acc store
+mstre16.m.c ms3, (rs1), rs2 # 16-bit acc store
+mstre32.m.c ms3, (rs1), rs2 # 32-bit acc store
+mstre64.m.c ms3, (rs1), rs2 # 64-bit acc store
+```
+
+
+=== Arithmetic Instructions
+
+==== Matrix Multiplication Instructions
+
+Matrix Multiplication operations take two matrix tiles of operands from matrix **tile registers** specified by `ms2` and `ms1` respectively, the output matrix tiles of operands is a matrix **accumulator register** specified by `md`.
+
+```
+# int matrix multiplication and add, md = md + ms1 * ms2
+mma.mm md, ms1, ms2    
+mwma.mm md, ms1, ms2    # output double widen
+mqma.mm md, ms1, ms2    # output quadruple widen
+
+# float matrix multiplication and add, md = md + ms1 * ms2
+mfma.mm md, ms1, ms2
+mfwma.mm md, ms1, ms2   # output double widen
+```
+
+==== Element-Wise Add/Sub/Multiply Instructions
+
+Matrix element-wise add/sub/multiply instructions.
+
+These instructions only support accumulator registers(acc0-acc1) as source and destination registers,
+if tile registers(tr0-tr7) are used, `mtype.mill` will be set.
+
+```
+# int matrix element-wise add, md[i,j] = md[i,j] + ms1[i,j]
+madd.mm md, ms1    
+mwadd.mm md, ms1        # output double widen
+mqadd.mm md, ms1        # output quadruple widen
+
+# int matrix element-wise subtract, md[i,j] = md[i,j] - ms1[i,j]
+msub.mm md, ms1    
+mwsub.mm md, ms1        # output double widen
+mqsub.mm md, ms1        # output quadruple widen
+
+# int matrix element-wise reverse subtract, md[i,j] = ms1[i,j] - md[i,j]
+mrsub.mm md, ms1    
+mwrsub.mm md, ms1       # output double widen
+mqrsub.mm md, ms1       # output quadruple widen
+
+# int matrix element-wise multiply with scalar int, md[i,j] = ms1[i,j] * rs2
+memul.mx md, ms1, rs2
+mwemul.mx md, ms1, rs2  # output double widen
+mqemul.mx md, ms1, rs2  # output quadruple widen
+
+# int matrix element-wise multiply with int imm, md[i,j] = ms1[i,j] * imm
+memul.mi md, ms1, imm
+mwemul.mi md, ms1, imm  # output double widen
+mqemul.mi md, ms1, imm  # output quadruple widen
+
+
+# float matrix element-wise add, md[i,j] = md[i,j] + ms1[i,j]
+mfadd.mm md, ms1    
+mfwadd.mm md, ms1       # output double widen
+
+# float matrix element-wise subtract, md[i,j] = md[i,j] - ms1[i,j]
+mfsub.mm md, ms1    
+mfwsub.mm md, ms1       # output double widen
+
+# float matrix element-wise reverse subtract, md[i,j] = ms1[i,j] - md[i,j]
+mfrsub.mm md, ms1    
+mfwrsub.mm md, ms1       # output double widen
+
+# float matrix element-wise multiply with scalar float, md[i,j] = ms1[i,j] * rs2
+mfemul.mf md, ms1, rs2
+mfwemul.mf md, ms1, rs2 # output double widen
+
+```
+
+==== Type-Convert Instructions
+
+These instructions only support accumulator registers(acc0-acc1) as source and destination registers,
+if tile registers(tr0-tr7) are used, `mtype.mill` will be set.
+
+```
+# convert float to float
+mfncvt.f.fw.m  md, ms1  # double-width float to single-width float
+mfwcvt.fw.f.m  md, ms1  # single-width float to double-width float
+
+# convert int to float
+mcvt.f.x.m md, ms1      # int to float
+
+mncvt.f.xw.m md, ms1    # double-width int to float
+mncvt.f.xq.m md, ms1    # quad-width int to float
+
+mwcvt.fw.x.m md, ms1    # single-width int to double-width float
+mcvt.fw.xw.m md, ms1    # double-width int to double-width float
+mncvt.fw.xq.m md, ms1   # quad-width int to double-width float
+
+# convert float to int
+mcvt.x.f.m md, ms1      # float to int
+
+mwcvt.xw.f.m md, ms1    # float to double-width int
+mwcvt.xq.f.m md, ms1    # float to quad-width int
+
+mncvt.x.fw.m md, ms1    # double-width float to single-width int
+mcvt.xw.fw.m md, ms1    # double-width float to double-width int
+mwcvt.xq.fw.m md, ms1   # double-width float to quad-width int
+```
+
+
+=== Instruction Listing
+
+[cols="^2,^5,^3,^2,^2,^2,^2,^2,^3"]
+|===
+| No.  |          | **31 28** 2+| 27      20  | 19 15 | 14  12 | 11 7 | 6    0
+2+|**Configuration**    |funct4 2+|             | rs1   | funct3 | rd   | opcode
+| 1    | msettypei      | 0000  3+| mtypei[27:15]       | 111    | rd   | 1110111
+| 2    | msettype       | 0001  2+| 00000000    | rs1   | 111    | rd   | 1110111
+| 3    | msettilemi     | 0010  3+| mleni[27:15]        | 111    | rd   | 1110111
+| 4    | msettilem      | 0011  2+| 00000000    | rs1   | 111    | rd   | 1110111
+| 5    | msettileki     | 0100  3+| mleni[27:15]        | 111    | rd   | 1110111
+| 6    | msettilek      | 0101  2+| 00000000    | rs1   | 111    | rd   | 1110111
+| 7    | msettileni     | 0110  3+| mleni[27:15]        | 111    | rd   | 1110111
+| 8    | msettilen      | 0111  2+| 00000000    | rs1   | 111    | rd   | 1110111
+9+|
+
+| No.  |          | **31  26** | 25   | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
+
+2+|**Load**             | funct6 | ls   | rs2   | rs1   | eew    | md   | opcode
+| 9    | mle8.m.a       | 001001 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 10   | mle16.m.a      | 001001 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 11   | mle32.m.a      | 001001 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 12   | mle64.m.a      | 001001 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 13   | mle8.m.b       | 001010 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 14   | mle16.m.b      | 001010 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 15   | mle32.m.b      | 001010 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 16   | mle64.m.b      | 001010 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 17   | mle8.m.c       | 000000 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 18   | mle16.m.c      | 000000 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 19   | mle32.m.c      | 000000 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 20   | mle64.m.c      | 000000 | 0    | rs2   | rs1   | 011    | md   | 1110111
+
+| 9    | mltre8.m.a     | 001101 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 10   | mltre16.m.a    | 001101 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 11   | mltre32.m.a    | 001101 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 12   | mltre64.m.a    | 001101 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 13   | mltre8.m.b     | 001110 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 14   | mltre16.m.b    | 001110 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 15   | mltre32.m.b    | 001110 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 16   | mltre64.m.b    | 001110 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 17   | mltre8.m.c     | 000100 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 18   | mltre16.m.c    | 000100 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 19   | mltre32.m.c    | 000100 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 20   | mltre64.m.c    | 000100 | 0    | rs2   | rs1   | 011    | md   | 1110111
+
+2+|**Store**            | funct6 | ls   | rs2   | rs1   | eew    | ms3  | opcode
+| 21   | mse8.m.a       | 001001 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 22   | mse16.m.a      | 001001 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 23   | mse32.m.a      | 001001 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 24   | mse64.m.a      | 001001 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 25   | mse8.m.b       | 001010 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 26   | mse16.m.b      | 001010 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 27   | mse32.m.b      | 001010 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 28   | mse64.m.b      | 001010 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 29   | mse8.m.c       | 000000 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 30   | mse16.m.c      | 000000 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 31   | mse32.m.c      | 000000 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 32   | mse64.m.c      | 000000 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+
+| 21   | mstre8.m.a     | 001101 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 22   | mstre16.m.a    | 001101 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 23   | mstre32.m.a    | 001101 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 24   | mstre64.m.a    | 001101 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 25   | mstre8.m.b     | 001110 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 26   | mstre16.m.b    | 001110 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 27   | mstre32.m.b    | 001110 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 28   | mstre64.m.b    | 001110 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 29   | mstre8.m.c     | 000100 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 30   | mstre16.m.c    | 000100 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 31   | mstre32.m.c    | 000100 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 32   | mstre64.m.c    | 000100 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+
+2+|**Arithmetic**       | funct6 | fp   | ms2   | ms1   | funct3 | md   | opcode
+| 33   | mma.mm         | 000000 | 0    | ms2   | ms1   | 110    | md   | 1110111 
+| 34   | mfma.mm        | 000000 | 1    | ms2   | ms1   | 110    | md   | 1110111 
+| 35   | mwma.mm        | 000001 | 0    | ms2   | ms1   | 110    | md   | 1110111 
+| 36   | mfwma.mm       | 000001 | 1    | ms2   | ms1   | 110    | md   | 1110111 
+| 37   | mqma.mm        | 000010 | 0    | ms2   | ms1   | 110    | md   | 1110111 
+
+| 38   | madd.mm        | 000100 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 39   | mfadd.mm       | 000100 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 40   | mwadd.mm       | 000101 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 41   | mfwadd.mm      | 000101 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 42   | mqadd.mm       | 000110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 43   | msub.mm        | 000111 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 44   | mfsub.mm       | 000111 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 45   | mwsub.mm       | 001000 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 46   | mfwsub.mm      | 001000 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 47   | mqsub.mm       | 001001 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 48   | mrsub.mm       | 001010 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 49   | mfrsub.mm      | 001010 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 50   | mwrsub.mm      | 001011 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 51   | mfwrsub.mm     | 001011 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 52   | mqrsub.mm      | 001100 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 53   | memul.mx       | 001101 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 54   | mfemul.mf      | 001101 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 55   | mwemul.mx      | 001110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 56   | mfwemul.mf     | 001110 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 57   | mqemul.mx      | 001111 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 58   | memul.mi       | 010000 | 0    | imm   | ms1   | 110    | md   | 1110111 
+| 59   | mwemul.mi      | 010001 | 0    | imm   | ms1   | 110    | md   | 1110111 
+| 60   | mqemul.mi      | 010010 | 0    | imm   | ms1   | 110    | md   | 1110111
+
+
+2+|**Convert**          | funct6 | fdst | ms2   | ms1   | funct3 | md   | opcode
+| 61   | mfncvt.f.fw.m  | 011000 | 1    | 00000 | ms1   | 110    | md   | 1110111
+| 62   | mfwcvt.fw.f.m  | 011000 | 0    | 00000 | ms1   | 110    | md   | 1110111
+
+| 63   | mfcvt.f.x.m    | 011010 | 1    | 00000 | ms1   | 110    | md   | 1110111
+| 64   | mfcvt.x.f.m    | 011010 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 65   | mfncvt.f.xw.m  | 011011 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 66   | mfwcvt.xw.f.m  | 011011 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 67   | mfncvt.f.xq.m  | 011100 | 1    | 00000 | ms1   | 110    | md   | 1110111
+| 68   | mfwcvt.xq.f.m  | 011100 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 69   | mfwcvt.fw.x.m  | 011101 | 1    | 00000 | ms1   | 110    | md   | 1110111
+| 70   | mfncvt.x.fw.m  | 011101 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 71   | mfcvt.fw.xw.m  | 011110 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 72   | mfcvt.xw.fw.m  | 011110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 73   | mfncvt.fw.xq.m | 011111 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 74   | mfwcvt.xq.fw.m | 011111 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+
+
+|===
+
+== Intrinsic Examples
+
+=== Matrix multiplication
+
+```
+void matmul_float16(c, a, b, m, k, n) {
+    msettype(e16);                              // use 16bit input matrix element
+    for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
+        tile_m = msettile_m(m-i);
+        for (j=0; j<n; j+=tile_n) {             // loop at dim n with tiling
+            tile_n = msettile_n(n-j);
+
+            acc = mfemul_mf(acc, 0.f)           // clear acc reg
+            for (s=0; s<k; s+=tile_k) {         // loop at dim k with tiling
+                tile_k = msettile_k(k-s);
+                
+                tr1 = mle16_m_a(&a[i][s], k*2); // load left matrix a
+                tr2 = mle16_m_b(&a[s][j], n*2); // load right matrix b
+                acc = mfwma_mm(tr1, tr2);       // tiled matrix multiply,
+                                                // double widen output acc
+            }
+           
+            acc = mfncvt_f_fw_m(acc);           // convert widen result
+            mse16_m_c(acc, &c[i][j], n*2);      // store to matrix c
+        }
+    }
+}
+
+```
+
+
+=== Matrix multiplication with left matrix transposed
+
+```
+void matmul_a_tr_float16(c, a, b, m, k, n) {
+    msettype(e16);                              // use 16bit input matrix element
+    for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
+        tile_m = msettile_m(m-i);
+        for (j=0; j<n; j+=tile_n) {             // loop at dim n with tiling
+            tile_n = msettile_n(n-j);
+
+            acc = mfemul_mf(acc, 0.f)           // clear acc reg
+            for (s=0; s<k; s+=tile_k) {         // loop at dim k with tiling
+                tile_k = msettile_k(k-s);
+                
+                tr1 = mltre16_m_a(&a[s][i], m*2);  // load transposed left matrix a
+                tr2 = mle16_m_b(&a[s][j], n*2); // load right matrix b
+                acc = mfwma_mm(tr1, tr2);       // tiled matrix multiply,
+                                                // double widen output acc
+            }
+           
+            acc = mfncvt_f_fw_m(acc);           // convert widen result
+            mse16_m_c(acc, &c[i][j], n*2);      // store to matrix c
+        }
+    }
+}
+
+```
+
+
+=== Matrix transpose without multiplication
+
+```
+void mattrans_float16(out, in, h, w) {
+    msettype(e16);                              // use 16bit input matrix element
+
+    for (i=0; i<h; i+=tile_m) {                 // loop at dim m with tiling
+        tile_m = msettile_m(h-i);
+        for (j=0; j<w; j+=tile_k) {             // loop at dim k with tiling
+            tile_k = msettile_k(w-j);
+
+            tr1 = mle16_m_a(&in[i][j], w*2);    // load input matrix
+            mstre16_m_a(tr1, &out[j][i], h*2);  // store output matrix
+        }
+    }
+}
+
+```

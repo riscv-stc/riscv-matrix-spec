@@ -1,0 +1,377 @@
+== Standard Matrix Extension
+
+=== Zmv: Matrix for Vector operations
+
+The Zmv extension is defined to provide matrix support with the RISC-V Vector
+"V" extension.
+
+The Zmv extension allows to load matrix tile slices into vector registers, and
+move data between slices of a matrix register and vector registers. 
+Element-wise multiply between a matrix register and a vector register(broadcast
+to a matrix) is also supported.
+
+The data layout examples of registers and memory in Zmv are shown below.
+
+image::memory-registers.svg[Data layout examples of registers and memory]
+
+==== Load Instructions
+
+```
+# vd destination, rs1 base address, rs2 row byte stride
+# lmul / (eew/sew) rows or columns
+
+# for left matrix, a
+mle8.v.a   vd, (rs1), rs2 #  8-bit tile/acc slices load to vregs
+mle16.v.a  vd, (rs1), rs2 # 16-bit tile/acc slices load to vregs
+mle32.v.a  vd, (rs1), rs2 # 32-bit tile/acc slices load to vregs
+mle64.v.a  vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
+
+# for right matrix, b
+mle8.v.b   vd, (rs1), rs2 #  8-bit tile/acc slices load to vregs
+mle16.v.b  vd, (rs1), rs2 # 16-bit tile/acc slices load to vregs
+mle32.v.b  vd, (rs1), rs2 # 32-bit tile/acc slices load to vregs
+mle64.v.b  vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
+
+# for output matrix, c
+mle8.v.c   vd, (rs1), rs2 #  8-bit tile/acc slices load to vregs
+mle16.v.c  vd, (rs1), rs2 # 16-bit tile/acc slices load to vregs
+mle32.v.c  vd, (rs1), rs2 # 32-bit tile/acc slices load to vregs
+mle64.v.c  vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
+```
+
+==== Store Instructions
+
+```
+# vs3 store data, rs1 base address, rs2 row byte stride
+# lmul / (eew/sew) rows or columns
+
+# for left matrix, a
+mse8.v.a   vs3, (rs1), rs2 #  8-bit tile/acc slices store from vregs
+mse16.v.a  vs3, (rs1), rs2 # 16-bit tile/acc slices store from vregs
+mse32.v.a  vs3, (rs1), rs2 # 32-bit tile/acc slices store from vregs
+mse64.v.a  vs3, (rs1), rs2 # 64-bit tile/acc slices store from vregs
+
+# for right matrix, b
+mse8.v.b   vs3, (rs1), rs2 #  8-bit tile/acc slices store from vregs
+mse16.v.b  vs3, (rs1), rs2 # 16-bit tile/acc slices store from vregs
+mse32.v.b  vs3, (rs1), rs2 # 32-bit tile/acc slices store from vregs
+mse64.v.b  vs3, (rs1), rs2 # 64-bit tile/acc slices store from vregs
+
+# for output matrix, c
+mse8.v.c   vs3, (rs1), rs2 #  8-bit tile/acc slices store from vregs
+mse16.v.c  vs3, (rs1), rs2 # 16-bit tile/acc slices store from vregs
+mse32.v.c  vs3, (rs1), rs2 # 32-bit tile/acc slices store from vregs
+mse64.v.c  vs3, (rs1), rs2 # 64-bit tile/acc slices store from vregs
+```
+
+
+==== Data Move Instructions
+
+Normal data move, rows or columns = lmul, eew = sew.
+
+```
+# Data move between matrix register rows and vector registers.
+
+# vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul
+mmvr.v.m.a vd, ms1, rs2  # vl = tile_k
+mmvr.v.m.b vd, ms1, rs2  # vl = tile_n
+mmvr.v.m.c vd, ms1, rs2  # vl = tile_n
+
+# md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul
+mmvr.m.v.a md, vs1, rs2  # vl = tile_k
+mmvr.m.v.b md, vs1, rs2  # vl = tile_n
+mmvr.m.v.c md, vs1, rs2  # vl = tile_n
+
+# Data move between matrix register columns and vector registers.
+
+# vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul
+mmvc.v.m.a vd, ms1, rs2  # vl = tile_m
+mmvc.v.m.b vd, ms1, rs2  # vl = tile_k
+mmvc.v.m.c vd, ms1, rs2  # vl = tile_m
+
+# md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul
+mmvc.m.v.a md, vs1, rs2  # vl = tile_m
+mmvc.m.v.b md, vs1, rs2  # vl = tile_k
+mmvc.m.v.c md, vs1, rs2  # vl = tile_m
+```
+
+Double widen data move, rows or columns = lmul / 2, eew = sew * 2.
+
+Only support accumulator registers as source and destination registers.
+
+```
+# Data move between matrix register rows and vector registers.
+
+# vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/2
+mwmvr.v.m.c vd, ms1, rs2  # vl = tile_n
+
+# md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/2
+mwmvr.m.v.c md, vs1, rs2  # vl = tile_n
+
+
+# Data move between matrix register columns and vector registers.
+
+# vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/2
+mwmvc.v.m.c vd, ms1, rs2  # vl = tile_m
+
+# md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/2
+mwmvc.m.v.c md, vs1, rs2  # vl = tile_m
+```
+
+
+quadruple widen data move, rows or columns = lmul / 4, eew = sew * 4.
+
+Only support accumulator registers as source and destination registers.
+
+```
+# Data move between matrix register rows and vector registers.
+
+# vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/4
+mqmvr.v.m.c vd, ms1, rs2  # vl = tile_n
+
+# md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/4
+mqmvr.m.v.c md, vs1, rs2  # vl = tile_n
+
+
+# Data move between matrix register columns and vector registers.
+
+# vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/4
+mqmvc.v.m.c vd, ms1, rs2  # vl = tile_m
+
+# md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/4
+mqmvc.m.v.c md, vs1, rs2  # vl = tile_m
+```
+
+==== Matrix element-wise multiply
+
+Matrix element-wise multiply instructions, the vector operand will broadcast to a matrix.
+
+These instructions only support accumulator registers(acc0-acc1) as source and destination registers,
+if tile registers(tr0-tr7) are used, `mtype.mill` will be set.
+
+```
+# int matrix element-wise multiply with a row of vector int, md[i,j] = ms1[i,j] * vs2[j]
+memul.r.mv md, ms1, vs2
+mwemul.r.mv md, ms1, vs2  # output double widen
+mqemul.r.mv md, ms1, vs2  # output quadruple widen
+
+# int matrix element-wise multiply with a column of vector int, md[i,j] = ms1[i,j] * vs2[i]
+memul.c.mv md, ms1, vs2
+mwemul.c.mv md, ms1, vs2  # output double widen
+mqemul.c.mv md, ms1, vs2  # output quadruple widen
+
+
+# float matrix element-wise multiply with a row of vector float, md = ms1[i,j] * vs2[j]
+mfemul.r.mv md, ms1, vs2
+mfwemul.r.mv md, ms1, vs2  # output double widen
+
+# float matrix element-wise multiply with a column of vector float, md = ms1[i,j] * vs2[i]
+mfemul.c.mv md, ms1, vs2
+mfwemul.c.mv md, ms1, vs2  # output double widen
+```
+
+
+==== Instruction Listing
+
+[cols="^2,^5,^3,^2,^2,^2,^2,^2,^3"]
+|===
+| No.  |          | **31  26** | 25   | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
+
+2+|**Load**             | funct6 | ls   | rs2   | rs1   | eew    | md   | opcode
+| 1    | mle8.v.a       | 100000 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 2    | mle16.v.a      | 100000 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 3    | mle32.v.a      | 100000 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 4    | mle64.v.a      | 100000 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 5    | mle8.v.b       | 100001 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 6    | mle16.v.b      | 100001 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 7    | mle32.v.b      | 100001 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 8    | mle64.v.b      | 100001 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 9    | mle8.v.c       | 100010 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 10   | mle16.v.c      | 100010 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 11   | mle32.v.c      | 100010 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 12   | mle64.v.c      | 100010 | 0    | rs2   | rs1   | 011    | md   | 1110111
+
+2+|**Store**            | funct6 | ls   | rs2   | rs1   | eew    | ms3  | opcode
+| 13   | mse8.v.a       | 100000 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 14   | mse16.v.a      | 100000 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 15   | mse32.v.a      | 100000 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 16   | mse64.v.a      | 100000 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 17   | mse8.v.b       | 100001 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 18   | mse16.v.b      | 100001 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 19   | mse32.v.b      | 100001 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 20   | mse64.v.b      | 100001 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 21   | mse8.v.c       | 100010 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 22   | mse16.v.c      | 100010 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 23   | mse32.v.c      | 100010 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 24   | mse64.v.c      | 100010 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+
+
+2+|**Data Move**        | funct6 | v2m  | rs2   | *s1   | funct3 | *d   | opcode
+| 25   | mmvr.v.m.a     | 000001 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 26   | mmvr.m.v.a     | 000001 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 27   | mmvr.v.m.b     | 000010 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 28   | mmvr.m.v.b     | 000010 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 29   | mmvr.v.m.c     | 000011 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 30   | mmvr.m.v.c     | 000011 | 1    | rs2   | vs1   | 101    | md   | 1110111
+
+| 31   | mmvc.v.m.a     | 000101 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 32   | mmvc.m.v.a     | 000101 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 33   | mmvc.v.m.b     | 000110 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 34   | mmvc.m.v.b     | 000110 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 35   | mmvc.v.m.c     | 000111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 36   | mmvc.m.v.c     | 000111 | 1    | rs2   | vs1   | 101    | md   | 1110111
+
+| 37   | mwmvr.v.m.c    | 010011 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 38   | mwmvr.m.v.c    | 010011 | 1    | rs2   | vs1   | 101    | md   | 1110111
+
+| 39   | mwmvc.v.m.c    | 010111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 40   | mwmvc.m.v.n    | 010111 | 1    | rs2   | vs1   | 101    | md   | 1110111
+
+| 41   | mqmvr.v.m.c    | 100011 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 42   | mqmvr.m.v.c    | 100011 | 1    | rs2   | vs1   | 101    | md   | 1110111
+
+| 43   | mqmvc.v.m.c    | 100111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 44   | mqmvc.m.v.c    | 100111 | 1    | rs2   | vs1   | 101    | md   | 1110111
+
+2+|**Arithmetic**       | funct6 | fp   | vs2   | ms1   | funct3 | md   | opcode
+| 45   | memul.r.mv     | 100001 | 0    | vs2   | ms1   | 110    | md   | 1110111 
+| 46   | mfemul.r.mv    | 100001 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 47   | mwemul.r.mv    | 100010 | 0    | vs2   | ms1   | 110    | md   | 1110111 
+| 48   | mfwemul.r.mv   | 100010 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 49   | mqemul.r.mv    | 100011 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 50   | memul.c.mv     | 100100 | 0    | vs2   | ms1   | 110    | md   | 1110111 
+| 51   | mfemul.c.mv    | 100100 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 52   | mwemul.c.mv    | 100101 | 0    | vs2   | ms1   | 110    | md   | 1110111 
+| 53   | mfwemul.c.mv   | 100101 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 54   | mqemul.c.mv    | 100110 | 0    | vs2   | ms1   | 110    | md   | 1110111
+
+|===
+
+
+====  Intrinsic Examples: Matrix multiplication fused with element-wise vector operation
+
+```
+void fused_matmul_relu_float16(c, a, b, m, k, n) {
+    msettype(e16);                              // use 16bit input matrix element
+    for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
+        tile_m = msettile_m(m-i);
+        for (j=0; j<n; j+=tile_n) {             // loop at dim n with tiling
+            tile_n = msettile_n(n-j);
+
+            acc = mfemul_mf(acc, 0.f)           // clear acc reg
+            for (s=0; s<k; s+=tile_k) {         // loop at dim k with tiling
+                tile_k = msettile_k(k-s);
+                
+                tr1_r = mle16_m_a(&a[i][s]);    // load left matrix a
+                tr2_r = mle16_m_b(&a[s][j]);    // load right matrix b
+                acc = mfwma_mm(tr1_r, tr2_r);   // tiled matrix multiply,
+                                                // double widen output acc
+            }
+           
+            acc = mfncvt_f_fw_m(acc);           // convert widen result to single
+
+           
+            for (s=0; s<tile_m; s+=8) {
+                rows = min(tile_m - s, 8)
+                vl = vsetvl(tile_n*rows, e16, m8)   // set vl to tile_n * rows
+
+                v1 = mmvr_v_m_c(acc_r[s])       // move acc rows to vreg
+                v1 = vfmax_vf(0.f, v1)          // vfmax.vf for relu
+
+                mse16_v(v1, &c[i+s][j], n);     // store output tile slices
+            }
+        }
+    }
+}
+
+```
+
+=== Zmbf16: Matrix Bfloat16(BF16) Extension
+
+The Zmbf16 extension allows to use BF16 format as the data type of input matrix elements.
+
+The Zmbf16 extension add a bit `mtype[4]` in `mtype` register.
+
+.`mtype` register layout
+[cols="^2,^2,8"]
+|===
+|     Bits | Name       | Description
+
+|   XLEN-1 | mill       | Illegal value if set
+| XLEN-2:5 | 0          | Reserved if non-zero
+|        4 | **mbf16**  | **Use BF16 input format**
+|        3 | maccq      | Support quad-width accumulator element
+|      2:0 | msew[2:0]  | Selected element width (SEW) setting
+|===
+
+
+The new `mtype` value is encoded in the immediate fields of msettypei, and in the rs1 register for msettype.
+
+```
+Suggested bf16 assembler name used for msettypei mtypei immediate
+
+    bf16  # Use BF16 format
+
+Examples:
+
+    msettypei t0, e16, bf16         # SEW = 16, use BF16 as input matrix element
+
+```
+
+For implemention not support Bfloat16 format, `mtype.mill` will be set.
+
+`bf16` should be always used with `e16`(SEW=16), otherwise `mtype.mill` will be set.
+
+
+=== Zmtf32: Matrix TensorFloat-32(TF32) Extension
+
+The Zmtf32 extension allows to use TF32 FMA for matrix multiplication. 
+
+TF32 implementions are designed to achieve better performance on matrix multiplications and convolutions
+by rounding input Float32 data to have 10 bits of mantissa, and accumulating results with FP32 precision,
+maintaining FP32 dynamic range.
+
+So when Zmtf32 is used, Float32 is still used as the input and output data type for matrix multiplication.
+
+The Zmtf32 extension add a bit `mtype[5]` in `mtype` register.
+
+.`mtype` register layout
+[cols="^2,^2,8"]
+|===
+|     Bits | Name       | Description
+
+|   XLEN-1 | mill       | Illegal value if set
+| XLEN-2:6 | 0          | Reserved if non-zero
+|        5 | **mtf32**  | **Enable TF32 FMA for matrix multiplication**
+|        4 | mbf16      | Use bfloat16 input format
+|        3 | maccq      | Support quad-width accumulator element
+|      2:0 | msew[2:0]  | Selected element width (SEW) setting
+|===
+
+
+The new `mtype` value is encoded in the immediate fields of msettypei, and in the rs1 register for msettype.
+
+```
+Suggested tf32 assembler name used for msettypei mtypei immediate
+
+    tf32  # enable TF32 FMA
+
+Examples:
+
+    msettypei t0, e32, tf32         # SEW = 32, enable TF32 FMA
+
+```
+
+For implemention not support TF32 format, `mtype.mill` will be set.
+
+`tf32` should be always used with `e32`(SEW=32), otherwise `mtype.mill` will be set.
+
+
+=== Zmic: Im2col Matrix Multiplication Extension
+
+Im2col stands for Image to Column, and is an implementation technique of computing Convolution operation
+(in Machine Learning) using GEMM operations.
+
+The Zmic extension allows to perform the im2col operation on-the-fly, by the new load instructions.
+
+Working in progress.
