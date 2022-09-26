@@ -231,29 +231,33 @@ image::tiled-matmul-example.svg[Tiled Matrix Multiplication Example]
 
 Load a matrix tile from memory.
 
+NOTE: For `mla*`, `msa*`, `mlb*` or `msb*` instructions, source and destination
+operands are *tile registers*(`tr0`-`tr7`). And for `mlc*`, `msc*` instructions,
+source and destination operands are *accumulator registers*(`acc0`-`acc1`)
+
 ```
 # md destination, rs1 base address, rs2 row byte stride
 
 # for left matrix, a
 # tile size = tile_m * tile_k
-mle8.m.a  md, (rs1), rs2 #  8-bit tile load
-mle16.m.a md, (rs1), rs2 # 16-bit tile load
-mle32.m.a md, (rs1), rs2 # 32-bit tile load
-mle64.m.a md, (rs1), rs2 # 64-bit tile load
+mlae8.m  md, (rs1), rs2 #  8-bit tile load
+mlae16.m md, (rs1), rs2 # 16-bit tile load
+mlae32.m md, (rs1), rs2 # 32-bit tile load
+mlae64.m md, (rs1), rs2 # 64-bit tile load
 
 # for right matrix, b
 # tile size = tile_k * tile_n
-mle8.m.b  md, (rs1), rs2 #  8-bit tile load
-mle16.m.b md, (rs1), rs2 # 16-bit tile load
-mle32.m.b md, (rs1), rs2 # 32-bit tile load
-mle64.m.b md, (rs1), rs2 # 64-bit tile load
+mlbe8.m  md, (rs1), rs2 #  8-bit tile load
+mlbe16.m md, (rs1), rs2 # 16-bit tile load
+mlbe32.m md, (rs1), rs2 # 32-bit tile load
+mlbe64.m md, (rs1), rs2 # 64-bit tile load
 
 # for output matrix, c
 # tile size = tile_m * tile_n
-mle8.m.c  md, (rs1), rs2 #  8-bit acc load
-mle16.m.c md, (rs1), rs2 # 16-bit acc load
-mle32.m.c md, (rs1), rs2 # 32-bit acc load
-mle64.m.c md, (rs1), rs2 # 64-bit acc load
+mlce8.m  md, (rs1), rs2 #  8-bit acc load
+mlce16.m md, (rs1), rs2 # 16-bit acc load
+mlce32.m md, (rs1), rs2 # 32-bit acc load
+mlce64.m md, (rs1), rs2 # 64-bit acc load
 
 ```
 
@@ -264,24 +268,24 @@ Load a matrix tile from memory, the matrix on memory is transposed.
 
 # for left matrix, a
 # tile size = tile_k * tile_m
-mltre8.m.a  md, (rs1), rs2 #  8-bit tile load
-mltre16.m.a md, (rs1), rs2 # 16-bit tile load
-mltre32.m.a md, (rs1), rs2 # 32-bit tile load
-mltre64.m.a md, (rs1), rs2 # 64-bit tile load
+mlate8.m  md, (rs1), rs2 #  8-bit tile load
+mlate16.m md, (rs1), rs2 # 16-bit tile load
+mlate32.m md, (rs1), rs2 # 32-bit tile load
+mlate64.m md, (rs1), rs2 # 64-bit tile load
 
 # for right matrix, b
 # tile size = tile_n * tile_k
-mltre8.m.b  md, (rs1), rs2 #  8-bit tile load
-mltre16.m.b md, (rs1), rs2 # 16-bit tile load
-mltre32.m.b md, (rs1), rs2 # 32-bit tile load
-mltre64.m.b md, (rs1), rs2 # 64-bit tile load
+mlbte8.m  md, (rs1), rs2 #  8-bit tile load
+mlbte16.m md, (rs1), rs2 # 16-bit tile load
+mlbte32.m md, (rs1), rs2 # 32-bit tile load
+mlbte64.m md, (rs1), rs2 # 64-bit tile load
 
 # for output matrix, c
 # tile size = tile_n * tile_m
-mltre8.m.c  md, (rs1), rs2 #  8-bit acc load
-mltre16.m.c md, (rs1), rs2 # 16-bit acc load
-mltre32.m.c md, (rs1), rs2 # 32-bit acc load
-mltre64.m.c md, (rs1), rs2 # 64-bit acc load
+mlcte8.m  md, (rs1), rs2 #  8-bit acc load
+mlcte16.m md, (rs1), rs2 # 16-bit acc load
+mlcte32.m md, (rs1), rs2 # 32-bit acc load
+mlcte64.m md, (rs1), rs2 # 64-bit acc load
 
 ```
 
@@ -294,24 +298,24 @@ Store a matrix tile to memory.
 
 # for left matrix, a
 # tile size = tile_m * tile_k
-mse8.m.a  ms3, (rs1), rs2 #  8-bit tile store
-mse16.m.a ms3, (rs1), rs2 # 16-bit tile store
-mse32.m.a ms3, (rs1), rs2 # 32-bit tile store
-mse64.m.a ms3, (rs1), rs2 # 64-bit tile store
+msae8.m  ms3, (rs1), rs2 #  8-bit tile store
+msae16.m ms3, (rs1), rs2 # 16-bit tile store
+msae32.m ms3, (rs1), rs2 # 32-bit tile store
+msae64.m ms3, (rs1), rs2 # 64-bit tile store
 
 # for right matrix, b
 # tile size = tile_k * tile_n
-mse8.m.b  ms3, (rs1), rs2 #  8-bit tile store
-mse16.m.b ms3, (rs1), rs2 # 16-bit tile store
-mse32.m.b ms3, (rs1), rs2 # 32-bit tile store
-mse64.m.b ms3, (rs1), rs2 # 64-bit tile store
+msbe8.m  ms3, (rs1), rs2 #  8-bit tile store
+msbe16.m ms3, (rs1), rs2 # 16-bit tile store
+msbe32.m ms3, (rs1), rs2 # 32-bit tile store
+msbe64.m ms3, (rs1), rs2 # 64-bit tile store
 
 # for output matrix, c
 # tile size = tile_m * tile_n
-mse8.m.c  ms3, (rs1), rs2 #  8-bit acc store
-mse16.m.c ms3, (rs1), rs2 # 16-bit acc store
-mse32.m.c ms3, (rs1), rs2 # 32-bit acc store
-mse64.m.c ms3, (rs1), rs2 # 64-bit acc store
+msce8.m  ms3, (rs1), rs2 #  8-bit acc store
+msce16.m ms3, (rs1), rs2 # 16-bit acc store
+msce32.m ms3, (rs1), rs2 # 32-bit acc store
+msce64.m ms3, (rs1), rs2 # 64-bit acc store
 
 ```
 
@@ -322,24 +326,24 @@ Save a matrix tile to memory, the matrix on memory is transposed.
 
 # for left matrix, a
 # tile size = tile_k * tile_m
-mstre8.m.a  ms3, (rs1), rs2 #  8-bit tile store
-mstre16.m.a ms3, (rs1), rs2 # 16-bit tile store
-mstre32.m.a ms3, (rs1), rs2 # 32-bit tile store
-mstre64.m.a ms3, (rs1), rs2 # 64-bit tile store
+msate8.m  ms3, (rs1), rs2 #  8-bit tile store
+msate16.m ms3, (rs1), rs2 # 16-bit tile store
+msate32.m ms3, (rs1), rs2 # 32-bit tile store
+msate64.m ms3, (rs1), rs2 # 64-bit tile store
 
 # for right matrix, b
 # tile size = tile_n * tile_k
-mstre8.m.b  ms3, (rs1), rs2 #  8-bit tile store
-mstre16.m.b ms3, (rs1), rs2 # 16-bit tile store
-mstre32.m.b ms3, (rs1), rs2 # 32-bit tile store
-mstre64.m.b ms3, (rs1), rs2 # 64-bit tile store
+msbte8.m  ms3, (rs1), rs2 #  8-bit tile store
+msbte16.m ms3, (rs1), rs2 # 16-bit tile store
+msbte32.m ms3, (rs1), rs2 # 32-bit tile store
+msbte64.m ms3, (rs1), rs2 # 64-bit tile store
 
 # for output matrix, c
 # tile size = tile_n * tile_m
-mstre8.m.c  ms3, (rs1), rs2 #  8-bit acc store
-mstre16.m.c ms3, (rs1), rs2 # 16-bit acc store
-mstre32.m.c ms3, (rs1), rs2 # 32-bit acc store
-mstre64.m.c ms3, (rs1), rs2 # 64-bit acc store
+mscte8.m  ms3, (rs1), rs2 #  8-bit acc store
+mscte16.m ms3, (rs1), rs2 # 16-bit acc store
+mscte32.m ms3, (rs1), rs2 # 32-bit acc store
+mscte64.m ms3, (rs1), rs2 # 64-bit acc store
 ```
 
 
@@ -364,83 +368,77 @@ mfwma.mm md, ms1, ms2   # output double widen
 
 Matrix element-wise add/sub/multiply instructions.
 
-These instructions only support accumulator registers(acc0-acc1) as source and destination registers,
-if tile registers(tr0-tr7) are used, `mtype.mill` will be set.
-
 ```
 # int matrix element-wise add, md[i,j] = md[i,j] + ms1[i,j]
-madd.mm md, ms1    
-mwadd.mm md, ms1        # output double widen
-mqadd.mm md, ms1        # output quadruple widen
+maddc.mm md, ms1    
+mwaddc.mm md, ms1           # output double widen
+mqaddc.mm md, ms1           # output quadruple widen
 
 # int matrix element-wise subtract, md[i,j] = md[i,j] - ms1[i,j]
-msub.mm md, ms1    
-mwsub.mm md, ms1        # output double widen
-mqsub.mm md, ms1        # output quadruple widen
+msubc.mm md, ms1    
+mwsubc.mm md, ms1           # output double widen
+mqsubc.mm md, ms1           # output quadruple widen
 
 # int matrix element-wise reverse subtract, md[i,j] = ms1[i,j] - md[i,j]
-mrsub.mm md, ms1    
-mwrsub.mm md, ms1       # output double widen
-mqrsub.mm md, ms1       # output quadruple widen
+mrsubc.mm md, ms1    
+mwrsubc.mm md, ms1          # output double widen
+mqrsubc.mm md, ms1          # output quadruple widen
 
 # int matrix element-wise multiply with scalar int, md[i,j] = ms1[i,j] * rs2
-memul.mx md, ms1, rs2
-mwemul.mx md, ms1, rs2  # output double widen
-mqemul.mx md, ms1, rs2  # output quadruple widen
+memulc.mx md, ms1, rs2
+mwemulc.mx md, ms1, rs2     # output double widen
+mqemulc.mx md, ms1, rs2     # output quadruple widen
 
 # int matrix element-wise multiply with int imm, md[i,j] = ms1[i,j] * imm
-memul.mi md, ms1, imm
-mwemul.mi md, ms1, imm  # output double widen
-mqemul.mi md, ms1, imm  # output quadruple widen
+memulc.mi md, ms1, imm
+mwemulc.mi md, ms1, imm     # output double widen
+mqemulc.mi md, ms1, imm     # output quadruple widen
 
 
 # float matrix element-wise add, md[i,j] = md[i,j] + ms1[i,j]
-mfadd.mm md, ms1    
-mfwadd.mm md, ms1       # output double widen
+mfaddc.mm md, ms1    
+mfwaddc.mm md, ms1          # output double widen
 
 # float matrix element-wise subtract, md[i,j] = md[i,j] - ms1[i,j]
-mfsub.mm md, ms1    
-mfwsub.mm md, ms1       # output double widen
+mfsubc.mm md, ms1    
+mfwsubc.mm md, ms1          # output double widen
 
 # float matrix element-wise reverse subtract, md[i,j] = ms1[i,j] - md[i,j]
-mfrsub.mm md, ms1    
-mfwrsub.mm md, ms1       # output double widen
+mfrsubc.mm md, ms1    
+mfwrsubc.mm md, ms1         # output double widen
 
 # float matrix element-wise multiply with scalar float, md[i,j] = ms1[i,j] * rs2
-mfemul.mf md, ms1, rs2
-mfwemul.mf md, ms1, rs2 # output double widen
+mfemulc.mf md, ms1, rs2
+mfwemulc.mf md, ms1, rs2    # output double widen
 
 ```
 
 ==== Type-Convert Instructions
 
-These instructions only support accumulator registers(acc0-acc1) as source and destination registers,
-if tile registers(tr0-tr7) are used, `mtype.mill` will be set.
-
 ```
 # convert float to float
-mfncvt.f.fw.m  md, ms1  # double-width float to single-width float
-mfwcvt.fw.f.m  md, ms1  # single-width float to double-width float
+mfncvtc.f.fw.m  md, ms1     # double-width float to single-width float
+mfwcvtc.fw.f.m  md, ms1     # single-width float to double-width float
 
 # convert int to float
-mcvt.f.x.m md, ms1      # int to float
+mfcvtc.f.x.m md, ms1        # int to float
 
-mncvt.f.xw.m md, ms1    # double-width int to float
-mncvt.f.xq.m md, ms1    # quad-width int to float
+mfncvtc.f.xw.m md, ms1      # double-width int to float
+mfncvtc.f.xq.m md, ms1      # quad-width int to float
 
-mwcvt.fw.x.m md, ms1    # single-width int to double-width float
-mcvt.fw.xw.m md, ms1    # double-width int to double-width float
-mncvt.fw.xq.m md, ms1   # quad-width int to double-width float
+mfwcvtc.fw.x.m md, ms1      # single-width int to double-width float
+mfcvtc.fw.xw.m md, ms1      # double-width int to double-width float
+mfncvtc.fw.xq.m md, ms1     # quad-width int to double-width float
 
 # convert float to int
-mcvt.x.f.m md, ms1      # float to int
+mfcvtc.x.f.m md, ms1        # float to int
 
-mwcvt.xw.f.m md, ms1    # float to double-width int
-mwcvt.xq.f.m md, ms1    # float to quad-width int
+mfwcvtc.xw.f.m md, ms1      # float to double-width int
+mfwcvtc.xq.f.m md, ms1      # float to quad-width int
 
-mncvt.x.fw.m md, ms1    # double-width float to single-width int
-mcvt.xw.fw.m md, ms1    # double-width float to double-width int
-mwcvt.xq.fw.m md, ms1   # double-width float to quad-width int
+mfncvtc.x.fw.m md, ms1      # double-width float to single-width int
+mfcvtc.xw.fw.m md, ms1      # double-width float to double-width int
+mfwcvtc.xq.fw.m md, ms1     # double-width float to quad-width int
 ```
 
 
@@ -463,58 +461,58 @@ mwcvt.xq.fw.m md, ms1   # double-width float to quad-width int
 | No.  |          | **31  26** | 25   | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
 
 2+|**Load**             | funct6 | ls   | rs2   | rs1   | eew    | md   | opcode
-| 9    | mle8.m.a       | 001001 | 0    | rs2   | rs1   | 000    | md   | 1110111
-| 10   | mle16.m.a      | 001001 | 0    | rs2   | rs1   | 001    | md   | 1110111
-| 11   | mle32.m.a      | 001001 | 0    | rs2   | rs1   | 010    | md   | 1110111
-| 12   | mle64.m.a      | 001001 | 0    | rs2   | rs1   | 011    | md   | 1110111
-| 13   | mle8.m.b       | 001010 | 0    | rs2   | rs1   | 000    | md   | 1110111
-| 14   | mle16.m.b      | 001010 | 0    | rs2   | rs1   | 001    | md   | 1110111
-| 15   | mle32.m.b      | 001010 | 0    | rs2   | rs1   | 010    | md   | 1110111
-| 16   | mle64.m.b      | 001010 | 0    | rs2   | rs1   | 011    | md   | 1110111
-| 17   | mle8.m.c       | 000000 | 0    | rs2   | rs1   | 000    | md   | 1110111
-| 18   | mle16.m.c      | 000000 | 0    | rs2   | rs1   | 001    | md   | 1110111
-| 19   | mle32.m.c      | 000000 | 0    | rs2   | rs1   | 010    | md   | 1110111
-| 20   | mle64.m.c      | 000000 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 9    | mlae8.m       | 001001 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 10   | mlae16.m      | 001001 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 11   | mlae32.m      | 001001 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 12   | mlae64.m      | 001001 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 13   | mlbe8.m       | 001010 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 14   | mlbe16.m      | 001010 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 15   | mlbe32.m      | 001010 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 16   | mlbe64.m      | 001010 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 17   | mlce8.m       | 000000 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 18   | mlce16.m      | 000000 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 19   | mlce32.m      | 000000 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 20   | mlce64.m      | 000000 | 0    | rs2   | rs1   | 011    | md   | 1110111
 
-| 9    | mltre8.m.a     | 001101 | 0    | rs2   | rs1   | 000    | md   | 1110111
-| 10   | mltre16.m.a    | 001101 | 0    | rs2   | rs1   | 001    | md   | 1110111
-| 11   | mltre32.m.a    | 001101 | 0    | rs2   | rs1   | 010    | md   | 1110111
-| 12   | mltre64.m.a    | 001101 | 0    | rs2   | rs1   | 011    | md   | 1110111
-| 13   | mltre8.m.b     | 001110 | 0    | rs2   | rs1   | 000    | md   | 1110111
-| 14   | mltre16.m.b    | 001110 | 0    | rs2   | rs1   | 001    | md   | 1110111
-| 15   | mltre32.m.b    | 001110 | 0    | rs2   | rs1   | 010    | md   | 1110111
-| 16   | mltre64.m.b    | 001110 | 0    | rs2   | rs1   | 011    | md   | 1110111
-| 17   | mltre8.m.c     | 000100 | 0    | rs2   | rs1   | 000    | md   | 1110111
-| 18   | mltre16.m.c    | 000100 | 0    | rs2   | rs1   | 001    | md   | 1110111
-| 19   | mltre32.m.c    | 000100 | 0    | rs2   | rs1   | 010    | md   | 1110111
-| 20   | mltre64.m.c    | 000100 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 9    | mlate8.m     | 001101 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 10   | mlate16.m    | 001101 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 11   | mlate32.m    | 001101 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 12   | mlate64.m    | 001101 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 13   | mlbte8.m     | 001110 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 14   | mlbte16.m    | 001110 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 15   | mlbte32.m    | 001110 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 16   | mlbte64.m    | 001110 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 17   | mlcte8.m     | 000100 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 18   | mlcte16.m    | 000100 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 19   | mlcte32.m    | 000100 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 20   | mlcte64.m    | 000100 | 0    | rs2   | rs1   | 011    | md   | 1110111
 
 2+|**Store**            | funct6 | ls   | rs2   | rs1   | eew    | ms3  | opcode
-| 21   | mse8.m.a       | 001001 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
-| 22   | mse16.m.a      | 001001 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
-| 23   | mse32.m.a      | 001001 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
-| 24   | mse64.m.a      | 001001 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
-| 25   | mse8.m.b       | 001010 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
-| 26   | mse16.m.b      | 001010 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
-| 27   | mse32.m.b      | 001010 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
-| 28   | mse64.m.b      | 001010 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
-| 29   | mse8.m.c       | 000000 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
-| 30   | mse16.m.c      | 000000 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
-| 31   | mse32.m.c      | 000000 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
-| 32   | mse64.m.c      | 000000 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 21   | msae8.m       | 001001 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 22   | msae16.m      | 001001 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 23   | msae32.m      | 001001 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 24   | msae64.m      | 001001 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 25   | msbe8.m       | 001010 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 26   | msbe16.m      | 001010 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 27   | msbe32.m      | 001010 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 28   | msbe64.m      | 001010 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 29   | msce8.m       | 000000 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 30   | msce16.m      | 000000 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 31   | msce32.m      | 000000 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 32   | msce64.m      | 000000 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
 
-| 21   | mstre8.m.a     | 001101 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
-| 22   | mstre16.m.a    | 001101 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
-| 23   | mstre32.m.a    | 001101 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
-| 24   | mstre64.m.a    | 001101 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
-| 25   | mstre8.m.b     | 001110 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
-| 26   | mstre16.m.b    | 001110 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
-| 27   | mstre32.m.b    | 001110 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
-| 28   | mstre64.m.b    | 001110 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
-| 29   | mstre8.m.c     | 000100 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
-| 30   | mstre16.m.c    | 000100 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
-| 31   | mstre32.m.c    | 000100 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
-| 32   | mstre64.m.c    | 000100 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 21   | msate8.m     | 001101 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 22   | msate16.m    | 001101 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 23   | msate32.m    | 001101 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 24   | msate64.m    | 001101 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 25   | msbte8.m     | 001110 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 26   | msbte16.m    | 001110 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 27   | msbte32.m    | 001110 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 28   | msbte64.m    | 001110 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 29   | mscte8.m     | 000100 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 30   | mscte16.m    | 000100 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 31   | mscte32.m    | 000100 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 32   | mscte64.m    | 000100 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
 
 2+|**Arithmetic**       | funct6 | fp   | ms2   | ms1   | funct3 | md   | opcode
 | 33   | mma.mm         | 000000 | 0    | ms2   | ms1   | 110    | md   | 1110111 
@@ -523,47 +521,47 @@ mwcvt.xq.fw.m md, ms1   # double-width float to quad-width int
 | 36   | mfwma.mm       | 000001 | 1    | ms2   | ms1   | 110    | md   | 1110111 
 | 37   | mqma.mm        | 000010 | 0    | ms2   | ms1   | 110    | md   | 1110111 
 
-| 38   | madd.mm        | 000100 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 39   | mfadd.mm       | 000100 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 40   | mwadd.mm       | 000101 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 41   | mfwadd.mm      | 000101 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 42   | mqadd.mm       | 000110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 43   | msub.mm        | 000111 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 44   | mfsub.mm       | 000111 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 45   | mwsub.mm       | 001000 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 46   | mfwsub.mm      | 001000 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 47   | mqsub.mm       | 001001 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 48   | mrsub.mm       | 001010 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 49   | mfrsub.mm      | 001010 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 50   | mwrsub.mm      | 001011 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 51   | mfwrsub.mm     | 001011 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 52   | mqrsub.mm      | 001100 | 0    | 00000 | ms1   | 110    | md   | 1110111
-| 53   | memul.mx       | 001101 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 54   | mfemul.mf      | 001101 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 55   | mwemul.mx      | 001110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 56   | mfwemul.mf     | 001110 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 57   | mqemul.mx      | 001111 | 0    | 00000 | ms1   | 110    | md   | 1110111
-| 58   | memul.mi       | 010000 | 0    | imm   | ms1   | 110    | md   | 1110111 
-| 59   | mwemul.mi      | 010001 | 0    | imm   | ms1   | 110    | md   | 1110111 
-| 60   | mqemul.mi      | 010010 | 0    | imm   | ms1   | 110    | md   | 1110111
+| 38   | maddc.mm       | 000100 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 39   | mfaddc.mm      | 000100 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 40   | mwaddc.mm      | 000101 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 41   | mfwaddc.mm     | 000101 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 42   | mqaddc.mm      | 000110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 43   | msubc.mm       | 000111 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 44   | mfsubc.mm      | 000111 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 45   | mwsubc.mm      | 001000 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 46   | mfwsubc.mm     | 001000 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 47   | mqsubc.mm      | 001001 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 48   | mrsubc.mm      | 001010 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 49   | mfrsubc.mm     | 001010 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 50   | mwrsubc.mm     | 001011 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 51   | mfwrsubc.mm    | 001011 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 52   | mqrsubc.mm     | 001100 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 53   | memulc.mx      | 001101 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 54   | mfemulc.mf     | 001101 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 55   | mwemulc.mx     | 001110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 56   | mfwemulc.mf    | 001110 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 57   | mqemulc.mx     | 001111 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 58   | memulc.mi      | 010000 | 0    | imm   | ms1   | 110    | md   | 1110111 
+| 59   | mwemulc.mi     | 010001 | 0    | imm   | ms1   | 110    | md   | 1110111 
+| 60   | mqemulc.mi     | 010010 | 0    | imm   | ms1   | 110    | md   | 1110111
 
 
 2+|**Convert**          | funct6 | fdst | ms2   | ms1   | funct3 | md   | opcode
-| 61   | mfncvt.f.fw.m  | 011000 | 1    | 00000 | ms1   | 110    | md   | 1110111
-| 62   | mfwcvt.fw.f.m  | 011000 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 61   | mnfcvtc.f.fw.m  | 011000 | 1    | 00000 | ms1   | 110    | md   | 1110111
+| 62   | mwfcvtc.fw.f.m  | 011000 | 0    | 00000 | ms1   | 110    | md   | 1110111
 
-| 63   | mfcvt.f.x.m    | 011010 | 1    | 00000 | ms1   | 110    | md   | 1110111
-| 64   | mfcvt.x.f.m    | 011010 | 0    | 00000 | ms1   | 110    | md   | 1110111
-| 65   | mfncvt.f.xw.m  | 011011 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 66   | mfwcvt.xw.f.m  | 011011 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 67   | mfncvt.f.xq.m  | 011100 | 1    | 00000 | ms1   | 110    | md   | 1110111
-| 68   | mfwcvt.xq.f.m  | 011100 | 0    | 00000 | ms1   | 110    | md   | 1110111
-| 69   | mfwcvt.fw.x.m  | 011101 | 1    | 00000 | ms1   | 110    | md   | 1110111
-| 70   | mfncvt.x.fw.m  | 011101 | 0    | 00000 | ms1   | 110    | md   | 1110111
-| 71   | mfcvt.fw.xw.m  | 011110 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 72   | mfcvt.xw.fw.m  | 011110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 73   | mfncvt.fw.xq.m | 011111 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 74   | mfwcvt.xq.fw.m | 011111 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 63   | mfcvtc.f.x.m    | 011010 | 1    | 00000 | ms1   | 110    | md   | 1110111
+| 64   | mfcvtc.x.f.m    | 011010 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 65   | mfncvtc.f.xw.m  | 011011 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 66   | mfwcvtc.xw.f.m  | 011011 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 67   | mfncvtc.f.xq.m  | 011100 | 1    | 00000 | ms1   | 110    | md   | 1110111
+| 68   | mfwcvtc.xq.f.m  | 011100 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 69   | mfwcvtc.fw.x.m  | 011101 | 1    | 00000 | ms1   | 110    | md   | 1110111
+| 70   | mfncvtc.x.fw.m  | 011101 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 71   | mfcvtc.fw.xw.m  | 011110 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 72   | mfcvtc.xw.fw.m  | 011110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
+| 73   | mfncvtc.fw.xq.m | 011111 | 1    | 00000 | ms1   | 110    | md   | 1110111 
+| 74   | mfwcvtc.xq.fw.m | 011111 | 0    | 00000 | ms1   | 110    | md   | 1110111 
 
 
 |===
@@ -584,14 +582,14 @@ void matmul_float16(c, a, b, m, k, n) {
             for (s=0; s<k; s+=tile_k) {         // loop at dim k with tiling
                 tile_k = msettile_k(k-s);
                 
-                tr1 = mle16_m_a(&a[i][s], k*2); // load left matrix a
-                tr2 = mle16_m_b(&a[s][j], n*2); // load right matrix b
+                tr1 = mlae16_m(&a[i][s], k*2); // load left matrix a
+                tr2 = mlbe16_m(&a[s][j], n*2); // load right matrix b
                 acc = mfwma_mm(tr1, tr2);       // tiled matrix multiply,
                                                 // double widen output acc
             }
            
             acc = mfncvt_f_fw_m(acc);           // convert widen result
-            mse16_m_c(acc, &c[i][j], n*2);      // store to matrix c
+            msce16_m(acc, &c[i][j], n*2);      // store to matrix c
         }
     }
 }
@@ -613,14 +611,14 @@ void matmul_a_tr_float16(c, a, b, m, k, n) {
             for (s=0; s<k; s+=tile_k) {         // loop at dim k with tiling
                 tile_k = msettile_k(k-s);
                 
-                tr1 = mltre16_m_a(&a[s][i], m*2);  // load transposed left matrix a
-                tr2 = mle16_m_b(&a[s][j], n*2); // load right matrix b
+                tr1 = mlate16_m(&a[s][i], m*2);  // load transposed left matrix a
+                tr2 = mlbe16_m(&a[s][j], n*2); // load right matrix b
                 acc = mfwma_mm(tr1, tr2);       // tiled matrix multiply,
                                                 // double widen output acc
             }
            
             acc = mfncvt_f_fw_m(acc);           // convert widen result
-            mse16_m_c(acc, &c[i][j], n*2);      // store to matrix c
+            msce16_m(acc, &c[i][j], n*2);      // store to matrix c
         }
     }
 }
@@ -639,8 +637,8 @@ void mattrans_float16(out, in, h, w) {
         for (j=0; j<w; j+=tile_k) {             // loop at dim k with tiling
             tile_k = msettile_k(w-j);
 
-            tr1 = mle16_m_a(&in[i][j], w*2);    // load input matrix
-            mstre16_m_a(tr1, &out[j][i], h*2);  // store output matrix
+            tr1 = mlae16_m(&in[i][j], w*2);    // load input matrix
+            msate16_m(tr1, &out[j][i], h*2);  // store output matrix
         }
     }
 }

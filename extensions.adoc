@@ -1,4 +1,4 @@
-== Standard Matrix Extension
+== Standard Matrix Extensions
 
 === Zmv: Matrix for Vector operations
 
@@ -21,22 +21,22 @@ image::memory-registers.svg[Data layout examples of registers and memory]
 # lmul / (eew/sew) rows or columns
 
 # for left matrix, a
-mle8.v.a   vd, (rs1), rs2 #  8-bit tile/acc slices load to vregs
-mle16.v.a  vd, (rs1), rs2 # 16-bit tile/acc slices load to vregs
-mle32.v.a  vd, (rs1), rs2 # 32-bit tile/acc slices load to vregs
-mle64.v.a  vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
+mlae8.v    vd, (rs1), rs2 #  8-bit tile/acc slices load to vregs
+mlae16.v   vd, (rs1), rs2 # 16-bit tile/acc slices load to vregs
+mlae32.v   vd, (rs1), rs2 # 32-bit tile/acc slices load to vregs
+mlae64.v   vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
 
 # for right matrix, b
-mle8.v.b   vd, (rs1), rs2 #  8-bit tile/acc slices load to vregs
-mle16.v.b  vd, (rs1), rs2 # 16-bit tile/acc slices load to vregs
-mle32.v.b  vd, (rs1), rs2 # 32-bit tile/acc slices load to vregs
-mle64.v.b  vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
+mlbe8.v    vd, (rs1), rs2 #  8-bit tile/acc slices load to vregs
+mlbe16.v   vd, (rs1), rs2 # 16-bit tile/acc slices load to vregs
+mlbe32.v   vd, (rs1), rs2 # 32-bit tile/acc slices load to vregs
+mlbe64.v   vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
 
 # for output matrix, c
-mle8.v.c   vd, (rs1), rs2 #  8-bit tile/acc slices load to vregs
-mle16.v.c  vd, (rs1), rs2 # 16-bit tile/acc slices load to vregs
-mle32.v.c  vd, (rs1), rs2 # 32-bit tile/acc slices load to vregs
-mle64.v.c  vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
+mlce8.v    vd, (rs1), rs2 #  8-bit tile/acc slices load to vregs
+mlce16.v   vd, (rs1), rs2 # 16-bit tile/acc slices load to vregs
+mlce32.v   vd, (rs1), rs2 # 32-bit tile/acc slices load to vregs
+mlce64.v   vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
 ```
 
 ==== Store Instructions
@@ -46,22 +46,22 @@ mle64.v.c  vd, (rs1), rs2 # 64-bit tile/acc slices load to vregs
 # lmul / (eew/sew) rows or columns
 
 # for left matrix, a
-mse8.v.a   vs3, (rs1), rs2 #  8-bit tile/acc slices store from vregs
-mse16.v.a  vs3, (rs1), rs2 # 16-bit tile/acc slices store from vregs
-mse32.v.a  vs3, (rs1), rs2 # 32-bit tile/acc slices store from vregs
-mse64.v.a  vs3, (rs1), rs2 # 64-bit tile/acc slices store from vregs
+msae8.v    vs3, (rs1), rs2 #  8-bit tile/acc slices store from vregs
+msae16.v   vs3, (rs1), rs2 # 16-bit tile/acc slices store from vregs
+msae32.v   vs3, (rs1), rs2 # 32-bit tile/acc slices store from vregs
+msae64.v   vs3, (rs1), rs2 # 64-bit tile/acc slices store from vregs
 
 # for right matrix, b
-mse8.v.b   vs3, (rs1), rs2 #  8-bit tile/acc slices store from vregs
-mse16.v.b  vs3, (rs1), rs2 # 16-bit tile/acc slices store from vregs
-mse32.v.b  vs3, (rs1), rs2 # 32-bit tile/acc slices store from vregs
-mse64.v.b  vs3, (rs1), rs2 # 64-bit tile/acc slices store from vregs
+msbe8.v    vs3, (rs1), rs2 #  8-bit tile/acc slices store from vregs
+msbe16.v   vs3, (rs1), rs2 # 16-bit tile/acc slices store from vregs
+msbe32.v   vs3, (rs1), rs2 # 32-bit tile/acc slices store from vregs
+msbe64.v   vs3, (rs1), rs2 # 64-bit tile/acc slices store from vregs
 
 # for output matrix, c
-mse8.v.c   vs3, (rs1), rs2 #  8-bit tile/acc slices store from vregs
-mse16.v.c  vs3, (rs1), rs2 # 16-bit tile/acc slices store from vregs
-mse32.v.c  vs3, (rs1), rs2 # 32-bit tile/acc slices store from vregs
-mse64.v.c  vs3, (rs1), rs2 # 64-bit tile/acc slices store from vregs
+msce8.v    vs3, (rs1), rs2 #  8-bit tile/acc slices store from vregs
+msce16.v   vs3, (rs1), rs2 # 16-bit tile/acc slices store from vregs
+msce32.v   vs3, (rs1), rs2 # 32-bit tile/acc slices store from vregs
+msce64.v   vs3, (rs1), rs2 # 64-bit tile/acc slices store from vregs
 ```
 
 
@@ -73,26 +73,26 @@ Normal data move, rows or columns = lmul, eew = sew.
 # Data move between matrix register rows and vector registers.
 
 # vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul
-mmvr.v.m.a vd, ms1, rs2  # vl = tile_k
-mmvr.v.m.b vd, ms1, rs2  # vl = tile_n
-mmvr.v.m.c vd, ms1, rs2  # vl = tile_n
+mmvar.v.m  vd, ms1, rs2  # vl = tile_k
+mmvbr.v.m  vd, ms1, rs2  # vl = tile_n
+mmvcr.v.m  vd, ms1, rs2  # vl = tile_n
 
 # md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul
-mmvr.m.v.a md, vs1, rs2  # vl = tile_k
-mmvr.m.v.b md, vs1, rs2  # vl = tile_n
-mmvr.m.v.c md, vs1, rs2  # vl = tile_n
+mmvar.m.v  md, vs1, rs2  # vl = tile_k
+mmvbr.m.v  md, vs1, rs2  # vl = tile_n
+mmvcr.m.v  md, vs1, rs2  # vl = tile_n
 
 # Data move between matrix register columns and vector registers.
 
 # vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul
-mmvc.v.m.a vd, ms1, rs2  # vl = tile_m
-mmvc.v.m.b vd, ms1, rs2  # vl = tile_k
-mmvc.v.m.c vd, ms1, rs2  # vl = tile_m
+mmvac.v.m  vd, ms1, rs2  # vl = tile_m
+mmvbc.v.m  vd, ms1, rs2  # vl = tile_k
+mmvcc.v.m  vd, ms1, rs2  # vl = tile_m
 
 # md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul
-mmvc.m.v.a md, vs1, rs2  # vl = tile_m
-mmvc.m.v.b md, vs1, rs2  # vl = tile_k
-mmvc.m.v.c md, vs1, rs2  # vl = tile_m
+mmvac.m.v  md, vs1, rs2  # vl = tile_m
+mmvbc.m.v  md, vs1, rs2  # vl = tile_k
+mmvcc.m.v  md, vs1, rs2  # vl = tile_m
 ```
 
 Double widen data move, rows or columns = lmul / 2, eew = sew * 2.
@@ -103,19 +103,19 @@ Only support accumulator registers as source and destination registers.
 # Data move between matrix register rows and vector registers.
 
 # vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/2
-mwmvr.v.m.c vd, ms1, rs2  # vl = tile_n
+mwmvcr.v.m  vd, ms1, rs2  # vl = tile_n
 
 # md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/2
-mwmvr.m.v.c md, vs1, rs2  # vl = tile_n
+mwmvcr.m.v  md, vs1, rs2  # vl = tile_n
 
 
 # Data move between matrix register columns and vector registers.
 
 # vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/2
-mwmvc.v.m.c vd, ms1, rs2  # vl = tile_m
+mwmvcc.v.m  vd, ms1, rs2  # vl = tile_m
 
 # md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/2
-mwmvc.m.v.c md, vs1, rs2  # vl = tile_m
+mwmvcc.m.v  md, vs1, rs2  # vl = tile_m
 ```
 
 
@@ -127,47 +127,53 @@ Only support accumulator registers as source and destination registers.
 # Data move between matrix register rows and vector registers.
 
 # vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/4
-mqmvr.v.m.c vd, ms1, rs2  # vl = tile_n
+mqmvcr.v.m  vd, ms1, rs2  # vl = tile_n
 
 # md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/4
-mqmvr.m.v.c md, vs1, rs2  # vl = tile_n
+mqmvcr.m.v  md, vs1, rs2  # vl = tile_n
 
 
 # Data move between matrix register columns and vector registers.
 
 # vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/4
-mqmvc.v.m.c vd, ms1, rs2  # vl = tile_m
+mqmvcc.v.m  vd, ms1, rs2  # vl = tile_m
 
 # md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/4
-mqmvc.m.v.c md, vs1, rs2  # vl = tile_m
+mqmvcc.m.v  md, vs1, rs2  # vl = tile_m
 ```
 
 ==== Matrix element-wise multiply
 
 Matrix element-wise multiply instructions, the vector operand will broadcast to a matrix.
 
-These instructions only support accumulator registers(acc0-acc1) as source and destination registers,
-if tile registers(tr0-tr7) are used, `mtype.mill` will be set.
+For m*emulcr.mv instructions, the vector operand will broadcast from a row to a c matrix.
 
 ```
-# int matrix element-wise multiply with a row of vector int, md[i,j] = ms1[i,j] * vs2[j]
-memul.r.mv md, ms1, vs2
-mwemul.r.mv md, ms1, vs2  # output double widen
-mqemul.r.mv md, ms1, vs2  # output quadruple widen
+# int matrix element-wise multiply with a row of vector int
+# md[i,j] = ms1[i,j] * vs2[j]
+memulcr.mv md, ms1, vs2
+mwemulcr.mv md, ms1, vs2  # output double widen
+mqemulcr.mv md, ms1, vs2  # output quadruple widen
 
-# int matrix element-wise multiply with a column of vector int, md[i,j] = ms1[i,j] * vs2[i]
-memul.c.mv md, ms1, vs2
-mwemul.c.mv md, ms1, vs2  # output double widen
-mqemul.c.mv md, ms1, vs2  # output quadruple widen
+# float matrix element-wise multiply with a row of vector float
+# md = ms1[i,j] * vs2[j]
+mfemulcr.mv md, ms1, vs2
+mfwemulcr.mv md, ms1, vs2  # output double widen
+```
 
+For m*emulcc.mv instructions, the vector operand will broadcast from a column to a c matrix.
 
-# float matrix element-wise multiply with a row of vector float, md = ms1[i,j] * vs2[j]
-mfemul.r.mv md, ms1, vs2
-mfwemul.r.mv md, ms1, vs2  # output double widen
+```
+# int matrix element-wise multiply with a column of vector int,
+# md[i,j] = ms1[i,j] * vs2[i]
+memulcc.mv md, ms1, vs2
+mwemulcc.mv md, ms1, vs2  # output double widen
+mqemulcc.mv md, ms1, vs2  # output quadruple widen
 
-# float matrix element-wise multiply with a column of vector float, md = ms1[i,j] * vs2[i]
-mfemul.c.mv md, ms1, vs2
-mfwemul.c.mv md, ms1, vs2  # output double widen
+# float matrix element-wise multiply with a column of vector float,
+# md = ms1[i,j] * vs2[i]
+mfemulcc.mv md, ms1, vs2
+mfwemulcc.mv md, ms1, vs2  # output double widen
 ```
 
 
@@ -178,72 +184,72 @@ mfwemul.c.mv md, ms1, vs2  # output double widen
 | No.  |          | **31  26** | 25   | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
 
 2+|**Load**             | funct6 | ls   | rs2   | rs1   | eew    | md   | opcode
-| 1    | mle8.v.a       | 100000 | 0    | rs2   | rs1   | 000    | md   | 1110111
-| 2    | mle16.v.a      | 100000 | 0    | rs2   | rs1   | 001    | md   | 1110111
-| 3    | mle32.v.a      | 100000 | 0    | rs2   | rs1   | 010    | md   | 1110111
-| 4    | mle64.v.a      | 100000 | 0    | rs2   | rs1   | 011    | md   | 1110111
-| 5    | mle8.v.b       | 100001 | 0    | rs2   | rs1   | 000    | md   | 1110111
-| 6    | mle16.v.b      | 100001 | 0    | rs2   | rs1   | 001    | md   | 1110111
-| 7    | mle32.v.b      | 100001 | 0    | rs2   | rs1   | 010    | md   | 1110111
-| 8    | mle64.v.b      | 100001 | 0    | rs2   | rs1   | 011    | md   | 1110111
-| 9    | mle8.v.c       | 100010 | 0    | rs2   | rs1   | 000    | md   | 1110111
-| 10   | mle16.v.c      | 100010 | 0    | rs2   | rs1   | 001    | md   | 1110111
-| 11   | mle32.v.c      | 100010 | 0    | rs2   | rs1   | 010    | md   | 1110111
-| 12   | mle64.v.c      | 100010 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 1    | mlae8.v        | 100000 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 2    | mlae16.v       | 100000 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 3    | mlae32.v       | 100000 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 4    | mlae64.v       | 100000 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 5    | mlbe8.v        | 100001 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 6    | mlbe16.v       | 100001 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 7    | mlbe32.v       | 100001 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 8    | mlbe64.v       | 100001 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 9    | mlce8.v        | 100010 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 10   | mlce16.v       | 100010 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 11   | mlce32.v       | 100010 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 12   | mlce64.v       | 100010 | 0    | rs2   | rs1   | 011    | md   | 1110111
 
 2+|**Store**            | funct6 | ls   | rs2   | rs1   | eew    | ms3  | opcode
-| 13   | mse8.v.a       | 100000 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
-| 14   | mse16.v.a      | 100000 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
-| 15   | mse32.v.a      | 100000 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
-| 16   | mse64.v.a      | 100000 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
-| 17   | mse8.v.b       | 100001 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
-| 18   | mse16.v.b      | 100001 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
-| 19   | mse32.v.b      | 100001 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
-| 20   | mse64.v.b      | 100001 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
-| 21   | mse8.v.c       | 100010 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
-| 22   | mse16.v.c      | 100010 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
-| 23   | mse32.v.c      | 100010 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
-| 24   | mse64.v.c      | 100010 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 13   | msae8.v        | 100000 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 14   | msae16.v       | 100000 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 15   | msae32.v       | 100000 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 16   | msae64.v       | 100000 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 17   | msbe8.v        | 100001 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 18   | msbe16.v       | 100001 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 19   | msbe32.v       | 100001 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 20   | msbe64.v       | 100001 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 21   | msce8.v        | 100010 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 22   | msce16.v       | 100010 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 23   | msce32.v       | 100010 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 24   | msce64.v       | 100010 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
 
 
 2+|**Data Move**        | funct6 | v2m  | rs2   | *s1   | funct3 | *d   | opcode
-| 25   | mmvr.v.m.a     | 000001 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 26   | mmvr.m.v.a     | 000001 | 1    | rs2   | vs1   | 101    | md   | 1110111
-| 27   | mmvr.v.m.b     | 000010 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 28   | mmvr.m.v.b     | 000010 | 1    | rs2   | vs1   | 101    | md   | 1110111
-| 29   | mmvr.v.m.c     | 000011 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 30   | mmvr.m.v.c     | 000011 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 25   | mmvar.v.m      | 000001 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 26   | mmvar.m.v      | 000001 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 27   | mmvbr.v.m      | 000010 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 28   | mmvbr.m.v      | 000010 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 29   | mmvcr.v.m      | 000011 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 30   | mmvcr.m.v      | 000011 | 1    | rs2   | vs1   | 101    | md   | 1110111
 
-| 31   | mmvc.v.m.a     | 000101 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 32   | mmvc.m.v.a     | 000101 | 1    | rs2   | vs1   | 101    | md   | 1110111
-| 33   | mmvc.v.m.b     | 000110 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 34   | mmvc.m.v.b     | 000110 | 1    | rs2   | vs1   | 101    | md   | 1110111
-| 35   | mmvc.v.m.c     | 000111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 36   | mmvc.m.v.c     | 000111 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 31   | mmvac.v.m      | 000101 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 32   | mmvac.m.v      | 000101 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 33   | mmvbc.v.m      | 000110 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 34   | mmvbc.m.v      | 000110 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 35   | mmvcc.v.m      | 000111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 36   | mmvcc.m.v      | 000111 | 1    | rs2   | vs1   | 101    | md   | 1110111
 
-| 37   | mwmvr.v.m.c    | 010011 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 38   | mwmvr.m.v.c    | 010011 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 37   | mwmvcr.v.m     | 010011 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 38   | mwmvcr.m.v     | 010011 | 1    | rs2   | vs1   | 101    | md   | 1110111
 
-| 39   | mwmvc.v.m.c    | 010111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 40   | mwmvc.m.v.n    | 010111 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 39   | mwmvcc.v.m     | 010111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 40   | mwmvcc.m.v     | 010111 | 1    | rs2   | vs1   | 101    | md   | 1110111
 
-| 41   | mqmvr.v.m.c    | 100011 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 42   | mqmvr.m.v.c    | 100011 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 41   | mqmvcr.v.m     | 100011 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 42   | mqmvcr.m.v     | 100011 | 1    | rs2   | vs1   | 101    | md   | 1110111
 
-| 43   | mqmvc.v.m.c    | 100111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
-| 44   | mqmvc.m.v.c    | 100111 | 1    | rs2   | vs1   | 101    | md   | 1110111
+| 43   | mqmvcc.v.m     | 100111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
+| 44   | mqmvcc.m.v     | 100111 | 1    | rs2   | vs1   | 101    | md   | 1110111
 
 2+|**Arithmetic**       | funct6 | fp   | vs2   | ms1   | funct3 | md   | opcode
-| 45   | memul.r.mv     | 100001 | 0    | vs2   | ms1   | 110    | md   | 1110111 
-| 46   | mfemul.r.mv    | 100001 | 1    | vs2   | ms1   | 110    | md   | 1110111 
-| 47   | mwemul.r.mv    | 100010 | 0    | vs2   | ms1   | 110    | md   | 1110111 
-| 48   | mfwemul.r.mv   | 100010 | 1    | vs2   | ms1   | 110    | md   | 1110111 
-| 49   | mqemul.r.mv    | 100011 | 0    | vs2   | ms1   | 110    | md   | 1110111
-| 50   | memul.c.mv     | 100100 | 0    | vs2   | ms1   | 110    | md   | 1110111 
-| 51   | mfemul.c.mv    | 100100 | 1    | vs2   | ms1   | 110    | md   | 1110111 
-| 52   | mwemul.c.mv    | 100101 | 0    | vs2   | ms1   | 110    | md   | 1110111 
-| 53   | mfwemul.c.mv   | 100101 | 1    | vs2   | ms1   | 110    | md   | 1110111 
-| 54   | mqemul.c.mv    | 100110 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 45   | memulcr.mv     | 100001 | 0    | vs2   | ms1   | 110    | md   | 1110111 
+| 46   | mfemulcr.mv    | 100001 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 47   | mwemulcr.mv    | 100010 | 0    | vs2   | ms1   | 110    | md   | 1110111 
+| 48   | mfwemulcr.mv   | 100010 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 49   | mqemulcr.mv    | 100011 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 50   | memulcc.mv     | 100100 | 0    | vs2   | ms1   | 110    | md   | 1110111 
+| 51   | mfemulcc.mv    | 100100 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 52   | mwemulcc.mv    | 100101 | 0    | vs2   | ms1   | 110    | md   | 1110111 
+| 53   | mfwemulcc.mv   | 100101 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 54   | mqemulcc.mv    | 100110 | 0    | vs2   | ms1   | 110    | md   | 1110111
 
 |===
 
@@ -262,8 +268,8 @@ void fused_matmul_relu_float16(c, a, b, m, k, n) {
             for (s=0; s<k; s+=tile_k) {         // loop at dim k with tiling
                 tile_k = msettile_k(k-s);
                 
-                tr1_r = mle16_m_a(&a[i][s]);    // load left matrix a
-                tr2_r = mle16_m_b(&a[s][j]);    // load right matrix b
+                tr1_r = mlae16_m(&a[i][s]);     // load left matrix a
+                tr2_r = mlbe16_m(&a[s][j]);     // load right matrix b
                 acc = mfwma_mm(tr1_r, tr2_r);   // tiled matrix multiply,
                                                 // double widen output acc
             }
@@ -275,10 +281,10 @@ void fused_matmul_relu_float16(c, a, b, m, k, n) {
                 rows = min(tile_m - s, 8)
                 vl = vsetvl(tile_n*rows, e16, m8)   // set vl to tile_n * rows
 
-                v1 = mmvr_v_m_c(acc_r[s])       // move acc rows to vreg
+                v1 = mmvcr_v_m(acc_r[s])        // move acc rows to vreg
                 v1 = vfmax_vf(0.f, v1)          // vfmax.vf for relu
 
-                mse16_v(v1, &c[i+s][j], n);     // store output tile slices
+                msce16_v(v1, &c[i+s][j], n);    // store output tile slices
             }
         }
     }
