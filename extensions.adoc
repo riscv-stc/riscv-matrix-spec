@@ -73,26 +73,26 @@ Normal data move, rows or columns = lmul, eew = sew.
 # Data move between matrix register rows and vector registers.
 
 # vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul
-mmvar.v.m  vd, ms1, rs2  # vl = tile_k
-mmvbr.v.m  vd, ms1, rs2  # vl = tile_n
-mmvcr.v.m  vd, ms1, rs2  # vl = tile_n
+mmvar.v.m  vd, ms1, rs2  # vl = lmul * tile_k
+mmvbr.v.m  vd, ms1, rs2  # vl = lmul * tile_n
+mmvcr.v.m  vd, ms1, rs2  # vl = lmul * tile_n
 
 # md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul
-mmvar.m.v  md, vs1, rs2  # vl = tile_k
-mmvbr.m.v  md, vs1, rs2  # vl = tile_n
-mmvcr.m.v  md, vs1, rs2  # vl = tile_n
+mmvar.m.v  md, vs1, rs2  # vl = lmul * tile_k
+mmvbr.m.v  md, vs1, rs2  # vl = lmul * tile_n
+mmvcr.m.v  md, vs1, rs2  # vl = lmul * tile_n
 
 # Data move between matrix register columns and vector registers.
 
 # vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul
-mmvac.v.m  vd, ms1, rs2  # vl = tile_m
-mmvbc.v.m  vd, ms1, rs2  # vl = tile_k
-mmvcc.v.m  vd, ms1, rs2  # vl = tile_m
+mmvac.v.m  vd, ms1, rs2  # vl = lmul * tile_m
+mmvbc.v.m  vd, ms1, rs2  # vl = lmul * tile_k
+mmvcc.v.m  vd, ms1, rs2  # vl = lmul * tile_m
 
 # md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul
-mmvac.m.v  md, vs1, rs2  # vl = tile_m
-mmvbc.m.v  md, vs1, rs2  # vl = tile_k
-mmvcc.m.v  md, vs1, rs2  # vl = tile_m
+mmvac.m.v  md, vs1, rs2  # vl = lmul * tile_m
+mmvbc.m.v  md, vs1, rs2  # vl = lmul * tile_k
+mmvcc.m.v  md, vs1, rs2  # vl = lmul * tile_m
 ```
 
 Double widen data move, rows or columns = lmul / 2, eew = sew * 2.
@@ -103,19 +103,19 @@ Only support accumulator registers as source and destination registers.
 # Data move between matrix register rows and vector registers.
 
 # vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/2
-mwmvcr.v.m  vd, ms1, rs2  # vl = tile_n
+mwmvcr.v.m  vd, ms1, rs2  # vl = lmul * tile_n
 
 # md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/2
-mwmvcr.m.v  md, vs1, rs2  # vl = tile_n
+mwmvcr.m.v  md, vs1, rs2  # vl = lmul * tile_n
 
 
 # Data move between matrix register columns and vector registers.
 
 # vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/2
-mwmvcc.v.m  vd, ms1, rs2  # vl = tile_m
+mwmvcc.v.m  vd, ms1, rs2  # vl = lmul * tile_m
 
 # md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/2
-mwmvcc.m.v  md, vs1, rs2  # vl = tile_m
+mwmvcc.m.v  md, vs1, rs2  # vl = lmul * tile_m
 ```
 
 
@@ -127,19 +127,19 @@ Only support accumulator registers as source and destination registers.
 # Data move between matrix register rows and vector registers.
 
 # vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/4
-mqmvcr.v.m  vd, ms1, rs2  # vl = tile_n
+mqmvcr.v.m  vd, ms1, rs2  # vl = lmul * tile_n
 
 # md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/4
-mqmvcr.m.v  md, vs1, rs2  # vl = tile_n
+mqmvcr.m.v  md, vs1, rs2  # vl = lmul * tile_n
 
 
 # Data move between matrix register columns and vector registers.
 
 # vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/4
-mqmvcc.v.m  vd, ms1, rs2  # vl = tile_m
+mqmvcc.v.m  vd, ms1, rs2  # vl = lmul * tile_m
 
 # md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/4
-mqmvcc.m.v  md, vs1, rs2  # vl = tile_m
+mqmvcc.m.v  md, vs1, rs2  # vl = lmul * tile_m
 ```
 
 ==== Matrix element-wise multiply
