@@ -179,11 +179,11 @@ mfwemulcc.mv md, ms1, vs2  # output double widen
 
 ==== Instruction Listing
 
-[cols="^2,^5,^3,^2,^2,^2,^2,^2,^3"]
+[cols="^2,5,^3,^2,^2,^2,^2,^2,^3"]
 |===
 | No.  |          | **31  26** | 25   | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
 
-2+|**Load**             | funct6 | ls   | rs2   | rs1   | eew    | md   | opcode
+2+|**Load**            ^| funct6 | ls   | rs2   | rs1   | eew    | md   | opcode
 | 1    | mlae8.v        | 100000 | 0    | rs2   | rs1   | 000    | md   | 1110111
 | 2    | mlae16.v       | 100000 | 0    | rs2   | rs1   | 001    | md   | 1110111
 | 3    | mlae32.v       | 100000 | 0    | rs2   | rs1   | 010    | md   | 1110111
@@ -197,7 +197,7 @@ mfwemulcc.mv md, ms1, vs2  # output double widen
 | 11   | mlce32.v       | 100010 | 0    | rs2   | rs1   | 010    | md   | 1110111
 | 12   | mlce64.v       | 100010 | 0    | rs2   | rs1   | 011    | md   | 1110111
 
-2+|**Store**            | funct6 | ls   | rs2   | rs1   | eew    | ms3  | opcode
+2+|**Store**           ^| funct6 | ls   | rs2   | rs1   | eew    | ms3  | opcode
 | 13   | msae8.v        | 100000 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
 | 14   | msae16.v       | 100000 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
 | 15   | msae32.v       | 100000 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
@@ -212,7 +212,7 @@ mfwemulcc.mv md, ms1, vs2  # output double widen
 | 24   | msce64.v       | 100010 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
 
 
-2+|**Data Move**        | funct6 | v2m  | rs2   | *s1   | funct3 | *d   | opcode
+2+|**Data Move**       ^| funct6 | v2m  | rs2   | *s1   | funct3 | *d   | opcode
 | 25   | mmvar.v.m      | 000001 | 0    | rs2   | ms1   | 101    | vd   | 1110111
 | 26   | mmvar.m.v      | 000001 | 1    | rs2   | vs1   | 101    | md   | 1110111
 | 27   | mmvbr.v.m      | 000010 | 0    | rs2   | ms1   | 101    | vd   | 1110111
@@ -239,7 +239,7 @@ mfwemulcc.mv md, ms1, vs2  # output double widen
 | 43   | mqmvcc.v.m     | 100111 | 0    | rs2   | ms1   | 101    | vd   | 1110111
 | 44   | mqmvcc.m.v     | 100111 | 1    | rs2   | vs1   | 101    | md   | 1110111
 
-2+|**Arithmetic**       | funct6 | fp   | vs2   | ms1   | funct3 | md   | opcode
+2+|**Arithmetic**      ^| funct6 | fp   | vs2   | ms1   | funct3 | md   | opcode
 | 45   | memulcr.mv     | 100001 | 0    | vs2   | ms1   | 110    | md   | 1110111 
 | 46   | mfemulcr.mv    | 100001 | 1    | vs2   | ms1   | 110    | md   | 1110111 
 | 47   | mwemulcr.mv    | 100010 | 0    | vs2   | ms1   | 110    | md   | 1110111 
