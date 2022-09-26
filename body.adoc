@@ -15,7 +15,7 @@ Matrix extension is strongly inspired by the RISC-V Vector "V" extension.
 
 == Implementation-defined Constant Parameters
 
-Each hart supporting a matrix extension defines two parameters:
+Each hart supporting a matrix extension defines three parameters:
 
 . The maximum size in bits of a matrix element that any operation can produce or consume, stem:[\rm{ELEN} \ge 8], which must be a power of 2.
 . The number of bits in a single matrix tile register, stem:[\rm{MLEN} \ge \rm{ELEN}], which must be a power of 2, and must be no greater than 2^32^.
@@ -206,7 +206,7 @@ For the `msettile[m|k|n]i` instructions, the `ATM/ATK/ATN` is encoded as a 13-bi
 The `msettile[m|k|n]{i}` instructions first set `TMMAX/TKMAX/TNMAX` according to the mtype CSR, then set `tile_m/tile_k/tile_n` obeying the following constraints(use `tile_m&ATM&TMMAX` as example, same to `tile_k&ATK&TKMAX` and `tile_n&ATN&TNMAX`):
 
 . `tile_m = ATM` if `ATM \<= TMMAX`
-. `ceil(ATM / 2) \<= vl \<= TMMAX` if `ATM < (2 * TMMAX)`
+. `ceil(ATM / 2) \<= tile_m \<= TMMAX` if `ATM < (2 * TMMAX)`
 . `tile_m = TMMAX` if `ATM >= (2 * TMMAX)`
 . Deterministic on any given implementation for same input ATM and TMMAX values
 . These specific properties follow from the prior rules:
