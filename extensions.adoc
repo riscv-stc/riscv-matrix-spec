@@ -268,9 +268,9 @@ void fused_matmul_relu_float16(c, a, b, m, k, n) {
             for (s=0; s<k; s+=tile_k) {         // loop at dim k with tiling
                 tile_k = msettile_k(k-s);
                 
-                tr1_r = mlae16_m(&a[i][s]);     // load left matrix a
-                tr2_r = mlbe16_m(&a[s][j]);     // load right matrix b
-                acc = mfwma_mm(tr1_r, tr2_r);   // tiled matrix multiply,
+                tr1 = mlae16_m(&a[i][s]);       // load left matrix a
+                tr2 = mlbe16_m(&b[s][j]);       // load right matrix b
+                acc = mfwma_mm(tr1, tr2);       // tiled matrix multiply,
                                                 // double widen output acc
             }
            
