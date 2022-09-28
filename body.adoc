@@ -31,10 +31,10 @@ The matrix extension adds 10 matrix tile registers, and 5 unprivileged CSRs (til
 |===
 | Address | Privilege | Name   | Description
 
-| 0xC40 | URW | tile_m | Tile length in m direction 
-| 0xC41 | URW | tile_n | Tile length in n direction 
-| 0xC42 | URW | tile_k | Tile length in k direction 
-| 0xC43 | URW | mtype  | Matrix tile data type register
+| 0xC40 | URO | tile_m | Tile length in m direction
+| 0xC41 | URO | tile_n | Tile length in n direction
+| 0xC42 | URO | tile_k | Tile length in k direction
+| 0xC43 | URO | mtype  | Matrix tile data type register
 | 0xC44 | URO | mlenb  | MLEN/8 (matrix tile register length in bytes)
 |===
 
