@@ -548,8 +548,8 @@ mfwcvtc.xq.fw.m md, ms1     # double-width float to quad-width int
 
 
 2+|**Convert**          ^| funct6 | fdst | ms2   | ms1   | funct3 | md   | opcode
-| 61   | mnfcvtc.f.fw.m  | 011000 | 1    | 00000 | ms1   | 110    | md   | 1110111
-| 62   | mwfcvtc.fw.f.m  | 011000 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 61   | mfncvtc.f.fw.m  | 011000 | 1    | 00000 | ms1   | 110    | md   | 1110111
+| 62   | mfwcvtc.fw.f.m  | 011000 | 0    | 00000 | ms1   | 110    | md   | 1110111
 
 | 63   | mfcvtc.f.x.m    | 011010 | 1    | 00000 | ms1   | 110    | md   | 1110111
 | 64   | mfcvtc.x.f.m    | 011010 | 0    | 00000 | ms1   | 110    | md   | 1110111
