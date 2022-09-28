@@ -18,8 +18,9 @@ Matrix extension is strongly inspired by the RISC-V Vector "V" extension.
 Each hart supporting a matrix extension defines three parameters:
 
 . The maximum size in bits of a matrix element that any operation can produce or consume, stem:[\rm{ELEN} \ge 8], which must be a power of 2.
-. The number of bits in a single matrix tile register, stem:[\rm{MLEN} \ge \rm{ELEN}], which must be a power of 2, and must be no greater than 2^32^.
-. The number of bits in a row of a single matrix tile register, stem:[\rm{RLEN} \ge \rm{ELEN}, \rm{RLEN} \le \rm{MLEN}], which must be a power of 2, and must be no greater than 2^16^.
+. The number of bits in a single matrix tile register, which must be a power of 2, and must be no greater than 2^32^.
+. The number of bits in a row of a single matrix tile register, which must be a power of 2, and must be no greater than 2^16^.
+. ELEN < RLEN < MLEN, this supports matrix tile size from stem:[2 \times 2] to stem:[2^{16} \times 2^{16}]
 
 
 == Programmer's Model
