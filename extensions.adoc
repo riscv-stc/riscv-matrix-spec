@@ -277,17 +277,14 @@ void fused_matmul_relu_float16(c, a, b, m, k, n) {
             acc = mfncvt_f_fw_m(acc);           // convert widen result to single
 
            
-            for (s=0; s<tile_m; s+=8) {
-                rows = min(tile_m - s, 8);
-                for (tl=tile_n*rows; tl>0; tl-=vl) {
-                    // loop to move all elements, only once if vl == tile_n*rows
-                    vl = vsetvl(tl, e16, m8);
+            for (s=0; s<tile_m; s+=rows) {
+                rows = min(tile_m - s, 8*vlenb/rlenb); // max rows could move into 8 vregs
+                vsetvl(tile_n*rows, e16, m8);
 
-                    v1 = mmvcr_v_m(acc, s);         // move acc rows to vreg
-                    v1 = vfmax_vf(0.f, v1);         // vfmax.vf for relu
+                v1 = mmvcr_v_m(acc, s);         // move acc rows to vreg
+                v1 = vfmax_vf(0.f, v1);         // vfmax.vf for relu
 
-                    msce16_v(v1, &c[i+s][j], n);    // store output tile slices
-                }
+                msce16_v(v1, &c[i+s][j], n);    // store output tile slices
             }
         }
     }
