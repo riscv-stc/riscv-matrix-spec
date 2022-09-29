@@ -537,11 +537,11 @@ mfwcvtc.xq.fw.m md, ms1     # double-width float to quad-width int
 | 50   | mwrsubc.mm     | 001011 | 0    | 00000 | ms1   | 110    | md   | 1110111 
 | 51   | mfwrsubc.mm    | 001011 | 1    | 00000 | ms1   | 110    | md   | 1110111 
 | 52   | mqrsubc.mm     | 001100 | 0    | 00000 | ms1   | 110    | md   | 1110111
-| 53   | memulc.mx      | 001101 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 54   | mfemulc.mf     | 001101 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 55   | mwemulc.mx     | 001110 | 0    | 00000 | ms1   | 110    | md   | 1110111 
-| 56   | mfwemulc.mf    | 001110 | 1    | 00000 | ms1   | 110    | md   | 1110111 
-| 57   | mqemulc.mx     | 001111 | 0    | 00000 | ms1   | 110    | md   | 1110111
+| 53   | memulc.mx      | 001101 | 0    | rs2   | ms1   | 110    | md   | 1110111
+| 54   | mfemulc.mf     | 001101 | 1    | rs2   | ms1   | 110    | md   | 1110111
+| 55   | mwemulc.mx     | 001110 | 0    | rs2   | ms1   | 110    | md   | 1110111
+| 56   | mfwemulc.mf    | 001110 | 1    | rs2   | ms1   | 110    | md   | 1110111
+| 57   | mqemulc.mx     | 001111 | 0    | rs2   | ms1   | 110    | md   | 1110111
 | 58   | memulc.mi      | 010000 | 0    | imm   | ms1   | 110    | md   | 1110111 
 | 59   | mwemulc.mi     | 010001 | 0    | imm   | ms1   | 110    | md   | 1110111 
 | 60   | mqemulc.mi     | 010010 | 0    | imm   | ms1   | 110    | md   | 1110111
