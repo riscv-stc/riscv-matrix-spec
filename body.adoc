@@ -166,7 +166,7 @@ Suggested assembler names used for msettypei mtypei immediate
 Examples:
 
     msettypei t0, e8                 # SEW = 8
-    msettypei t0, e32                # SEW = 16
+    msettypei t0, e32                # SEW = 32
 
     msettypei t0, e8, accq           # SEW = 8, support 32-bit accumulator element
 ```

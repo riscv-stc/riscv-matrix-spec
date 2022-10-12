@@ -1,4 +1,4 @@
-The `mtype` register has five fields, `mill`, `maccq`, and `msew[2:0]`.  
+The `mtype` register has three fields, `mill`, `maccq`, and `msew[2:0]`.
 Bits `mtype[XLEN-2:4]` should be written with zero, and non-zero values
 in this field are reserved.
 

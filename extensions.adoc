@@ -72,24 +72,24 @@ Normal data move, rows or columns = lmul, eew = sew.
 ```
 # Data move between matrix register rows and vector registers.
 
-# vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul
+# vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul - 1
 mmvar.v.m  vd, ms1, rs2
 mmvbr.v.m  vd, ms1, rs2
 mmvcr.v.m  vd, ms1, rs2
 
-# md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul
+# md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul - 1
 mmvar.m.v  md, vs1, rs2
 mmvbr.m.v  md, vs1, rs2
 mmvcr.m.v  md, vs1, rs2
 
 # Data move between matrix register columns and vector registers.
 
-# vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul
+# vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul - 1
 mmvac.v.m  vd, ms1, rs2
 mmvbc.v.m  vd, ms1, rs2
 mmvcc.v.m  vd, ms1, rs2
 
-# md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul
+# md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul - 1
 mmvac.m.v  md, vs1, rs2
 mmvbc.m.v  md, vs1, rs2
 mmvcc.m.v  md, vs1, rs2
@@ -102,19 +102,19 @@ Only support accumulator registers as source and destination registers.
 ```
 # Data move between matrix register rows and vector registers.
 
-# vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/2
+# vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/2 - 1
 mwmvcr.v.m  vd, ms1, rs2
 
-# md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/2
+# md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/2 - 1
 mwmvcr.m.v  md, vs1, rs2
 
 
 # Data move between matrix register columns and vector registers.
 
-# vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/2
+# vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/2 - 1
 mwmvcc.v.m  vd, ms1, rs2
 
-# md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/2
+# md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/2 - 1
 mwmvcc.m.v  md, vs1, rs2
 ```
 
@@ -126,19 +126,19 @@ Only support accumulator registers as source and destination registers.
 ```
 # Data move between matrix register rows and vector registers.
 
-# vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/4
+# vd[(i - rs2) * tile_n + j] = md[i, j], i = rs2 .. rs2 + lmul/4 - 1
 mqmvcr.v.m  vd, ms1, rs2  # vl = lmul * tile_n
 
-# md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/4
+# md[i, j] = vd[(i - rs2) * tile_n + j], i = rs2 .. rs2 + lmul/4 - 1
 mqmvcr.m.v  md, vs1, rs2  # vl = lmul * tile_n
 
 
 # Data move between matrix register columns and vector registers.
 
-# vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/4
+# vd[(j - rs2) * tile_m + i] = md[i, j], j = rs2 .. rs2 + lmul/4 - 1
 mqmvcc.v.m  vd, ms1, rs2  # vl = lmul * tile_m
 
-# md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/4
+# md[i, j] = vd[(j - rs2) * tile_m + i], j = rs2 .. rs2 + lmul/4 - 1
 mqmvcc.m.v  md, vs1, rs2  # vl = lmul * tile_m
 ```
 
