@@ -6,7 +6,7 @@ The Zmv extension is defined to provide matrix support with the RISC-V Vector
 "V" extension.
 
 The Zmv extension allows to load matrix tile slices into vector registers, and
-move data between slices of a matrix register and vector registers. 
+move data between slices of a matrix register and vector registers.
 Element-wise multiply between a matrix register and a vector register(broadcast
 to a matrix) is also supported.
 
@@ -240,15 +240,15 @@ mfwemulcc.mv md, ms1, vs2  # output double widen
 | 44   | mqmvcc.m.v     | 100111 | 1    | rs2   | vs1   | 101    | md   | 1110111
 
 2+|**Arithmetic**      ^| funct6 | fp   | vs2   | ms1   | funct3 | md   | opcode
-| 45   | memulcr.mv     | 100001 | 0    | vs2   | ms1   | 110    | md   | 1110111 
-| 46   | mfemulcr.mv    | 100001 | 1    | vs2   | ms1   | 110    | md   | 1110111 
-| 47   | mwemulcr.mv    | 100010 | 0    | vs2   | ms1   | 110    | md   | 1110111 
-| 48   | mfwemulcr.mv   | 100010 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 45   | memulcr.mv     | 100001 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 46   | mfemulcr.mv    | 100001 | 1    | vs2   | ms1   | 110    | md   | 1110111
+| 47   | mwemulcr.mv    | 100010 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 48   | mfwemulcr.mv   | 100010 | 1    | vs2   | ms1   | 110    | md   | 1110111
 | 49   | mqemulcr.mv    | 100011 | 0    | vs2   | ms1   | 110    | md   | 1110111
-| 50   | memulcc.mv     | 100100 | 0    | vs2   | ms1   | 110    | md   | 1110111 
-| 51   | mfemulcc.mv    | 100100 | 1    | vs2   | ms1   | 110    | md   | 1110111 
-| 52   | mwemulcc.mv    | 100101 | 0    | vs2   | ms1   | 110    | md   | 1110111 
-| 53   | mfwemulcc.mv   | 100101 | 1    | vs2   | ms1   | 110    | md   | 1110111 
+| 50   | memulcc.mv     | 100100 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 51   | mfemulcc.mv    | 100100 | 1    | vs2   | ms1   | 110    | md   | 1110111
+| 52   | mwemulcc.mv    | 100101 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 53   | mfwemulcc.mv   | 100101 | 1    | vs2   | ms1   | 110    | md   | 1110111
 | 54   | mqemulcc.mv    | 100110 | 0    | vs2   | ms1   | 110    | md   | 1110111
 
 |===
@@ -267,16 +267,16 @@ void fused_matmul_relu_float16(c, a, b, m, k, n) {
             acc = mfemul_mf(acc, 0.f)           // clear acc reg
             for (s=0; s<k; s+=tile_k) {         // loop at dim k with tiling
                 tile_k = msettile_k(k-s);
-                
+
                 tr1 = mlae16_m(&a[i][s]);       // load left matrix a
                 tr2 = mlbe16_m(&b[s][j]);       // load right matrix b
                 acc = mfwma_mm(tr1, tr2);       // tiled matrix multiply,
                                                 // double widen output acc
             }
-           
+
             acc = mfncvt_f_fw_m(acc);           // convert widen result to single
 
-           
+
             for (s=0; s<tile_m; s+=rows) {
                 rows = min(tile_m - s, 8*vlenb/rlenb); // max rows could move into 8 vregs
                 vsetvl(tile_n*rows, e16, m8);
@@ -331,7 +331,7 @@ For implemention not support Bfloat16 format, `mtype.mill` will be set.
 
 === Zmtf32: Matrix TensorFloat-32(TF32) Extension
 
-The Zmtf32 extension allows to use TF32 FMA for matrix multiplication. 
+The Zmtf32 extension allows to use TF32 FMA for matrix multiplication.
 
 TF32 implementions are designed to achieve better performance on matrix multiplications and convolutions
 by rounding input Float32 data to have 10 bits of mantissa, and accumulating results with FP32 precision,
@@ -380,4 +380,358 @@ Im2col stands for Image to Column, and is an implementation technique of computi
 
 The Zmic extension allows to perform the im2col operation on-the-fly, by the new load instructions.
 
-Working in progress.
+The **Load Unfold** instructions allows to load and extract sliding local blocks from memory into the matrix tile registers.
+And also, **Store Fold** instructions allows to store and combine an array of sliding local blocks from the matrix tile regstiers into memory.
+Similar to PyTorch, for the case of two output spatial dimensions this operation is sometimes called `col2im`.
+
+==== CSRs
+
+The matrix extension adds 5 unprivileged CSRs (mkrsh, mfdsh, mpad, mstdi, msk) to the base scalar RISC-V ISA.
+
+.New matrix CSRs
+[cols="^2,^2,^2,10",options="header"]
+|===
+| Address | Privilege  | Name   | Description
+
+| 0xC45 | URO | mkrsh  | Fold/unfold Kernel shape
+| 0xC46 | URO | mfdsh  | Fold/unfold data shape
+| 0xC47 | URO | mpad   | Fold/unfold padding and sliding strides
+| 0xC48 | URO | mstdi  | Fold/unfold sliding strides and dilations
+| 0xC49 | URO | msk    | Fold/unfold sliding kernel position
+|===
+
+
+.`mkrsh` register layout
+[cols="^2,^2,8"]
+|===
+|     Bits | Name       | Description
+
+|  XLEN:32 | 0          | Reserved
+|    31:16 | krshape[1] | Kernel shape of dim 1, height
+|     15:0 | krshape[0] | Kernel shape of dim 0, width
+|===
+
+.`mfdsh` register layout
+[cols="^2,^2,8"]
+|===
+|     Bits | Name       | Description
+
+|  XLEN:32 | 0          | Reserved
+|    31:16 | fdshape[1] | Folded data shape of dim 1, height
+|     15:0 | fdshape[0] | Folded data shape of dim 0, width
+|===
+
+.`mpad` register layout
+[cols="^2,^2,8"]
+|===
+|     Bits | Name        | Description
+
+|  XLEN:32 | 0           | Reserved
+|    31:24 | mpad_top    | Padding added to up side of input
+|    23:16 | mpad_bottom | Padding added to bottom side of input
+|     15:8 | mpad_left   | Padding added to left side of input
+|      7:0 | mpad_right  | Padding added to left side of input
+|===
+
+.`mstdi` register layout
+[cols="^2,^2,8"]
+|===
+|     Bits | Name        | Description
+
+|  XLEN:32 | 0           | Reserved
+|    15:12 | mdil_h      | Height spacing of the kernel elements
+|     11:8 | mdil_w      | Weight spacing of the kernel elements
+|      7:4 | mstr_h      | Height stride of the convolution
+|      3:0 | mstr_w      | Weight stride of the convolution
+|===
+
+.`msk` register layout
+[cols="^2,^2,8"]
+|===
+|     Bits | Name        | Description
+
+|  XLEN:32 | 0           | Reserved
+|    31:16 | msk[1]      | Sliding kernel position of dim 1, height
+|     15:0 | msk[0]      | Sliding kernel position of dim 0, width
+|===
+
+==== Configuration Instructions
+
+```
+msetkrsh rd, rs1, rs2   # set kernel shape(rs1), strides and dilations(rs2)
+msetfdsh rd, rs1, rs2   # set fold/unfold shape and padding(rs1)
+
+msetsk rd, rs1          # set fold/unfold sliding kernel position
+```
+
+
+==== Load Unfold Instructions
+
+The **Load Unfold** instructions allows to load and extract sliding local blocks from memory into the matrix tile registers.
+Similar to PyTorch, for the case of two input spatial dimensions this operation is sometimes called `im2col`.
+
+```
+# md destination, rs1 base address, rs2 row byte stride
+
+# for left matrix, a
+mlufae8.m    md, (rs1), rs2
+mlufae16.m   md, (rs1), rs2
+mlufae32.m   md, (rs1), rs2
+mlufae64.m   md, (rs1), rs2
+```
+
+==== Store Fold Instructions
+
+The **Store Fold** instructions allows to store and combine an array of sliding local blocks from the matrix tile regstiers into memory.
+Similar to PyTorch, for the case of two output spatial dimensions this operation is sometimes called `col2im`.
+
+```
+# ms3 destination, rs1 base address, rs2 row byte stride
+
+# for left matrix, a
+msfdae8.m    ms3, (rs1), rs2
+msfdae16.m   ms3, (rs1), rs2
+msfdae32.m   ms3, (rs1), rs2
+msfdae64.m   ms3, (rs1), rs2
+```
+
+==== Instruction Listing
+
+[cols="^2,5,^3,^2,^2,^2,^2,^2,^3"]
+|===
+| No.  |          | **31  28** | 27  25 | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
+2+|**Configuration**   ^|funct4   | 000 | rs2   | rs1   | funct3 | rd   | opcode
+| 2    | msetkrsh       | 1000    | 000 | rs2   | rs1   | 111    | rd   | 1110111
+| 4    | msetfdsh       | 1001    | 000 | rs2   | rs1   | 111    | rd   | 1110111
+| 6    | msetsk         | 1010  2+| 00000000    | rs1   | 111    | rd   | 1110111
+
+
+
+| No.  |          | **31  26** | 25   | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
+
+2+|**Load**            ^| funct6 | ls   | rs2   | rs1   | eew    | md   | opcode
+| 1    | mlufae8.m      | 110000 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 2    | mlufae16.m     | 110000 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 3    | mlufae32.m     | 110000 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 4    | mlufae64.m     | 110000 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 5    | mlufbe8.m      | 110001 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 6    | mlufbe16.m     | 110001 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 7    | mlufbe32.m     | 110001 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 8    | mlufbe64.m     | 110001 | 0    | rs2   | rs1   | 011    | md   | 1110111
+| 9    | mlufce8.m      | 110010 | 0    | rs2   | rs1   | 000    | md   | 1110111
+| 10   | mlufce16.m     | 110010 | 0    | rs2   | rs1   | 001    | md   | 1110111
+| 11   | mlufce32.m     | 110010 | 0    | rs2   | rs1   | 010    | md   | 1110111
+| 12   | mlufce64.m     | 110010 | 0    | rs2   | rs1   | 011    | md   | 1110111
+
+2+|**Store**           ^| funct6 | ls   | rs2   | rs1   | eew    | ms3  | opcode
+| 13   | msfdae8.m      | 110000 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 14   | msfdae16.m     | 110000 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 15   | msfdae32.m     | 110000 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 16   | msfdae64.m     | 110000 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 17   | msfdbe8.m      | 110001 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 18   | msfdbe16.m     | 110001 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 19   | msfdbe32.m     | 110001 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 20   | msfdbe64.m     | 110001 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+| 21   | msfdce8.m      | 110010 | 1    | rs2   | rs1   | 000    | ms3  | 1110111
+| 22   | msfdce16.m     | 110010 | 1    | rs2   | rs1   | 001    | ms3  | 1110111
+| 23   | msfdce32.m     | 110010 | 1    | rs2   | rs1   | 010    | ms3  | 1110111
+| 24   | msfdce64.m     | 110010 | 1    | rs2   | rs1   | 011    | ms3  | 1110111
+
+
+|===
+
+
+====  Intrinsic Examples: Conv2D
+
+```
+void conv2d_float16(c, a, b, outh, outw, outc, inh, inw, inc,
+        kh, kw, pt, pb, pl, pr, sw, dilh, dilw) {
+    m = outh * outw;
+    k = kh * kw * inc;
+    n = outc;
+
+    msettype(e16);                              // use 16bit input matrix element
+
+    // set kernel shape, sliding strides and dilations, and padding
+    msetkrsh(kh << 16 | kw, dilh << 12 | dilw << 8 | sh << 4 | sw);
+    msetfdsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
+
+    for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
+        tile_m = msettile_m(m-i);
+
+        outh_pos = i / outw;
+        outw_pos = i - outh_pos * outw;
+
+        for (j=0; j<n; j+=tile_n) {             // loop at dim n with tiling
+            tile_n = msettile_n(n-j);
+
+            acc = mfemul_mf(acc, 0.f)           // clear acc reg
+            for (skh=0; skh<kh; skh++) {        // loop for kernel height
+                inh_pos = outh_pos * sh - pt + skh * dh;
+                for (skw=0; skw<kw; skw++) {    // loop for kernel width
+                    inw_pos = outw_pos * sw - pl + skw * dw;
+
+                    msetsk(inh_pos << 16 | inw_pos);     // set sliding kernel position
+
+                    for (skc=0; skc<inc; skc+=tile_k) { // loop for kernel channels
+                        tile_k = msettile_k(inc-skc);
+
+                        tr1 = mlufae16_m(&a[inh_pos][inw_pos][skc]);
+                                                    // load and unfold input blocks
+                        tr2 = mlbe16_m(&b[s][j]);   // load right matrix b
+                        acc = mfwma_mm(tr1, tr2);   // tiled matrix multiply,
+                                                    // double widen output acc
+                    }
+                }
+            }
+
+            acc = mfncvt_f_fw_m(acc);           // convert widen result
+            msce16_m(acc, &c[i][j], n*2);       // store to matrix c
+        }
+    }
+}
+
+```
+
+====  Intrinsic Examples: Conv3D
+
+```
+void conv3d_float16(c, a, b, outh, outw, outc, ind, inh, inw, inc,
+        kd, kh, kw, pt, pb, pl, pr, sw, dilh, dilw) {
+    m = outh * outw;
+    k = kd * kh * kw * inc;
+    n = outc;
+
+    msettype(e16);                              // use 16bit input matrix element
+
+    // set kernel shape, sliding strides and dilations, and padding
+    msetkrsh(kd << 24 | kh << 16 | kw, dilh << 12 | dilw << 8 | sh << 4 | sw);
+    msetfdsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
+
+    for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
+        tile_m = msettile_m(m-i);
+
+        outh_pos = i / outw;
+        outw_pos = i - outh_pos * outw;
+
+        for (j=0; j<n; j+=tile_n) {             // loop at dim n with tiling
+            tile_n = msettile_n(n-j);
+
+            acc = mfemul_mf(acc, 0.f)           // clear acc reg
+            for (skd=0; skd<kd; skd++) {        // loop for kernel *depth*
+                for (skh=0; skh<kh; skh++) {        // loop for kernel height
+                    inh_pos = outh_pos * sh - pt + skh * dh;
+                    for (skw=0; skw<kw; skw++) {    // loop for kernel width
+                        inw_pos = outw_pos * sw - pl + skw * dw;
+
+                        msetsk(inh_pos << 16 | inw_pos);   // set sliding position
+
+                        for (skc=0; skc<inc; skc+=tile_k) {
+                            tile_k = msettile_k(inc-skc);
+
+                            tr1 = mlufae16_m(&a[skd][inh_pos][inw_pos][skc]);
+                                                      // load and unfold blocks
+                            tr2 = mlbe16_m(&b[s][j]); // load right matrix b
+                            acc = mfwma_mm(tr1, tr2); // tiled matrix multiply,
+                                                      // double widen output acc
+                        }
+                    }
+                }
+            }
+
+            acc = mfncvt_f_fw_m(acc);           // convert widen result
+            msce16_m(acc, &c[i][j], n*2);       // store to matrix c
+        }
+    }
+}
+
+```
+
+====  Intrinsic Examples: MaxPool2D
+
+```
+void maxpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
+        kh, kw, pt, pb, pl, pr, sw, dilh, dilw) {
+    m = outh * outw;
+    n = outc;
+
+    msettype(e16);                              // use 16bit input matrix element
+
+    // set kernel shape, sliding strides and dilations, and padding
+    msetkrsh(kh << 16 | kw, dilh << 12 | dilw << 8 | sh << 4 | sw);
+    msetfdsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
+
+    for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
+        tile_m = msettile_m(m-i);
+
+        outh_pos = i / outw;
+        outw_pos = i - outh_pos * outw;
+
+        for (j=0; j<n; j+=tile_n) {             // loop at dim n with tiling
+            tile_n = msettile_n(n-j);
+
+            acc = mfemul_mf(acc, -inf)          // clear acc reg
+            for (skh=0; skh<kh; skh++) {        // loop for kernel height
+                inh_pos = outh_pos * sh - pt + skh * dh;
+                for (skw=0; skw<kw; skw++) {    // loop for kernel width
+                    inw_pos = outw_pos * sw - pl + skw * dw;
+
+                    msetsk(inh_pos << 16 | inw_pos);   // set sliding kernel position
+
+                    // load and unfold matrix blocks
+                    acc1 = mlufce16_m(&in[inh_pos][inw_pos][j]);
+                    acc = mfmaxc_mm(acc, acc1);
+                }
+            }
+
+            msce16_m(acc, &out[i][j], n*2);       // store to matrix c
+        }
+    }
+}
+
+```
+
+====  Intrinsic Examples: AvgPool2D
+
+```
+void avgpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
+        kh, kw, pt, pb, pl, pr, sw, dilh, dilw) {
+    m = outh * outw;
+    n = outc;
+
+    msettype(e16);                              // use 16bit input matrix element
+
+    // set kernel shape, sliding strides and dilations, and padding
+    msetkrsh(kh << 16 | kw, dilh << 12 | dilw << 8 | sh << 4 | sw);
+    msetfdsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
+
+    for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
+        tile_m = msettile_m(m-i);
+
+        outh_pos = i / outw;
+        outw_pos = i - outh_pos * outw;
+
+        for (j=0; j<n; j+=tile_n) {             // loop at dim n with tiling
+            tile_n = msettile_n(n-j);
+
+            acc = mfemul_mf(acc, -inf)          // clear acc reg
+            for (skh=0; skh<kh; skh++) {        // loop for kernel height
+                inh_pos = outh_pos * sh - pt + skh * dh;
+                for (skw=0; skw<kw; skw++) {    // loop for kernel width
+                    inw_pos = outw_pos * sw - pl + skw * dw;
+
+                    msetsk(inh_pos << 16 | inw_pos);   // set sliding kernel position
+
+                    // load and unfold matrix blocks
+                    acc1 = mlufce16_m(&in[inh_pos][inw_pos][j]);
+                    acc = mfaddc_mm(acc, acc1);
+                }
+            }
+
+            acc = mfdivc_mf(acc, kh*kw);
+            msce16_m(acc, &out[i][j], n*2);     // store to matrix c
+        }
+    }
+}
+
+```
