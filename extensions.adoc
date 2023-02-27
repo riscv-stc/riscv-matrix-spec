@@ -156,7 +156,7 @@ mwemulcr.mv md, ms1, vs2  # output double widen
 mqemulcr.mv md, ms1, vs2  # output quadruple widen
 
 # float matrix element-wise multiply with a row of vector float
-# md = ms1[i,j] * vs2[j]
+# md[i,j] = ms1[i,j] * vs2[j]
 mfemulcr.mv md, ms1, vs2
 mfwemulcr.mv md, ms1, vs2  # output double widen
 ```
@@ -171,11 +171,78 @@ mwemulcc.mv md, ms1, vs2  # output double widen
 mqemulcc.mv md, ms1, vs2  # output quadruple widen
 
 # float matrix element-wise multiply with a column of vector float,
-# md = ms1[i,j] * vs2[i]
+# md[i,j] = ms1[i,j] * vs2[i]
 mfemulcc.mv md, ms1, vs2
 mfwemulcc.mv md, ms1, vs2  # output double widen
 ```
 
+==== Matrix element-wise add
+
+Matrix element-wise add instructions, the vector operand will broadcast to a matrix.
+
+For m*addcr.mv instructions, the vector operand will broadcast from a row to a c matrix.
+
+```
+# int matrix element-wise add with a row of vector int
+# md[i,j] = ms1[i,j] + vs2[j]
+maddcr.mv md, ms1, vs2
+mwaddcr.mv md, ms1, vs2  # output double widen
+mqaddcr.mv md, ms1, vs2  # output quadruple widen
+
+# float matrix element-wise add with a row of vector float
+# md[i,j] = ms1[i,j] + vs2[j]
+mfaddcr.mv md, ms1, vs2
+mfwaddcr.mv md, ms1, vs2  # output double widen
+```
+
+For m*addcc.mv instructions, the vector operand will broadcast from a column to a c matrix.
+
+```
+# int matrix element-wise add with a column of vector int,
+# md[i,j] = ms1[i,j] + vs2[i]
+maddcc.mv md, ms1, vs2
+mwaddcc.mv md, ms1, vs2  # output double widen
+mqaddcc.mv md, ms1, vs2  # output quadruple widen
+
+# float matrix element-wise add with a column of vector float,
+# md[i,j] = ms1[i,j] + vs2[i]
+mfaddcc.mv md, ms1, vs2
+mfwaddcc.mv md, ms1, vs2  # output double widen
+```
+
+==== Matrix element-wise fused multiply-accumulate
+
+Matrix element-wise fused multiply-add instructions, the vector operand will broadcast to a matrix.
+
+For m*macccr.mv instructions, the vector operand will broadcast from a row to a c matrix.
+
+```
+# int matrix element-wise multiply-accumulate with a row of vector int
+# md[i,j] = vs1[j] * md[i,j] + vs2[j]
+mmacccr.mv md, vs1, vs2
+mwmacccr.mv md, vs1, vs2  # output double widen
+mqmacccr.mv md, vs1, vs2  # output quadruple widen
+
+# float matrix element-wise multiply-accumulate with a row of vector float
+# md[i,j] = vs1[j] * md[i,j] + vs2[j]
+mfmacccr.mv md, vs1, vs2
+mfwmacccr.mv md, vs1, vs2  # output double widen
+```
+
+For m*macccc.mv instructions, the vector operand will broadcast from a column to a c matrix.
+
+```
+# int matrix element-wise multiply-accumulate with a column of vector int,
+# md[i,j] = vs1[i] * md[i,j] + vs2[i]
+mmacccc.mv md, vs1, vs2
+mwmacccc.mv md, vs1, vs2  # output double widen
+mqmacccc.mv md, vs1, vs2  # output quadruple widen
+
+# float matrix element-wise add with a column of vector float,
+# md[i,j] = vs1[i] * md[i,j] + vs2[i]
+mfmacccc.mv md, vs1, vs2
+mfwmacccc.mv md, vs1, vs2  # output double widen
+```
 
 ==== Instruction Listing
 
@@ -250,6 +317,28 @@ mfwemulcc.mv md, ms1, vs2  # output double widen
 | 52   | mwemulcc.mv    | 100101 | 0    | vs2   | ms1   | 110    | md   | 1110111
 | 53   | mfwemulcc.mv   | 100101 | 1    | vs2   | ms1   | 110    | md   | 1110111
 | 54   | mqemulcc.mv    | 100110 | 0    | vs2   | ms1   | 110    | md   | 1110111
+
+| 55   | maddcr.mv      | 100111 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 56   | mfaddcr.mv     | 100111 | 1    | vs2   | ms1   | 110    | md   | 1110111
+| 57   | mwaddcr.mv     | 101000 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 58   | mfwaddcr.mv    | 101000 | 1    | vs2   | ms1   | 110    | md   | 1110111
+| 59   | mqaddcr.mv     | 101001 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 60   | maddcc.mv      | 101010 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 61   | mfaddcc.mv     | 101010 | 1    | vs2   | ms1   | 110    | md   | 1110111
+| 62   | mwaddcc.mv     | 101011 | 0    | vs2   | ms1   | 110    | md   | 1110111
+| 63   | mfwaddcc.mv    | 101011 | 1    | vs2   | ms1   | 110    | md   | 1110111
+| 64   | mqaddcc.mv     | 101100 | 0    | vs2   | ms1   | 110    | md   | 1110111
+
+| 55   | mmacccr.mv     | 101101 | 0    | vs2   | vs1   | 110    | md   | 1110111
+| 56   | mfmacccr.mv    | 101101 | 1    | vs2   | vs1   | 110    | md   | 1110111
+| 57   | mwmacccr.mv    | 101110 | 0    | vs2   | vs1   | 110    | md   | 1110111
+| 58   | mfwmacccr.mv   | 101110 | 1    | vs2   | vs1   | 110    | md   | 1110111
+| 59   | mqmacccr.mv    | 101111 | 0    | vs2   | vs1   | 110    | md   | 1110111
+| 60   | mmacccc.mv     | 110000 | 0    | vs2   | vs1   | 110    | md   | 1110111
+| 61   | mfmacccc.mv    | 110000 | 1    | vs2   | vs1   | 110    | md   | 1110111
+| 62   | mwmacccc.mv    | 110001 | 0    | vs2   | vs1   | 110    | md   | 1110111
+| 63   | mfwmacccc.mv   | 110001 | 1    | vs2   | vs1   | 110    | md   | 1110111
+| 64   | mqmacccc.mv    | 110010 | 0    | vs2   | vs1   | 110    | md   | 1110111
 
 |===
 
@@ -393,32 +482,23 @@ The matrix extension adds 5 unprivileged CSRs (mkrsh, mfdsh, mpad, mstdi, msk) t
 |===
 | Address | Privilege  | Name   | Description
 
-| 0xC45 | URO | mkrsh  | Fold/unfold Kernel shape
-| 0xC46 | URO | mfdsh  | Fold/unfold data shape
+| 0xC45 | URO | moutsh | Fold/unfold output shape
+| 0xC46 | URO | minsh  | Fold/unfold input shape
 | 0xC47 | URO | mpad   | Fold/unfold padding and sliding strides
 | 0xC48 | URO | mstdi  | Fold/unfold sliding strides and dilations
-| 0xC49 | URO | msk    | Fold/unfold sliding kernel position
+| 0xC49 | URO | minsk  | Fold/unfold sliding kernel position of input
+| 0xC50 | URO | moutsk | Fold/unfold sliding kernel position of output
 |===
 
 
-.`mkrsh` register layout
+.`minsh` `moutsh` register layout
 [cols="^2,^2,8"]
 |===
 |     Bits | Name       | Description
 
 |  XLEN:32 | 0          | Reserved
-|    31:16 | krshape[1] | Kernel shape of dim 1, height
-|     15:0 | krshape[0] | Kernel shape of dim 0, width
-|===
-
-.`mfdsh` register layout
-[cols="^2,^2,8"]
-|===
-|     Bits | Name       | Description
-
-|  XLEN:32 | 0          | Reserved
-|    31:16 | fdshape[1] | Folded data shape of dim 1, height
-|     15:0 | fdshape[0] | Folded data shape of dim 0, width
+|    31:16 | shape[1]   | shape of dim 1, height
+|     15:0 | shape[0]   | shape of dim 0, width
 |===
 
 .`mpad` register layout
@@ -439,13 +519,13 @@ The matrix extension adds 5 unprivileged CSRs (mkrsh, mfdsh, mpad, mstdi, msk) t
 |     Bits | Name        | Description
 
 |  XLEN:32 | 0           | Reserved
-|    15:12 | mdil_h      | Height spacing of the kernel elements
-|     11:8 | mdil_w      | Weight spacing of the kernel elements
-|      7:4 | mstr_h      | Height stride of the convolution
-|      3:0 | mstr_w      | Weight stride of the convolution
+|    31:24 | mdil_h      | Height spacing of the kernel elements
+|    23:16 | mdil_w      | Weight spacing of the kernel elements
+|     15:8 | mstr_h      | Height stride of the convolution
+|      7:0 | mstr_w      | Weight stride of the convolution
 |===
 
-.`msk` register layout
+.`minsk` `moutsk` register layout
 [cols="^2,^2,8"]
 |===
 |     Bits | Name        | Description
@@ -458,10 +538,10 @@ The matrix extension adds 5 unprivileged CSRs (mkrsh, mfdsh, mpad, mstdi, msk) t
 ==== Configuration Instructions
 
 ```
-msetkrsh rd, rs1, rs2   # set kernel shape(rs1), strides and dilations(rs2)
-msetfdsh rd, rs1, rs2   # set fold/unfold shape and padding(rs1)
+msetoutsh rd, rs1, rs2  # set output shape(rs1), strides and dilations(rs2)
+msetinsh rd, rs1, rs2   # set input shape(rs1) and padding(rs2)
 
-msetsk rd, rs1          # set fold/unfold sliding kernel position
+msetsk rd, rs1, rs2     # set fold/unfold sliding positions, insk(rs1), outsk(rs2)
 ```
 
 
@@ -501,8 +581,8 @@ msfdae64.m   ms3, (rs1), rs2
 |===
 | No.  |          | **31  28** | 27  25 | 24 20 | 19 15 | 14  12 | 11 7 | 6    0
 2+|**Configuration**   ^|funct4   | 000 | rs2   | rs1   | funct3 | rd   | opcode
-| 2    | msetkrsh       | 1000    | 000 | rs2   | rs1   | 111    | rd   | 1110111
-| 4    | msetfdsh       | 1001    | 000 | rs2   | rs1   | 111    | rd   | 1110111
+| 2    | msetoutsh      | 1000    | 000 | rs2   | rs1   | 111    | rd   | 1110111
+| 4    | mseindsh       | 1001    | 000 | rs2   | rs1   | 111    | rd   | 1110111
 | 6    | msetsk         | 1010  2+| 00000000    | rs1   | 111    | rd   | 1110111
 
 
@@ -552,9 +632,9 @@ void conv2d_float16(c, a, b, outh, outw, outc, inh, inw, inc,
 
     msettype(e16);                              // use 16bit input matrix element
 
-    // set kernel shape, sliding strides and dilations, and padding
-    msetkrsh(kh << 16 | kw, dilh << 12 | dilw << 8 | sh << 4 | sw);
-    msetfdsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
+    // set in/out shape, sliding strides and dilations, and padding
+    msetoutsh(outh << 16 | outw, dilh << 24 | dilw << 16 | sh << 8 | sw);
+    msetinsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
 
     for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
         tile_m = msettile_m(m-i);
@@ -571,7 +651,8 @@ void conv2d_float16(c, a, b, outh, outw, outc, inh, inw, inc,
                 for (skw=0; skw<kw; skw++) {    // loop for kernel width
                     inw_pos = outw_pos * sw - pl + skw * dw;
 
-                    msetsk(inh_pos << 16 | inw_pos);     // set sliding kernel position
+                    msetsk(inh_pos << 16 | inw_pos, skw * dilw << 16 | outw_pos)
+                                                // set sliding position
 
                     for (skc=0; skc<inc; skc+=tile_k) { // loop for kernel channels
                         tile_k = msettile_k(inc-skc);
@@ -604,9 +685,9 @@ void conv3d_float16(c, a, b, outh, outw, outc, ind, inh, inw, inc,
 
     msettype(e16);                              // use 16bit input matrix element
 
-    // set kernel shape, sliding strides and dilations, and padding
-    msetkrsh(kd << 24 | kh << 16 | kw, dilh << 12 | dilw << 8 | sh << 4 | sw);
-    msetfdsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
+    // set in/out shape, sliding strides and dilations, and padding
+    msetoutsh(outh << 16 | outw, dilh << 24 | dilw << 16 | sh << 8 | sw);
+    msetinsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
 
     for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
         tile_m = msettile_m(m-i);
@@ -624,7 +705,8 @@ void conv3d_float16(c, a, b, outh, outw, outc, ind, inh, inw, inc,
                     for (skw=0; skw<kw; skw++) {    // loop for kernel width
                         inw_pos = outw_pos * sw - pl + skw * dw;
 
-                        msetsk(inh_pos << 16 | inw_pos);   // set sliding position
+                        msetsk(inh_pos << 16 | inw_pos, skw * dilw << 16 | outw_pos)
+                                                // set sliding position
 
                         for (skc=0; skc<inc; skc+=tile_k) {
                             tile_k = msettile_k(inc-skc);
@@ -657,9 +739,9 @@ void maxpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
 
     msettype(e16);                              // use 16bit input matrix element
 
-    // set kernel shape, sliding strides and dilations, and padding
-    msetkrsh(kh << 16 | kw, dilh << 12 | dilw << 8 | sh << 4 | sw);
-    msetfdsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
+    // set in/out shape, sliding strides and dilations, and padding
+    msetoutsh(outh << 16 | outw, dilh << 24 | dilw << 16 | sh << 8 | sw);
+    msetinsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
 
     for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
         tile_m = msettile_m(m-i);
@@ -676,7 +758,8 @@ void maxpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
                 for (skw=0; skw<kw; skw++) {    // loop for kernel width
                     inw_pos = outw_pos * sw - pl + skw * dw;
 
-                    msetsk(inh_pos << 16 | inw_pos);   // set sliding kernel position
+                    msetsk(inh_pos << 16 | inw_pos, skw * dilw << 16 | outw_pos)
+                                                // set sliding position
 
                     // load and unfold matrix blocks
                     acc1 = mlufce16_m(&in[inh_pos][inw_pos][j]);
@@ -701,9 +784,9 @@ void avgpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
 
     msettype(e16);                              // use 16bit input matrix element
 
-    // set kernel shape, sliding strides and dilations, and padding
-    msetkrsh(kh << 16 | kw, dilh << 12 | dilw << 8 | sh << 4 | sw);
-    msetfdsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
+    // set in/out shape, sliding strides and dilations, and padding
+    msetoutsh(outh << 16 | outw, dilh << 24 | dilw << 16 | sh << 8 | sw);
+    msetinsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
 
     for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
         tile_m = msettile_m(m-i);
@@ -720,7 +803,8 @@ void avgpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
                 for (skw=0; skw<kw; skw++) {    // loop for kernel width
                     inw_pos = outw_pos * sw - pl + skw * dw;
 
-                    msetsk(inh_pos << 16 | inw_pos);   // set sliding kernel position
+                    msetsk(inh_pos << 16 | inw_pos, skw * dilw << 16 | outw_pos)
+                                                // set sliding position
 
                     // load and unfold matrix blocks
                     acc1 = mlufce16_m(&in[inh_pos][inw_pos][j]);
