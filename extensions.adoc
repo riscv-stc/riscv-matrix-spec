@@ -484,7 +484,7 @@ The matrix extension adds 5 unprivileged CSRs (mkrsh, mfdsh, mpad, mstdi, msk) t
 
 | 0xC45 | URO | moutsh | Fold/unfold output shape
 | 0xC46 | URO | minsh  | Fold/unfold input shape
-| 0xC47 | URO | mpad   | Fold/unfold padding and sliding strides
+| 0xC47 | URO | mpad   | Fold/unfold padding parameters
 | 0xC48 | URO | mstdi  | Fold/unfold sliding strides and dilations
 | 0xC49 | URO | minsk  | Fold/unfold sliding kernel position of input
 | 0xC50 | URO | moutsk | Fold/unfold sliding kernel position of output
@@ -625,7 +625,7 @@ msfdae64.m   ms3, (rs1), rs2
 
 ```
 void conv2d_float16(c, a, b, outh, outw, outc, inh, inw, inc,
-        kh, kw, pt, pb, pl, pr, sw, dilh, dilw) {
+        kh, kw, pt, pb, pl, pr, sw, dh, dw) {
     m = outh * outw;
     k = kh * kw * inc;
     n = outc;
@@ -633,7 +633,7 @@ void conv2d_float16(c, a, b, outh, outw, outc, inh, inw, inc,
     msettype(e16);                              // use 16bit input matrix element
 
     // set in/out shape, sliding strides and dilations, and padding
-    msetoutsh(outh << 16 | outw, dilh << 24 | dilw << 16 | sh << 8 | sw);
+    msetoutsh(outh << 16 | outw, dh << 24 | dw << 16 | sh << 8 | sw);
     msetinsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
 
     for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
@@ -651,7 +651,7 @@ void conv2d_float16(c, a, b, outh, outw, outc, inh, inw, inc,
                 for (skw=0; skw<kw; skw++) {    // loop for kernel width
                     inw_pos = outw_pos * sw - pl + skw * dw;
 
-                    msetsk(inh_pos << 16 | inw_pos, skw * dilw << 16 | outw_pos)
+                    msetsk(inh_pos << 16 | inw_pos, skw * dw << 16 | outw_pos)
                                                 // set sliding position
 
                     for (skc=0; skc<inc; skc+=tile_k) { // loop for kernel channels
@@ -678,7 +678,7 @@ void conv2d_float16(c, a, b, outh, outw, outc, inh, inw, inc,
 
 ```
 void conv3d_float16(c, a, b, outh, outw, outc, ind, inh, inw, inc,
-        kd, kh, kw, pt, pb, pl, pr, sw, dilh, dilw) {
+        kd, kh, kw, pt, pb, pl, pr, sw, dh, dw) {
     m = outh * outw;
     k = kd * kh * kw * inc;
     n = outc;
@@ -686,7 +686,7 @@ void conv3d_float16(c, a, b, outh, outw, outc, ind, inh, inw, inc,
     msettype(e16);                              // use 16bit input matrix element
 
     // set in/out shape, sliding strides and dilations, and padding
-    msetoutsh(outh << 16 | outw, dilh << 24 | dilw << 16 | sh << 8 | sw);
+    msetoutsh(outh << 16 | outw, dh << 24 | dw << 16 | sh << 8 | sw);
     msetinsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
 
     for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
@@ -705,7 +705,7 @@ void conv3d_float16(c, a, b, outh, outw, outc, ind, inh, inw, inc,
                     for (skw=0; skw<kw; skw++) {    // loop for kernel width
                         inw_pos = outw_pos * sw - pl + skw * dw;
 
-                        msetsk(inh_pos << 16 | inw_pos, skw * dilw << 16 | outw_pos)
+                        msetsk(inh_pos << 16 | inw_pos, skw * dw << 16 | outw_pos)
                                                 // set sliding position
 
                         for (skc=0; skc<inc; skc+=tile_k) {
@@ -733,14 +733,14 @@ void conv3d_float16(c, a, b, outh, outw, outc, ind, inh, inw, inc,
 
 ```
 void maxpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
-        kh, kw, pt, pb, pl, pr, sw, dilh, dilw) {
+        kh, kw, pt, pb, pl, pr, sw, dh, dw) {
     m = outh * outw;
     n = outc;
 
     msettype(e16);                              // use 16bit input matrix element
 
     // set in/out shape, sliding strides and dilations, and padding
-    msetoutsh(outh << 16 | outw, dilh << 24 | dilw << 16 | sh << 8 | sw);
+    msetoutsh(outh << 16 | outw, dh << 24 | dw << 16 | sh << 8 | sw);
     msetinsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
 
     for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
@@ -758,7 +758,7 @@ void maxpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
                 for (skw=0; skw<kw; skw++) {    // loop for kernel width
                     inw_pos = outw_pos * sw - pl + skw * dw;
 
-                    msetsk(inh_pos << 16 | inw_pos, skw * dilw << 16 | outw_pos)
+                    msetsk(inh_pos << 16 | inw_pos, skw * dw << 16 | outw_pos)
                                                 // set sliding position
 
                     // load and unfold matrix blocks
@@ -778,14 +778,14 @@ void maxpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
 
 ```
 void avgpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
-        kh, kw, pt, pb, pl, pr, sw, dilh, dilw) {
+        kh, kw, pt, pb, pl, pr, sw, dh, dw) {
     m = outh * outw;
     n = outc;
 
     msettype(e16);                              // use 16bit input matrix element
 
     // set in/out shape, sliding strides and dilations, and padding
-    msetoutsh(outh << 16 | outw, dilh << 24 | dilw << 16 | sh << 8 | sw);
+    msetoutsh(outh << 16 | outw, dh << 24 | dw << 16 | sh << 8 | sw);
     msetinsh(inh << 16 | inw, pt << 24 | pb << 16 | pl << 8 | pr);
 
     for (i=0; i<m; i+=tile_m) {                 // loop at dim m with tiling
@@ -803,7 +803,7 @@ void avgpool2d_float16(out, in, outh, outw, outc, inh, inw, inc,
                 for (skw=0; skw<kw; skw++) {    // loop for kernel width
                     inw_pos = outw_pos * sw - pl + skw * dw;
 
-                    msetsk(inh_pos << 16 | inw_pos, skw * dilw << 16 | outw_pos)
+                    msetsk(inh_pos << 16 | inw_pos, skw * dw << 16 | outw_pos)
                                                 // set sliding position
 
                     // load and unfold matrix blocks
