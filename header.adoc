@@ -1,8 +1,8 @@
 [[header]]
 :description: RISC-V Matrix Specification
 :company: RISC-V.org
-:revdate: 9/2022
-:revnumber: 0.2
+:revdate: 9/2023
+:revnumber: 0.3.0
 :revremark: This document is in development.
 :url-riscv: http://riscv.org
 :doctype: book
@@ -37,7 +37,7 @@ endif::[]
 :xrefstyle: short
 
 = RISC-V Matrix Specification
-Xin Ouyang; Zhiqiang Liu;
+Fujie Fan; Xin Ouyang; Zhiqiang Liu;
 
 // Preamble
 [WARNING]
@@ -55,7 +55,7 @@ Attribution 4.0 International License (CC-BY 4.0). The full
 license text is available at
 https://creativecommons.org/licenses/by/4.0/.
 
-Copyright 2022 by Streamcomputing Corp.
+Copyright 2023 by Streamcomputing Corp.
 
 [preface]
 include::contributors.adoc[]

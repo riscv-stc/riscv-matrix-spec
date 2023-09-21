@@ -1,14 +1,14 @@
-The `mtype` register has three fields, `mill`, `maccq`, and `msew[2:0]`.
-Bits `mtype[XLEN-2:4]` should be written with zero, and non-zero values
-in this field are reserved.
+The `mtype` register has 5 fields, `mill`, `mfp64`, `mba`, `msew[2:0]` and `mlmul[1:0]`. Bits `mtype[XLEN-2:7]` should be written with zero, and non-zero values of this field are reserved.
 
 .`mtype` register layout
 [cols="^2,^2,8"]
 |===
 |     Bits | Name       | Description
 
-|   XLEN-1 | mill       | Illegal value if set
-| XLEN-2:4 | 0          | Reserved if non-zero
-|        3 | maccq      | Support quad-width accumulator element
-|      2:0 | msew[2:0]  | Selected element width (SEW) setting
+|   XLEN-1 | mill       | Illegal value if set.
+| XLEN-2:7 | 0          | Reserved if non-zero.
+|        6 | mfp64      | Support 64-bit float point.
+|        5 | mba        | Matrix out of bound agnostic.
+|      4:2 | msew[2:0]  | Selected element width (SEW) setting.
+|      1:0 | mlmul[1:0] | Register group multiplier (LMUL) setting.
 |===
