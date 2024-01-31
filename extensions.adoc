@@ -703,6 +703,18 @@ mlufae8.m    td, (rs1), rs2
 mlufae16.m   td, (rs1), rs2
 mlufae32.m   td, (rs1), rs2
 mlufae64.m   td, (rs1), rs2
+
+# for left matrix, b
+mlufbe8.m    td, (rs1), rs2
+mlufbe16.m   td, (rs1), rs2
+mlufbe32.m   td, (rs1), rs2
+mlufbe64.m   td, (rs1), rs2
+
+# for left matrix, c
+mlufce8.m    td, (rs1), rs2
+mlufce16.m   td, (rs1), rs2
+mlufce32.m   td, (rs1), rs2
+mlufce64.m   td, (rs1), rs2
 ```
 
 ==== Store Fold Instructions
@@ -718,6 +730,18 @@ msfdae8.m    ts3, (rs1), rs2
 msfdae16.m   ts3, (rs1), rs2
 msfdae32.m   ts3, (rs1), rs2
 msfdae64.m   ts3, (rs1), rs2
+
+# for left matrix, b
+msfdbe8.m    ts3, (rs1), rs2
+msfdbe16.m   ts3, (rs1), rs2
+msfdbe32.m   ts3, (rs1), rs2
+msfdbe64.m   ts3, (rs1), rs2
+
+# for left matrix, c
+msfdce8.m    ts3, (rs1), rs2
+msfdce16.m   ts3, (rs1), rs2
+msfdce32.m   ts3, (rs1), rs2
+msfdce64.m   ts3, (rs1), rs2
 ```
 
 ==== Instruction Listing

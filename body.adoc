@@ -416,10 +416,10 @@ mscte64.m ts3, (rs1), rs2, lmul # 64-bit output tile store
 Load a whole matrix from memory without considering the tile size.
 
 ```
-mlre8.m  md, (rs1), rs2, lmul   #  8-bit whole matrix load
-mlre16.m md, (rs1), rs2, lmul   # 16-bit whole matrix load
-mlre32.m md, (rs1), rs2, lmul   # 32-bit whole matrix load
-mlre64.m md, (rs1), rs2, lmul   # 64-bit whole matrix load
+mlre8.m  td, (rs1), rs2, lmul   #  8-bit whole matrix load
+mlre16.m td, (rs1), rs2, lmul   # 16-bit whole matrix load
+mlre32.m td, (rs1), rs2, lmul   # 32-bit whole matrix load
+mlre64.m td, (rs1), rs2, lmul   # 64-bit whole matrix load
 ```
 
 Store a whole matrix to memory without considering the tile size.
@@ -595,7 +595,7 @@ mfdiv.mm   td, ts1, ts2, lmul
 
 # Float matrix element-wise square root.
 # td[i,j] = ts1[i,j] ^ (1/2)
-mfsqrt.mm  td, ts1, lmul
+mfsqrt.m   td, ts1, lmul
 ```
 
 NOTE: There is no matrix-scalar or matrix-vector version for element-wise instructions. Such operations can be replaced by a broadcast instruction and a matrix-matrix element-wise instruction.
