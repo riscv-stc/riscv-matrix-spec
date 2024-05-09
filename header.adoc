@@ -2,7 +2,7 @@
 :description: RISC-V Matrix Specification
 :company: RISC-V.org
 :revdate: 9/2023
-:revnumber: 0.3.0
+:revnumber: 0.3
 :revremark: This document is in development.
 :url-riscv: http://riscv.org
 :doctype: book

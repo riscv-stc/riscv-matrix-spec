@@ -208,9 +208,9 @@ The `msettile` instruction sets the mtilem/mtilek/mtilen CSRs simultaneously, wh
 
 ```
 msettile rd, rs1                   # rd[7:0] = new mtilem, rd[15:8] = new mtilen,
-                                   # rd[XLEN-1:0] = new mtilek;
+                                   # rd[XLEN-1:16] = new mtilek;
                                    # rs1[7:0] = ATM, rs1[15:8] = ATN,
-                                   # rs1[XLEN-1:0] = ATK
+                                   # rs1[XLEN-1:16] = ATK
 ```
 
 To use the combined set instruction, the values of ATM and ATN must be held by 8 bits, and the value of ATK must be held by `XLEN-16` bits.
@@ -229,14 +229,23 @@ Suggested assembler names used for msettypei mtypei immediate
     e32   # SEW = 32b
     e64   # SEW = 64b
 
+    m1    # LMUL = 1 (mlmul = 00)
+    m2    # LMUL = 2 (mlmul = 01)
+    m4    # LMUL = 4 (mlmul = 10)
+
+    ba    # Out-of-bound agnostic
+    bu    # Out-of-bound undisturbed
+
     fp64  # support 64-bit float point
 
 Examples:
 
     msettypei t0, e8                 # SEW = 8
-    msettypei t0, e32                # SEW = 32
+    msettypei t0, e16, m2            # SEW = 16, LMUL = 2
+    msettypei t0, e32, bu            # SEW = 16, out-of-bound undisturbed
+    msettypei t0, e32, m4, ba        # SEW = 32, LMUL = 4, out-of-bound agnostic
 
-    msettypei t0, e64, fp64          # SEW = 8, support 64-bit float point
+    msettypei t0, e64, fp64          # SEW = 64, support 64-bit float point
 ```
 
 
@@ -604,28 +613,28 @@ NOTE: There is no matrix-scalar or matrix-vector version for element-wise instru
 
 ```
 # Convert float to float
-mfncvt.f.fw.m  td, ts1, ts2, lmul   # double-width float to single-width float
-mfwcvt.fw.f.m  td, ts1, ts2, lmul   # single-width float to double-width float
+mfncvt.f.fw.m  td, ts1, lmul   # double-width float to single-width float
+mfwcvt.fw.f.m  td, ts1, lmul   # single-width float to double-width float
 
 # Convert integer to float
-mfcvt.f.x.m    td, ts1, ts2, lmul   # integer to float
+mfcvt.f.x.m    td, ts1, lmul   # integer to float
 
-mfncvt.f.xw.m  td, ts1, ts2, lmul   # double-width integer to float
-mfncvt.f.xq.m  td, ts1, ts2, lmul   # quad-width integer to float
+mfncvt.f.xw.m  td, ts1, lmul   # double-width integer to float
+mfncvt.f.xq.m  td, ts1, lmul   # quad-width integer to float
 
-mfwcvt.fw.x.m  td, ts1, ts2, lmul   # single-width integer to double-width float
-mfcvt.fw.xw.m  td, ts1, ts2, lmul   # double-width integer to double-width float
-mfncvt.fw.xq.m td, ts1, ts2, lmul   # quad-width integer to double-width float
+mfwcvt.fw.x.m  td, ts1, lmul   # single-width integer to double-width float
+mfcvt.fw.xw.m  td, ts1, lmul   # double-width integer to double-width float
+mfncvt.fw.xq.m td, ts1, lmul   # quad-width integer to double-width float
 
 # Convert float to integer
-mfcvt.x.f.m    td, ts1, ts2, lmul   # float to integer
+mfcvt.x.f.m    td, ts1, lmul   # float to integer
 
-mfwcvt.xw.f.m  td, ts1, ts2, lmul   # float to double-width integer
-mfwcvt.xq.f.m  td, ts1, ts2, lmul   # float to quad-width integer
+mfwcvt.xw.f.m  td, ts1, lmul   # float to double-width integer
+mfwcvt.xq.f.m  td, ts1, lmul   # float to quad-width integer
 
-mfncvt.x.fw.m  td, ts1, ts2, lmul   # double-width float to single-width integer
-mfcvt.xw.fw.m  td, ts1, ts2, lmul   # double-width float to double-width integer
-mfwcvt.xq.fw.m td, ts1, ts2, lmul   # double-width float to quad-width integer
+mfncvt.x.fw.m  td, ts1, lmul   # double-width float to single-width integer
+mfcvt.xw.fw.m  td, ts1, lmul   # double-width float to double-width integer
+mfwcvt.xq.fw.m td, ts1, lmul   # double-width float to quad-width integer
 ```
 
 
@@ -793,21 +802,21 @@ mfwcvt.xq.fw.m td, ts1, ts2, lmul   # double-width float to quad-width integer
 [cols="^3,8,^5,^3,^3,^3,^4,^3,^3,^5"]
 |===
 | No.  |                 | **31 26** | 25   | 24 20 | 19 15 | 14  12 | 11 10 | 9 7 | 6    0
-2+|**Convert**          ^| funct6    | fdst | ts2   | ts1   | funct3 | lmul  | td  | opcode
-| 1    | mfncvtc.f.fw.m  | 010000    | 1    | ts2   | ts1   | 110    | lmul  | td  | 1110111
-| 2    | mfwcvtc.fw.f.m  | 010000    | 0    | ts2   | ts1   | 110    | lmul  | td  | 1110111
-| 3    | mfcvtc.f.x.m    | 010010    | 1    | ts2   | ts1   | 110    | lmul  | td  | 1110111
-| 4    | mfcvtc.x.f.m    | 010010    | 0    | ts2   | ts1   | 110    | lmul  | td  | 1110111
-| 5    | mfncvtc.f.xw.m  | 010011    | 1    | ts2   | ts1   | 110    | lmul  | td  | 1110111 
-| 6    | mfwcvtc.xw.f.m  | 010011    | 0    | ts2   | ts1   | 110    | lmul  | td  | 1110111 
-| 7    | mfncvtc.f.xq.m  | 010100    | 1    | ts2   | ts1   | 110    | lmul  | td  | 1110111
-| 8    | mfwcvtc.xq.f.m  | 010100    | 0    | ts2   | ts1   | 110    | lmul  | td  | 1110111
-| 9    | mfwcvtc.fw.x.m  | 010101    | 1    | ts2   | ts1   | 110    | lmul  | td  | 1110111
-| 10   | mfncvtc.x.fw.m  | 010101    | 0    | ts2   | ts1   | 110    | lmul  | td  | 1110111
-| 11   | mfcvtc.fw.xw.m  | 010110    | 1    | ts2   | ts1   | 110    | lmul  | td  | 1110111 
-| 12   | mfcvtc.xw.fw.m  | 010110    | 0    | ts2   | ts1   | 110    | lmul  | td  | 1110111 
-| 13   | mfncvtc.fw.xq.m | 010111    | 1    | ts2   | ts1   | 110    | lmul  | td  | 1110111 
-| 14   | mfwcvtc.xq.fw.m | 010111    | 0    | ts2   | ts1   | 110    | lmul  | td  | 1110111 
+2+|**Convert**          ^| funct6    | fdst | 0     | ts1   | funct3 | lmul  | td  | opcode
+| 1    | mfncvtc.f.fw.m  | 010000    | 1    | 0     | ts1   | 110    | lmul  | td  | 1110111
+| 2    | mfwcvtc.fw.f.m  | 010000    | 0    | 0     | ts1   | 110    | lmul  | td  | 1110111
+| 3    | mfcvtc.f.x.m    | 010010    | 1    | 0     | ts1   | 110    | lmul  | td  | 1110111
+| 4    | mfcvtc.x.f.m    | 010010    | 0    | 0     | ts1   | 110    | lmul  | td  | 1110111
+| 5    | mfncvtc.f.xw.m  | 010011    | 1    | 0     | ts1   | 110    | lmul  | td  | 1110111 
+| 6    | mfwcvtc.xw.f.m  | 010011    | 0    | 0     | ts1   | 110    | lmul  | td  | 1110111 
+| 7    | mfncvtc.f.xq.m  | 010100    | 1    | 0     | ts1   | 110    | lmul  | td  | 1110111
+| 8    | mfwcvtc.xq.f.m  | 010100    | 0    | 0     | ts1   | 110    | lmul  | td  | 1110111
+| 9    | mfwcvtc.fw.x.m  | 010101    | 1    | 0     | ts1   | 110    | lmul  | td  | 1110111
+| 10   | mfncvtc.x.fw.m  | 010101    | 0    | 0     | ts1   | 110    | lmul  | td  | 1110111
+| 11   | mfcvtc.fw.xw.m  | 010110    | 1    | 0     | ts1   | 110    | lmul  | td  | 1110111 
+| 12   | mfcvtc.xw.fw.m  | 010110    | 0    | 0     | ts1   | 110    | lmul  | td  | 1110111 
+| 13   | mfncvtc.fw.xq.m | 010111    | 1    | 0     | ts1   | 110    | lmul  | td  | 1110111 
+| 14   | mfwcvtc.xq.fw.m | 010111    | 0    | 0     | ts1   | 110    | lmul  | td  | 1110111 
 |===
 
 
