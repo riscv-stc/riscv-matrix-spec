@@ -1,0 +1,76 @@
+== Programmer's Model
+
+The matrix extension adds 8 unprivileged CSRs and 16 matrix registers to the base scalar RISC-V ISA.
+
+include::csr.adoc[]
+
+=== Matrix Tile Registers
+
+include::tilereg.adoc[]
+
+=== Matrix Type Register, mtype
+
+The read-only XLEN-wide _matrix_ _type_ CSR, `mtype`, provides the default type used to interpret the contents of the matrix register file, and can only be updated by `msettype{i|hi}` and field-set instructions. The matrix type determines the organization of elements in each matrix register.
+
+NOTE: Allowing updates only via type-set or field-set instructions simplifies the maintenance of `mtype` register state.
+
+The `mtype` register has an `mill` field, an `msew` field, an `mba` field and several type fields. Bits `mtype[XLEN-2:16]` should be written with zero, and non-zero values of this field are reserved.
+
+include::mtype.adoc[]
+
+The `msew` field is used to specify the element width of source operands. It is used to calculate the maximum values of matrix size.
+
+For each type field, a value 0 means the corresponding type is disabled. Write non-zero value to enable matrix multiplication operation of the specified type. 0 will be returned and `mill` will be set if the type is not supported.
+
+For `mint4` field, write 1 to enable 4-bit integer where a 8-bit integer will be treated as a pair of 4-bit integers. 1'b0 will be returned if 4-bit integer is not supported.
+
+For `mint8` field, write 1 to enable 8-bit integer.
+
+For `mint16` field, write 1 to enable 16-bit integer.
+
+For `mint64` field, write 1 to enable 64-bit integer.
+
+For `mfp8` field, write 2'b01 to enable E4M3, 2'b10 to enable E5M2, and 2'b11 to enable E3M4. `mfp8[1:0]` always returns 2'b00 if FP8 is not supported.
+
+For `mfp16` field, write 2'b01 to enable IEEE-754 half-precision float point (E5M10), and write 2'b10 to enable BFloat16 (E8M7). 2'b11 is reserved.
+
+For `mfp32` field, write 2'b01 to enalbe IEEE-754 single-precison float point (E8M23), and write 2'b10 to enable TensorFloat32 (E8M10). 2'b11 is reserved.
+
+For `mfp64` field, write 1 to enable 64-bit double-precision float point. To support FP64 format, the implementation should support "D" extension at the same time. 0 will be returned if FP64 is not supported.
+
+The `mba` field indicates that the out-of-bound elements is undisturbed or agnostic. When `mba` is marked undisturbed (`mba=0`), the out-of-bound elements in a matrix register retain the value it previously held. Otherwise, the out-of-bound elements can be overwritten with any values.
+
+=== Matrix Tile Size Registers, mtilem/mtilek/mtilen
+
+The XLEN-bit-wide read-only `mtilem/mtilek/mtilen` CSRs can only be updated by the `msettile{m|k|n}{i}` instructions. The registers holds 3 unsigned integers specifying the tile shapes for tiled matrix.
+
+
+=== Matrix Start Index Register, mstart
+
+The `mstart` read-write CSR specifies the index of the first element to be executed by load/store and element-wise arithmetic instructions. The CSR can be written by hardware on a trap, and its value represents the element on which the trap was taken. The value is the sequential number in row order.
+
+Any legal matrix instruction can reset the `mstart` to zero at the end of excution.
+
+=== Matrix Control and Status Register, mcsr
+
+The `mcsr` register has 2 fields, and other bits with non-zero value are reserved.
+
+.`mcsr` register layout
+[cols="^2,^2,8"]
+|===
+|     Bits | Name       | Description
+
+| XLEN-1:3 | 0          | Reserved if non-zero.
+|      2:1 | mmode[1:0] | The mode of matrix multiplication.
+|        0 | msat       | Integer arithmetic instruction accrued saturation flag.
+|===
+
+`mmode` field indicates the mode of matrix multiplication. `mmode = 00` means `C = A x B`, where the source matrices, `A` and `B`, are both organized as the original order. `mmode = 01` means `C = A x BT`, where `B` is transposed. `mmode = 10` means `C = AT x B`, where `A` is transposed.
+
+An implementation can support any combination of these modes, with extensions Zmab, Zmabt and Zmatb.
+
+If an unsupported `mmode` is set, then any attempt to execute a matrix multiplication instruction will raise an illegal instruction exception.
+
+=== Matrix Context Status in mstatus and sstatus
+
+A 2-bit matrix context status field should be added to mstatus and shadowed in status. It is defined analogously to the vector context status field, VS.

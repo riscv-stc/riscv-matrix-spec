@@ -1,0 +1,95 @@
+The input and output matrices of type-convert instructions are both accumulation registers and always with size `mtilem x mtilen`. The type convert of tile registers can be implemented by combining data move instructions (such as `mmve*.a.t` and `mmve*.t.a`).
+
+```
+# Convert float to float
+mfcvt.bf.hf.m   md, ms1         # fp16 to bf16
+mfcvt.hf.bf.m   md, ms1         # bf16 to fp16
+
+mfwcvt.fw.f.m   md, ms1         # single-width float to double-width float
+mfwcvt.hf.cf.m  md, ms1         # fp8 to fp16
+mfwcvt.f.hf.m   md, ms1         # fp16 to fp32
+mfwcvt.d.f.m    md, ms1         # fp32 to fp64
+
+mfncvt.f.fw.m   md, ms1         # double-width float to single-width float
+mfncvt.cf.hf.m  md, ms1         # fp16 to fp8
+mfncvt.hf.f.m   md, ms1         # fp32 to fp16
+mfncvt.f.d.m    md, ms1         # fp64 to fp32
+
+# Convert integer to float
+mfcvtu.f.x.m    md, ms1         # uint to float
+mfcvtu.hf.h.m   md, ms1         # uint16 to fp16
+mfcvtu.f.w.m    md, ms1         # uint32 to fp32
+mfcvtu.d.dw.m   md, ms1         # uint64 to fp64
+
+mfcvt.f.x.m     md, ms1         # int to float
+mfcvt.hf.h.m    md, ms1         # int16 to fp16
+mfcvt.f.w.m     md, ms1         # int32 to fp32
+mfcvt.d.dw.m    md, ms1         # int64 to fp64
+
+mfwcvtu.fw.x.m  md, ms1         # single-width uint to double-width float
+mfwcvtu.fq.x.m  md, ms1         # single-width uint to quad-width float
+mfwcvtu.fo.x.m  md, ms1         # single-width uint to oct-width float
+mfwcvtu.hf.hb.m md, ms1         # uint4 to fp16
+mfwcvtu.f.hb.m  md, ms1         # uint4 to fp32
+mfwcvtu.hf.b.m  md, ms1         # uint8 to fp16
+mfwcvtu.f.b.m   md, ms1         # uint8 to fp32
+mfwcvtu.f.h.m   md, ms1         # uint16 to fp32
+mfwcvtu.d.w.m   md, ms1         # uint32 to fp64
+
+mfwcvt.fw.x.m   md, ms1         # single-width int to double-width float
+mfwcvt.fq.x.m   md, ms1         # single-width int to quad-width float
+mfwcvt.fo.x.m   md, ms1         # single-width int to oct-width float
+mfwcvt.hf.hb.m  md, ms1         # int4 to fp16
+mfwcvt.f.hb.m   md, ms1         # int4 to fp32
+mfwcvt.hf.b.m   md, ms1         # int8 to fp16
+mfwcvt.f.b.m    md, ms1         # int8 to fp32
+mfwcvt.f.h.m    md, ms1         # int16 to fp32
+mfwcvt.d.w.m    md, ms1         # int32 to fp64
+
+mfncvtu.f.xw.m  md, ms1         # double-width uint to float
+mfncvtu.hf.w.m  md, ms1         # uint32 to fp16
+mfncvtu.f.dw.m  md, ms1         # uint64 to fp32
+
+mfncvt.f.xw.m   md, ms1         # double-width int to float
+mfncvt.hf.w.m   md, ms1         # int32 to fp16
+mfncvt.f.dw.m   md, ms1         # int64 to fp32
+
+# Convert float to integer
+mfcvtu.x.f.m    md, ms1         # float to uint
+mfcvtu.h.hf.m   md, ms1         # fp16 to uint16
+mfcvtu.w.f.m    md, ms1         # fp32 to uint32
+mfcvtu.dw.d.m   md, ms1         # fp64 to uint64
+
+mfcvt.x.f.m     md, ms1         # float to int
+mfcvt.h.hf.m    md, ms1         # fp16 to int16
+mfcvt.w.f.m     md, ms1         # fp32 to int32
+mfcvt.dw.d.m    md, ms1         # fp64 to int64
+
+mfwcvtu.xw.f.m  md, ms1         # single-width float to double-width uint
+mfwcvtu.w.hf.m  md, ms1         # fp16 to uint32
+mfwcvtu.dw.f.m  md, ms1         # fp32 to uint64
+
+mfwcvt.xw.f.m   md, ms1         # single-width float to double-width int
+mfwcvt.w.hf.m   md, ms1         # fp16 to int32
+mfwcvt.dw.f.m   md, ms1         # fp32 to int64
+
+mfncvtu.x.fw.m  md, ms1         # double-width float to single-width uint
+mfncvtu.x.fq.m  md, ms1         # quad-width float to single-width uint
+mfncvtu.x.fo.m  md, ms1         # oct-width float to single-width uint
+mfncvtu.hb.hf.m md, ms1         # fp16 to uint4
+mfncvtu.hb.f.m  md, ms1         # fp32 to uint4
+mfncvtu.b.hf.m  md, ms1         # fp16 to uint8
+mfncvtu.b.f.m   md, ms1         # fp32 to uint8
+mfncvtu.h.f.m   md, ms1         # fp32 to uint16
+mfncvtu.w.d.m   md, ms1         # fp64 to uint32
+
+mfncvt.x.fw.m   md, ms1         # double-width float to single-width int
+mfncvt.x.fq.m   md, ms1         # quad-width float to single-width int
+mfncvt.x.fo.m   md, ms1         # oct-width float to single-width int
+mfncvt.hb.hf.m  md, ms1         # fp16 to int4
+mfncvt.hb.f.m   md, ms1         # fp32 to int4
+mfncvt.b.hf.m   md, ms1         # fp16 to int8
+mfncvt.b.f.m    md, ms1         # fp32 to int8
+mfncvt.h.f.m    md, ms1         # fp32 to int16
+mfncvt.w.d.m    md, ms1         # fp64 to int32
+```

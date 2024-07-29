@@ -1,0 +1,113 @@
+=== Zmsp*: Matrix Sparsity Extension
+
+The Zmspa extension allows to perform 2:4 sparsing for left matrix.
+
+The Zmspb extension allows to perform 2:4 sparsing for right matrix.
+
+The Zmsp* extension adds two unprivileged CSRs, two configuration instructions, and two groups of matrix multiplication instructions, both for left matrix and right matrix.
+
+.Sparsity CSRs
+[cols="^2,^2,^2,10",options="header"]
+|===
+| Address | Privilege | Name   | Description
+|  0xC4E  |    URO    | mtsp   | Source tile register for sparsing index.
+|  0xC4F  |    URO    | mdsp   | The direction of sparsity (0 for row and 1 for column).
+|===
+
+==== Configuration Instructions
+
+The Zmsp* extension adds two configuration instruction to configure the source index register and sparsity direction.
+
+```
+# Set sparsing index source register.
+msettspi  rd, imm   # rd = new mtsp, imm = register index
+msettsp   rd, rs1   # rd = new mtsp, rs1 = register index
+
+# Set sparsity direction.
+msetdspi  rd, imm   # rd = new mdsp, imm = direction
+msetdsp   rd, rs1   # rd = new mdsp, rs1 = direction
+```
+
+An implementation may support one of sparsity directions or both two directions. The `msetdsp[i]` always returns the supported direction.
+
+==== Matrix Multiplication Instructions
+
+The Zmspa extension adds a group of matrix multiplication instructions for left matrix sparsity.
+
+```
+# Unigned integer sparsing matrix multiplication and add, md = md + ms1 * ms2.
+mmau.spa.[dw].mm   md, ms1, ms2     # left matrix is sparsing
+mmau.spa.[w].mm    md, ms1, ms2     # left matrix is sparsing
+mmau.spa.[h].mm    md, ms1, ms2     # left matrix is sparsing
+mqmau.spa.[b].mm   md, ms1, ms2     # left matrix is sparsing
+momau.spa.[hb].mm  md, ms1, ms2     # left matrix is sparsing
+
+msmau.spa.[dw].mm  md, ms1, ms2     # left matrix is sparsing
+msmau.spa.[w].mm   md, ms1, ms2     # left matrix is sparsing
+msmau.spa.[h].mm   md, ms1, ms2     # left matrix is sparsing
+msqmau.spa.[b].mm  md, ms1, ms2     # left matrix is sparsing
+msomau.spa.[hb].mm md, ms1, ms2     # left matrix is sparsing
+
+# Signed integer sparsing matrix multiplication and add, md = md + ms1 * ms2.
+mma.spa.[dw].mm    md, ms1, ms2     # left matrix is sparsing
+mma.spa.[w].mm     md, ms1, ms2     # left matrix is sparsing
+mma.spa.[h].mm     md, ms1, ms2     # left matrix is sparsing
+mqma.spa.[b].mm    md, ms1, ms2     # left matrix is sparsing
+moma.spa.[hb].mm   md, ms1, ms2     # left matrix is sparsing
+
+msma.spa.[dw].mm   md, ms1, ms2     # left matrix is sparsing
+msma.spa.[w].mm    md, ms1, ms2     # left matrix is sparsing
+msma.spa.[h].mm    md, ms1, ms2     # left matrix is sparsing
+msqma.spa.[b].mm   md, ms1, ms2     # left matrix is sparsing
+msoma.spa.[hb].mm  md, ms1, ms2     # left matrix is sparsing
+
+# Float point sparsing matrix multiplication and add, md = md + ms1 * ms2.
+mfma.spa.[d].mm    md, ms1, ms2     # left matrix is sparsing
+mfma.spa.[f].mm    md, ms1, ms2     # left matrix is sparsing
+mfma.spa.[hf].mm   md, ms1, ms2     # left matrix is sparsing
+
+mfwma.spa.[f].mm   md, ms1, ms2     # left matrix is sparsing
+mfwma.spa.[hf].mm  md, ms1, ms2     # left matrix is sparsing
+mfwma.spa.[cf].mm  md, ms1, ms2     # left matrix is sparsing
+mfqma.spa.[cf].mm  md, ms1, ms2     # left matrix is sparsing
+```
+
+The Zmspb extension adds a group of matrix multiplication instructions for right matrix sparsity.
+
+```
+# Unigned integer sparsing matrix multiplication and add, md = md + ms1 * ms2.
+mmau.spb.[dw].mm   md, ms1, ms2     # right matrix is sparsing
+mmau.spb.[w].mm    md, ms1, ms2     # right matrix is sparsing
+mmau.spb.[h].mm    md, ms1, ms2     # right matrix is sparsing
+mqmau.spb.[b].mm   md, ms1, ms2     # right matrix is sparsing
+momau.spb.[hb].mm  md, ms1, ms2     # right matrix is sparsing
+
+msmau.spb.[dw].mm  md, ms1, ms2     # right matrix is sparsing
+msmau.spb.[w].mm   md, ms1, ms2     # right matrix is sparsing
+msmau.spb.[h].mm   md, ms1, ms2     # right matrix is sparsing
+msqmau.spb.[b].mm  md, ms1, ms2     # right matrix is sparsing
+msomau.spb.[hb].mm md, ms1, ms2     # right matrix is sparsing
+
+# Signed integer sparsing matrix multiplication and add, md = md + ms1 * ms2.
+mma.spb.[dw].mm    md, ms1, ms2     # right matrix is sparsing
+mma.spb.[w].mm     md, ms1, ms2     # right matrix is sparsing
+mma.spb.[h].mm     md, ms1, ms2     # right matrix is sparsing
+mqma.spb.[b].mm    md, ms1, ms2     # right matrix is sparsing
+moma.spb.[hb].mm   md, ms1, ms2     # right matrix is sparsing
+
+msma.spb.[dw].mm   md, ms1, ms2     # right matrix is sparsing
+msma.spb.[w].mm    md, ms1, ms2     # right matrix is sparsing
+msma.spb.[h].mm    md, ms1, ms2     # right matrix is sparsing
+msqma.spb.[b].mm   md, ms1, ms2     # right matrix is sparsing
+msoma.spb.[hb].mm  md, ms1, ms2     # right matrix is sparsing
+
+# Float point sparsing matrix multiplication and add, md = md + ms1 * ms2.
+mfma.spb.[d].mm    md, ms1, ms2     # right matrix is sparsing
+mfma.spb.[f].mm    md, ms1, ms2     # right matrix is sparsing
+mfma.spb.[hf].mm   md, ms1, ms2     # right matrix is sparsing
+
+mfwma.spb.[f].mm   md, ms1, ms2     # right matrix is sparsing
+mfwma.spb.[hf].mm  md, ms1, ms2     # right matrix is sparsing
+mfwma.spb.[cf].mm  md, ms1, ms2     # right matrix is sparsing
+mfqma.spb.[cf].mm  md, ms1, ms2     # right matrix is sparsing
+```

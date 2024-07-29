@@ -1,0 +1,3 @@
+== Matrix Instruction Listing
+
+include::inst32-list.adoc[]

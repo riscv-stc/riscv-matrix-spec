@@ -1,0 +1,78 @@
+== Intrinsic Examples
+
+=== Matrix multiplication
+
+```
+void matmul_float16(c, a, b, m, k, n) {
+    msettype(e16);                              // use 16bit input matrix element
+    for (i = 0; i < m; i += mtilem) {           // loop at dim m with tiling
+        mtilem = msettilem(m-i);
+        for (j = 0; j < n; j += mtilen) {       // loop at dim n with tiling
+            mtilen = msettilen(n-j);
+
+            out = mwsub_mm(out, out)            // clear output reg
+            for (s = 0; s < k; s += mtilek) {   // loop at dim k with tiling
+                mtilek = msettilek(k-s);
+                
+                tr1 = mlae16_m(&a[i][s], k*2);  // load left matrix a
+                tr2 = mlbe16_m(&b[s][j], n*2);  // load right matrix b
+                out = mfwma_mm(tr1, tr2);       // tiled matrix multiply,
+                                                // double widen output
+            }
+           
+            out = mfncvt_f_fw_m(out);           // convert widen result
+            msce16_m(out, &c[i][j], n*2);       // store to matrix c
+        }
+    }
+}
+
+```
+
+
+=== Matrix multiplication with left matrix transposed
+
+```
+void matmul_a_tr_float16(c, a, b, m, k, n) {
+    msettype(e16);                              // use 16bit input matrix element
+    for (i = 0; i < m; i += mtilem) {           // loop at dim m with tiling
+        mtilem = msettilem(m-i);
+        for (j = 0; j < n; j += mtilen) {       // loop at dim n with tiling
+            mtilen = msettilen(n-j);
+
+            out = mwsub_mm(out, out)            // clear output reg
+            for (s = 0; s < k; s += mtilek) {   // loop at dim k with tiling
+                mtilek = msettilek(k-s);
+                
+                tr1 = mlate16_m(&a[s][i], m*2); // load transposed left matrix a
+                tr2 = mlbe16_m(&a[s][j], n*2);  // load right matrix b
+                out = mfwma_mm(tr1, tr2);       // tiled matrix multiply,
+                                                // double widen output
+            }
+           
+            out = mfncvt_f_fw_m(out);           // convert widen result
+            msce16_m(out, &c[i][j], n*2);       // store to matrix c
+        }
+    }
+}
+
+```
+
+
+=== Matrix transpose without multiplication
+
+```
+void mattrans_float16(out, in, h, w) {
+    msettype(e16);                              // use 16bit input matrix element
+
+    for (i = 0; i < h; i += mtilem) {           // loop at dim m with tiling
+        mtilem = msettilem(h-i);
+        for (j = 0; j < w; j += mtilek) {       // loop at dim k with tiling
+            mtilek = msettilek(w-j);
+
+            tr_in = mlae16_m(&in[i][j], w*2);   // load input matrix
+            msate16_m(tr_in, &out[j][i], h*2);  // store output matrix
+        }
+    }
+}
+
+```

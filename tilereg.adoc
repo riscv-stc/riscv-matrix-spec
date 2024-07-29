@@ -1,0 +1,14 @@
+The matrix extension adds 8 architectural **Tile Registers** (tr0-tr7) for input tile matrices and 8 architectural *Accumulation Registers* (acc0-acc7) for output accumulation matrices.
+
+A **Tile Register** has a fixed MLEN bits of state, where each row has RLEN bits. As a result, there are MLEN/RLEN rows for each tile register in logic.
+
+An **Accumulation Register** has a fixed stem:[\rm{MLEN} \times \rm{AMUL}] bits of state, where each row has stem:[\rm{RLEN} \times \rm{AMUL}] bits. As a result, there are MLEN/RLEN rows for each accumulation register in logic.
+
+image::tileregstruct.svg[alt="Matrix Tile Structure", align="center"]
+image::accregstruct.svg[alt="Matrix Accumulation Structure", align="center"]
+image::tilereg.svg[alt="Tile Register File", align="center"]
+image::accreg.svg[alt="Accumulation Register File", align="center"]
+
+An input matrix of matrix multiplication instruction only uses one tile register, and large matrix must be split according to the size of tile defined by MLEN and RLEN.
+
+For widening instructions, each output element is wider than input one. To match the width of input and output, an output matrix may be written back to a wider accumulation register whose length are specified by MLEN x AMUL.
