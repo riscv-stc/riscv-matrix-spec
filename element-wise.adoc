@@ -36,9 +36,9 @@ mmaxu.[hb|b|h|w|dw].mm   md, ms1, ms2
 mmax.[hb|b|h|w|dw].mm    md, ms1, ms2
 
 # Integer matrix bit-wise logic.
-mand.mm                  md, ms1, ms2
-mor.mm                   md, ms1, ms2
-mxor.mm                  md, ms1, ms2
+mand.[hb|b|h|w|dw].mm    md, ms1, ms2
+mor.[hb|b|h|w|dw].mm     md, ms1, ms2
+mxor.[hb|b|h|w|dw].mm    md, ms1, ms2
 
 # Integer matrix element-wise shift.
 msll.[hb|b|h|w|dw].mm    md, ms1, ms2

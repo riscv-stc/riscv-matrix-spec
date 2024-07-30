@@ -4,13 +4,12 @@ The Zmspa extension allows to perform 2:4 sparsing for left matrix.
 
 The Zmspb extension allows to perform 2:4 sparsing for right matrix.
 
-The Zmsp* extension adds two unprivileged CSRs, two configuration instructions, and two groups of matrix multiplication instructions, both for left matrix and right matrix.
+The Zmsp* extension adds one unprivileged CSR, two configuration instructions, and two groups of matrix multiplication instructions, both for left matrix and right matrix.
 
 .Sparsity CSRs
 [cols="^2,^2,^2,10",options="header"]
 |===
 | Address | Privilege | Name   | Description
-|  0xC4E  |    URO    | mtsp   | Source tile register for sparsing index.
 |  0xC4F  |    URO    | mdsp   | The direction of sparsity (0 for row and 1 for column).
 |===
 
@@ -19,10 +18,6 @@ The Zmsp* extension adds two unprivileged CSRs, two configuration instructions, 
 The Zmsp* extension adds two configuration instruction to configure the source index register and sparsity direction.
 
 ```
-# Set sparsing index source register.
-msettspi  rd, imm   # rd = new mtsp, imm = register index
-msettsp   rd, rs1   # rd = new mtsp, rs1 = register index
-
 # Set sparsity direction.
 msetdspi  rd, imm   # rd = new mdsp, imm = direction
 msetdsp   rd, rs1   # rd = new mdsp, rs1 = direction

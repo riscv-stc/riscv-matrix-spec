@@ -54,8 +54,8 @@ The matrix extension adds 7 unprivileged CSRs (moutsh, minsh, mpad, mstdi, minsk
 |     Bits | Name        | Description
 
 |  XLEN:32 | 0           | Reserved
-|    31:24 | tdil_h      | Height spacing of the kernel elements
-|    23:16 | tdil_w      | Weight spacing of the kernel elements
+|    31:24 | mdil_h      | Height spacing of the kernel elements
+|    23:16 | mdil_w      | Weight spacing of the kernel elements
 |     15:8 | mstr_h      | Height stride of the convolution
 |      7:0 | mstr_w      | Weight stride of the convolution
 |===

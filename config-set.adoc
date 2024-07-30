@@ -8,11 +8,10 @@ For a simple matrix multiplication example, check out the Section Intrinsic Exam
 
 A set of instructions is provided to allow rapid configuration of the values in `mtile*` and `mtype` to match application needs. 
 
-The `msettype[i|hi]` instructions set the `mtype` CSR based on their arguments, and write the new value of mtype into rd.
+The `msettype[i]` instructions set the `mtype` CSR based on their arguments, and write the new value of mtype into rd.
 
 ```
-msettypei  rd, imm      # rd = new mtype, imm = new mtype[9:0] setting.
-msettypehi rd, imm      # rd = new mtype, imm = new mtype[19:10] setting.
+msettypei  rd, imm      # rd = new mtype, imm = new mtype[31:0] setting.
 msettype   rd, rs1      # rd = new mtype, rs1 = new mtype value.
 ```
 
@@ -54,12 +53,12 @@ munsetfp  rd, fp32      # rd = new mtype, set mfp32 = 00 to disable FP32 type.
 munsetfp  rd, fp64      # rd = new mtype, set mfp64 = 0 to disable FP64 type.
 ```
 
-The field to be set or unset is specified by inst[18:15] and the value is specified by inst[24:20].
+The field to be set or unset is specified by `mtf` (inst[42:39]) and the value is specified by imm[25:15].
 
 .Field to be set or unset
 [cols="^2,^2"]
 |===
-| *inst[18:15]* | *field*
+|       *mtf*   | *field*
 |        0000   | msew
 |        0001   | mint4
 |        0010   | mint8
@@ -89,8 +88,9 @@ msettilen  rd, rs1          # rd = new mtilen, rs1 = ATK
 
 include::mtype.adoc[]
 
-The new `mtype` value is encoded in the immediate fields of `msettypei` / `msettypehi`, and in the `rs1` register for `msettype`. Each field can be set or unset with `msetsew`, `msetba`, `msetfp`, `msetint`, `munsetfp` and `munsetint` instructions independently.
+The new `mtype` value is encoded in the immediate fields of `msettypei`, and in the `rs1` register for `msettype`. Each field can be set or unset with `msetsew`, `msetba`, `msetfp`, `msetint`, `munsetfp` and `munsetint` instructions independently.
 
+The fields encoded by instruction directly have higher priority than the same fileds in `mtype` CSR.
 
 ==== ATM/ATK/ATN Encoding
 

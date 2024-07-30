@@ -3,31 +3,45 @@
 Data move instructions between matrix registers are used to move elements between two tile registers, two accumulation registers, or one tile register and one accumulation register.
 
 ```
-# md = ms1, both md and ms1 are tile registers.
-mmve8.t.t  md, ms1
-mmve16.t.t md, ms1
-mmve32.t.t md, ms1
-mmve64.t.t md, ms1
+# md = ms1, md and ms1 are both tile registers.
+mmve8.t.t   md, ms1
+mmve16.t.t  md, ms1
+mmve32.t.t  md, ms1
+mmve64.t.t  md, ms1
 
-# md = ms1, both md and ms1 are accumulation registers.
-mmve8.a.a  md, ms1
-mmve16.a.a md, ms1
-mmve32.a.a md, ms1
-mmve64.a.a md, ms1
+# md = ms1, md and ms1 are both accumulation registers.
+mmve8.a.a   md, ms1
+mmve16.a.a  md, ms1
+mmve32.a.a  md, ms1
+mmve64.a.a  md, ms1
 
 # md[i, rs2 * (RLEN / EEW) + j] = ms1[i, j]
-# md is accumulation register and ms1 is tile register.
-mmve8.a.t  md, ms1, rs2
-mmve16.a.t md, ms1, rs2
-mmve32.a.t md, ms1, rs2
-mmve64.a.t md, ms1, rs2
+# md is an accumulation register and ms1 is a tile register.
+mmve8.a.t   md, ms1, rs2
+mmve16.a.t  md, ms1, rs2
+mmve32.a.t  md, ms1, rs2
+mmve64.a.t  md, ms1, rs2
 
 # md[i, j] = ms1[i, rs2 * (RLEN / EEW) + j]
-# md is tile register and ms1 is accumulation register.
-mmve8.t.a  md, ms1, rs2
-mmve16.t.a md, ms1, rs2
-mmve32.t.a md, ms1, rs2
-mmve64.t.a md, ms1, rs2
+# md is a tile register and ms1 is an accumulation register.
+mmve8.t.a   md, ms1, rs2
+mmve16.t.a  md, ms1, rs2
+mmve32.t.a  md, ms1, rs2
+mmve64.t.a  md, ms1, rs2
+
+# md[i, imm * (RLEN / EEW) + j] = ms1[i, j]
+# md is an accumulation register and ms1 is a tile register.
+mmvie8.a.t  md, ms1, imm
+mmvie16.a.t md, ms1, imm
+mmvie32.a.t md, ms1, imm
+mmvie64.a.t md, ms1, imm
+
+# md[i, j] = ms1[i, imm * (RLEN / EEW) + j]
+# md is a tile register and ms1 is an accumulation register.
+mmvie8.t.a  md, ms1, imm
+mmvie16.t.a md, ms1, imm
+mmvie32.t.a md, ms1, imm
+mmvie64.t.a md, ms1, imm
 ```
 
 ==== Data Move Instructions between Matrix and Integer
@@ -36,21 +50,37 @@ Data move instructions between matrix and integer are used to move single elemen
 
 ```
 # x[rd] = ms1[i, j], i = rs2[15:0], j = rs2[XLEN-1:16]
-mmve8.x.s  rd, ms1, rs2
-mmve16.x.s rd, ms1, rs2
-mmve32.x.s rd, ms1, rs2
-mmve64.x.s rd, ms1, rs2
+# rd is an integer register and ms1 is a tile register.
+mmve8.x.t  rd, ms1, rs2
+mmve16.x.t rd, ms1, rs2
+mmve32.x.t rd, ms1, rs2
+mmve64.x.t rd, ms1, rs2
 
 # md[i, j] = x[rs1], i = rs2[15:0], j = rs2[XLEN-1:16]
-mmve8.s.x  md, rs1, rs2
-mmve16.s.x md, rs1, rs2
-mmve32.s.x md, rs1, rs2
-mmve64.s.x md, rs1, rs2
+# md is a tile register and rs1 is an integer register.
+mmve8.t.x  md, rs1, rs2
+mmve16.t.x md, rs1, rs2
+mmve32.t.x md, rs1, rs2
+mmve64.t.x md, rs1, rs2
+
+# x[rd] = ms1[i, j], i = rs2[15:0], j = rs2[XLEN-1:16]
+# rd is an integer register and ms1 is an accumulation register.
+mmve8.x.a  rd, ms1, rs2
+mmve16.x.a rd, ms1, rs2
+mmve32.x.a rd, ms1, rs2
+mmve64.x.a rd, ms1, rs2
+
+# md[i, j] = x[rs1], i = rs2[15:0], j = rs2[XLEN-1:16]
+# md is an accumulation register and rs1 is an integer register.
+mmve8.a.x  md, rs1, rs2
+mmve16.a.x md, rs1, rs2
+mmve32.a.x md, rs1, rs2
+mmve64.a.x md, rs1, rs2
 ```
 
-The `mmve*.x.s` instruction copies a signle SEW-wide element of the tile register to an integer register, where the element coordinates are specified by rs2. If SEW > XLEN, the least-significat XLEN bits are transferred. If SEW < XLEN, the valud is sign-extended to XLEN bits.
+The `mmve*.x.t/a` instruction copies a signle SEW-wide element of the matrix register to an integer register, where the element coordinates are specified by rs2. If SEW > XLEN, the least-significat XLEN bits are transferred. If SEW < XLEN, the valud is sign-extended to XLEN bits.
 
-The `mmve*.s.x` instruction copies an integer register to an element of the destination tile register, where the element coordinates are specified by rs2. If SEW < XLEN, the least-significant bits are moved and the upper (XLEN-SEW) bits are ignored. If SEW > XLEN, the valud is sign-extended to SEW bits. The other elements of the tile register are treated as out-of-bound elements, using the setting of `mtype.mba`.
+The `mmve*.t/a.x` instruction copies an integer register to an element of the destination matrix register, where the element coordinates are specified by rs2. If SEW < XLEN, the least-significant bits are moved and the upper (XLEN-SEW) bits are ignored. If SEW > XLEN, the valud is sign-extended to SEW bits. The other elements of the tile register are treated as out-of-bound elements, using the setting of `ba`.
 
 
 ==== Data Move Instructions between Matrix and Float-point
@@ -59,31 +89,49 @@ Float point data move instructions are similar with integer.
 
 ```
 # f[rd] = ms1[i, j], i = rs2[15:0], j = rs2[XLEN-1:16]
-mfmve8.f.s  rd, ms1, rs2
-mfmve16.f.s rd, ms1, rs2
-mfmve32.f.s rd, ms1, rs2
-mfmve64.f.s rd, ms1, rs2
+# rd is a float-point register and ms1 is a tile register.
+mfmve8.f.t  rd, ms1, rs2
+mfmve16.f.t rd, ms1, rs2
+mfmve32.f.t rd, ms1, rs2
+mfmve64.f.t rd, ms1, rs2
 
 # md[i, j] = f[rs1], i = rs2[15:0], j = rs2[XLEN-1:16]
-mfmve8.s.f  md, rs1, rs2
-mfmve16.s.f md, rs1, rs2
-mfmve32.s.f md, rs1, rs2
-mfmve64.s.f md, rs1, rs2
+# md is a tile register and rs1 is a float-point register.
+mfmve8.t.f  md, rs1, rs2
+mfmve16.t.f md, rs1, rs2
+mfmve32.t.f md, rs1, rs2
+mfmve64.t.f md, rs1, rs2
+
+# f[rd] = ms1[i, j], i = rs2[15:0], j = rs2[XLEN-1:16]
+# rd is a float-point register and ms1 is an accumulation register.
+mfmve8.f.a  rd, ms1, rs2
+mfmve16.f.a rd, ms1, rs2
+mfmve32.f.a rd, ms1, rs2
+mfmve64.f.a rd, ms1, rs2
+
+# md[i, j] = f[rs1], i = rs2[15:0], j = rs2[XLEN-1:16]
+# md is an accumulation register and rs1 is a float-point register.
+mfmve8.a.f  md, rs1, rs2
+mfmve16.a.f md, rs1, rs2
+mfmve32.a.f md, rs1, rs2
+mfmve64.a.f md, rs1, rs2
 ```
 
 // ==== Possible data move between tile register and accumulation register.
 
 ==== Data Broadcast Instructions
 
-The first row/column and the first element of a tile register can be broadcasted to fill the whole matrix.
+The first row/column and the first element of a matrix register can be broadcasted to fill the whole matrix.
 
 ```
-# Broadcast the first row to fill the whole matrix.
+# Broadcast the first row of a tile register to fill the whole matrix.
 mbcar.m md, ms1
 mbcbr.m md, ms1
+
+# Broadcast the first row of an accumulation register to fill the whole matrix.
 mbccr.m md, ms1
 
-# Broadcast the first column to fill the whole matrix.
+# Broadcast the first column of a tile register to fill the whole matrix.
 mbcace8.m  md, ms1
 mbcace16.m md, ms1
 mbcace32.m md, ms1
@@ -94,12 +142,13 @@ mbcbce16.m md, ms1
 mbcbce32.m md, ms1
 mbcbce64.m md, ms1
 
+# Broadcast the first column of an accumulation register to fill the whole matrix.
 mbccce8.m  md, ms1
 mbccce16.m md, ms1
 mbccce32.m md, ms1
 mbccce64.m md, ms1
 
-# Broadcast the first element to fill the whole matrix.
+# Broadcast the first element of a tile register to fill the whole matrix.
 mbcaee8.m  md, ms1
 mbcaee16.m md, ms1
 mbcaee32.m md, ms1
@@ -110,6 +159,7 @@ mbcbee16.m md, ms1
 mbcbee32.m md, ms1
 mbcbee64.m md, ms1
 
+# Broadcast the first element of an accumulation register to fill the whole matrix.
 mbccee8.m  md, ms1
 mbccee16.m md, ms1
 mbccee32.m md, ms1
@@ -121,7 +171,7 @@ mbccee64.m md, ms1
 Transpose instruction can only be used for square matrix. For matrix A, the sizes of two dimensions are both min(`mtilem`, `mtilek`). Matrix B and C are similar.
 
 ```
-# Transpose square matrix.
+# Transpose square matrix of tile register.
 mtae8.m  md, ms1
 mtae16.m md, ms1
 mtae32.m md, ms1
@@ -132,6 +182,7 @@ mtbe16.m md, ms1
 mtbe32.m md, ms1
 mtbe64.m md, ms1
 
+# Transpose square matrix of accumulation register.
 mtce8.m  md, ms1
 mtce16.m md, ms1
 mtce32.m md, ms1

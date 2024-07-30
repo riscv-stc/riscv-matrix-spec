@@ -4,7 +4,7 @@ The matrix extension adds 8 unprivileged CSRs and 16 matrix registers to the bas
 
 include::csr.adoc[]
 
-=== Matrix Tile Registers
+=== Matrix Registers
 
 include::tilereg.adoc[]
 

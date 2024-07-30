@@ -2,7 +2,7 @@
 
 === Instruction Formats
 
-include::inst32-format.adoc[]
+include::inst-format.adoc[]
 
 === Configuration-Setting Instructions
 
