@@ -95,3 +95,19 @@ mfsqrt.[cf|hf|f|d].m     md, ms1
 ```
 
 NOTE: There is no matrix-scalar and matrix-vector version for element-wise instructions. Such operations can be replaced by a broadcast instruction and a matrix-matrix element-wise instruction.
+
+Element-wise instructions support mask register. The mask register is a general accumulation register whose element is in bit. Bit 1 means the corresponding element in source register is active. Bit 0 means the corresponding element will not be calculated and its value is determined by `bma[0]` field (`bma[0]=0` for undisturbed and `bma[0]=1` for agnostic).
+
+The mask register index, `bma` and `frm` are used as optional suffixes.
+
+```
+m*{ew-func}*.*.m[m]      md, ms1, ms2, [mks], [mma], [mba], [frm]
+```
+
+For example,
+
+```
+mfadd.f.mm               acc1, acc1, acc2, acc0, mma, mba, rne
+```
+
+where `acc1 = acc1 + acc2` and `acc0` is the mask register.

@@ -10,11 +10,11 @@ include::tilereg.adoc[]
 
 === Matrix Type Register, mtype
 
-The read-only XLEN-wide _matrix_ _type_ CSR, `mtype`, provides the default type used to interpret the contents of the matrix register file, and can only be updated by `msettype{i|hi}` and field-set instructions. The matrix type determines the organization of elements in each matrix register.
+The read-only XLEN-wide _matrix_ _type_ CSR, `mtype`, provides the default type used to interpret the contents of the matrix register file, and can only be updated by `msettype{i}` and field-set instructions. The matrix type determines the organization of elements in each matrix register.
 
 NOTE: Allowing updates only via type-set or field-set instructions simplifies the maintenance of `mtype` register state.
 
-The `mtype` register has an `mill` field, an `msew` field, an `mba` field and several type fields. Bits `mtype[XLEN-2:16]` should be written with zero, and non-zero values of this field are reserved.
+The `mtype` register has an `mill` field, an `msew` field, an `mba` field, an `mma` field and several type fields. Bits `mtype[XLEN-2:17]` should be written with zero, and non-zero values of this field are reserved.
 
 include::mtype.adoc[]
 
@@ -39,6 +39,10 @@ For `mfp32` field, write 2'b01 to enalbe IEEE-754 single-precison float point (E
 For `mfp64` field, write 1 to enable 64-bit double-precision float point. To support FP64 format, the implementation should support "D" extension at the same time. 0 will be returned if FP64 is not supported.
 
 The `mba` field indicates that the out-of-bound elements is undisturbed or agnostic. When `mba` is marked undisturbed (`mba=0`), the out-of-bound elements in a matrix register retain the value it previously held. Otherwise, the out-of-bound elements can be overwritten with any values.
+
+The `mma` field indicates that the masked elements is undisturbed or agnostic. When `mma` is marked undisturbed (`mma=0`), the masked elements in a matrix register retain the value it previously held. Otherwise, the masked elements can be overwritten with any values.
+
+With 64-bit instruction encoding, the `mba` and `mma` fields in `mtype` are reserved and encoded in instruction as a `bma` field directly, where `bma[1]` is `mba` and `bma[0]` is `mma`.
 
 === Matrix Tile Size Registers, mtilem/mtilek/mtilen
 

@@ -53,7 +53,7 @@ munsetfp  rd, fp32      # rd = new mtype, set mfp32 = 00 to disable FP32 type.
 munsetfp  rd, fp64      # rd = new mtype, set mfp64 = 0 to disable FP64 type.
 ```
 
-The field to be set or unset is specified by `mtf` (inst[42:39]) and the value is specified by imm[25:15].
+The field to be set or unset is specified by `mtf` (inst[42:39]) and the value is specified by imm[10:0] (inst[25:15]).
 
 .Field to be set or unset
 [cols="^2,^2"]

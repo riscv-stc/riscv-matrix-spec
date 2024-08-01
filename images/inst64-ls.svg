@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- 由 Microsoft Visio, SVG Export 生成 inst32-ls.svg inst-loadstore -->
+<!-- 由 Microsoft Visio, SVG Export 生成 inst64-ls.svg inst-loadstore -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
 		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="6.30616in" height="1.08962in"
 		viewBox="0 0 454.043 78.4529" xml:space="preserve" color-interpolation-filters="sRGB" class="st8">
@@ -285,16 +285,16 @@
 			<v:textRect cx="7.33663" cy="71.3663" width="14.68" height="14.1732"/>
 			<rect x="0" y="64.2796" width="14.6733" height="14.1732" class="st3"/>
 			<text x="3.73" y="74.37" class="st4" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>ls</text>		</g>
-		<g id="shape90-97" v:mID="90" v:groupContext="shape" transform="translate(226.772,-49.6063)">
+		<g id="shape90-97" v:mID="90" v:groupContext="shape" transform="translate(212.598,-49.6063)">
 			<title>Rectangle.163</title>
-			<desc>ba</desc>
+			<desc>bma</desc>
 			<v:userDefs>
 				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
 			</v:userDefs>
 			<v:textBlock v:margins="rect(0,0,0,0)" v:tabSpace="42.5197"/>
-			<v:textRect cx="7.33663" cy="71.3663" width="14.68" height="14.1732"/>
-			<rect x="0" y="64.2796" width="14.6733" height="14.1732" class="st3"/>
-			<text x="1.78" y="74.37" class="st4" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>ba</text>		</g>
+			<v:textRect cx="14.4232" cy="71.3663" width="28.85" height="14.1732"/>
+			<rect x="0" y="64.2796" width="28.8465" height="14.1732" class="st3"/>
+			<text x="4.7" y="74.37" class="st4" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>bma</text>		</g>
 		<g id="shape91-100" v:mID="91" v:groupContext="shape" transform="translate(212.598,-63.7795)">
 			<title>工作表.91</title>
 			<desc>48</desc>
@@ -309,10 +309,10 @@
 				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
 			</v:userDefs>
 			<v:textBlock v:margins="rect(0,0,0,0)" v:tabSpace="42.5197"/>
-			<v:textRect cx="99.2126" cy="71.3663" width="198.43" height="14.1732"/>
-			<rect x="0" y="64.2796" width="198.425" height="14.1732" class="st3"/>
-			<text x="86.7" y="74.37" class="st4" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>0...00</text>		</g>
-		<g id="shape97-106" v:mID="97" v:groupContext="shape" transform="translate(198.425,-49.6063)">
+			<v:textRect cx="92.126" cy="71.3663" width="184.26" height="14.1732"/>
+			<rect x="0" y="64.2796" width="184.252" height="14.1732" class="st3"/>
+			<text x="79.62" y="74.37" class="st4" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>0...00</text>		</g>
+		<g id="shape97-106" v:mID="97" v:groupContext="shape" transform="translate(184.252,-49.6063)">
 			<title>矩形.105</title>
 			<desc>mt</desc>
 			<v:userDefs>
@@ -336,5 +336,12 @@
 			<v:textRect cx="7.08661" cy="71.3662" width="14.18" height="14.1732"/>
 			<rect x="0" y="64.2796" width="14.1732" height="14.1732" class="st1"/>
 			<text x="2.08" y="74.07" class="st2" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>49</text>		</g>
+		<g id="shape100-115" v:mID="100" v:groupContext="shape" transform="translate(170.079,-63.7795)">
+			<title>工作表.100</title>
+			<desc>51</desc>
+			<v:textBlock v:margins="rect(0,0,0,0)" v:tabSpace="42.5197"/>
+			<v:textRect cx="7.08661" cy="71.3662" width="14.18" height="14.1732"/>
+			<rect x="0" y="64.2796" width="14.1732" height="14.1732" class="st1"/>
+			<text x="2.08" y="74.07" class="st2" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>51</text>		</g>
 	</g>
 </svg>

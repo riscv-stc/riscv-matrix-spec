@@ -4,7 +4,8 @@
 |     Bits  | Name       | Description
 
 |    XLEN-1 | mill       | Illegal value if set.
-| XLEN-2:16 | 0          | Reserved if non-zero.
+| XLEN-2:17 | 0          | Reserved if non-zero.
+|        16 | mma        | Matrix element mask agnostic.
 |        15 | mba        | Matrix out of bound agnostic.
 |        14 | mfp64      | 64-bit float point enabling.
 |     13:12 | mfp32[1:0] | 32-bit float point enabling.

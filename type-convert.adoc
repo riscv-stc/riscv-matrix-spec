@@ -1,6 +1,65 @@
 The input and output matrices of type-convert instructions are both accumulation registers and always with size `mtilem x mtilen`. The type convert of tile registers can be implemented by combining data move instructions (such as `mmve*.a.t` and `mmve*.t.a`).
 
 ```
+# Convert integer to integer
+mcvt.x.xu.m     md, ms1         # uint to int
+mcvt.hb.uhb.m   md, ms1         # uint4 to int4
+mcvt.b.ub.m     md, ms1         # uint8 to int8
+mcvt.h.uh.m     md, ms1         # uint16 to int16
+mcvt.w.uw.m     md, ms1         # uint32 to int32
+mcvt.dw.udw.m   md, ms1         # uint64 to int64
+
+mcvt.xu.x.m     md, ms1         # int to uint
+mcvt.uhb.hb.m   md, ms1         # int4 to uint4
+mcvt.ub.b.m     md, ms1         # int8 to uint8
+mcvt.uh.h.m     md, ms1         # int16 to uint16
+mcvt.uw.w.m     md, ms1         # int32 to uint32
+mcvt.udw.dw.m   md, ms1         # int64 to uint64
+
+mwcvtu.xw.x.m   md, ms1         # uint to double-width uint
+mwcvtu.xq.x.m   md, ms1         # uint to quad-width uint
+mwcvtu.xo.x.m   md, ms1         # uint to oct-width uint
+mwcvtu.b.hb.m   md, ms1         # uint4 to uint8
+mwcvtu.h.hb.m   md, ms1         # uint4 to uint16
+mwcvtu.w.hb.m   md, ms1         # uint4 to uint32
+mwcvtu.h.b.m    md, ms1         # uint8 to uint16
+mwcvtu.w.b.m    md, ms1         # uint8 to uint32
+mwcvtu.w.h.m    md, ms1         # uint16 to uint32
+mwcvtu.dw.w.m   md, ms1         # uint32 to uint64
+
+mwcvt.xw.x.m    md, ms1         # int to double-width int
+mwcvt.xq.x.m    md, ms1         # int to quad-width int
+mwcvt.xo.x.m    md, ms1         # int to oct-width int
+mwcvt.b.hb.m    md, ms1         # int4 to int8
+mwcvt.h.hb.m    md, ms1         # int4 to int16
+mwcvt.w.hb.m    md, ms1         # int4 to int32
+mwcvt.h.b.m     md, ms1         # int8 to int16
+mwcvt.w.b.m     md, ms1         # int8 to int32
+mwcvt.w.h.m     md, ms1         # int16 to int32
+mwcvt.dw.w.m    md, ms1         # int32 to int64
+
+mncvtu.x.xw.m   md, ms1         # double-width uint to single-width uint
+mncvtu.x.xq.m   md, ms1         # quad-width uint to single-width uint
+mncvtu.x.xo.m   md, ms1         # oct-width uint to single-width uint
+mncvtu.hb.b.m   md, ms1         # uint8 to uint4
+mncvtu.hb.h.m   md, ms1         # uint16 to uint4
+mncvtu.hb.w.m   md, ms1         # uint32 to uint4
+mncvtu.b.h.m    md, ms1         # uint16 to uint8
+mncvtu.b.w.m    md, ms1         # uint32 to uint8
+mncvtu.h.w.m    md, ms1         # uint32 to uint16
+mncvtu.w.dw.m   md, ms1         # uint64 to uint32
+
+mncvt.x.xw.m    md, ms1         # double-width int to single-width int
+mncvt.x.xq.m    md, ms1         # quad-width int to single-width int
+mncvt.x.xo.m    md, ms1         # oct-width int to single-width int
+mncvt.hb.b.m    md, ms1         # int8 to int4
+mncvt.hb.h.m    md, ms1         # int16 to int4
+mncvt.hb.w.m    md, ms1         # int32 to int4
+mncvt.b.h.m     md, ms1         # int16 to int8
+mncvt.b.w.m     md, ms1         # int32 to int8
+mncvt.h.w.m     md, ms1         # int32 to int16
+mncvt.w.dw.m    md, ms1         # int64 to int32
+
 # Convert float to float
 mfcvt.bf.hf.m   md, ms1         # fp16 to bf16
 mfcvt.hf.bf.m   md, ms1         # bf16 to fp16
@@ -92,4 +151,12 @@ mfncvt.b.hf.m   md, ms1         # fp16 to int8
 mfncvt.b.f.m    md, ms1         # fp32 to int8
 mfncvt.h.f.m    md, ms1         # fp32 to int16
 mfncvt.w.d.m    md, ms1         # fp64 to int32
+```
+
+Type-convert instructions support mask register. The mask register is a general accumulation register whose element is in bit. Bit 1 means the corresponding element in source register is active and will be converted. Bit 0 means the corresponding element will not be converted and its value is determined by `bma[0]` field (`bma[0]=0` for undisturbed and `bma[0]=1` for agnostic).
+
+The mask register index, `bma` and `frm` are used as optional suffixes.
+
+```
+m*cvt*.*.*.m   md, ms1, [mks], [mma], [mba], [frm]
 ```

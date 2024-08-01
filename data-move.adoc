@@ -44,6 +44,25 @@ mmvie32.t.a md, ms1, imm
 mmvie64.t.a md, ms1, imm
 ```
 
+The above data-move instructions support mask register. The mask register is a general matrix register whose element is in bit. Bit 1 means the corresponding element in source register is active. Bit 0 means the corresponding element will not be calculated and its value is determined by `bma[0]` field (`bma[0]=0` for undisturbed and `bma[0]=1` for agnostic). Mask register and source register are with the same type (i.e., both tile register or both accumulation register).
+
+For out-of-bound elements of destination register, their values are determined by `bma[1]` field (`bma[0]=0` for undisturbed and `bma[0]=1` for agnostic).
+
+The mask register index and `bma` are used as optional suffixes.
+
+```
+mmv*.t/a.t/a  md, ms1, [rs1/imm], [mks], [mma], [mba]
+```
+
+For example,
+
+```
+mmvie8.a.t acc0, tr1, 0, tr0, mma, mba
+```
+
+where `tr1` is moved to the left part of `acc0` and `tr0` is the mask register.
+
+
 ==== Data Move Instructions between Matrix and Integer
 
 Data move instructions between matrix and integer are used to move single element between integer registers and tile registers. Such instructions can change a part of matrix and often used for debug.
