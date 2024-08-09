@@ -1,0 +1,71 @@
+Matrix Multiplication operations take two matrix tiles from matrix **tile registers** specified by `ms1` and `ms2` respectively, and the output matrix tile is a matrix **accumulation register** specified by `md`.
+
+```
+# Unigned integer matrix multiplication and add, md = md + ms1 * ms2.
+mmau.[dw].mm    md, ms1, ms2        # uint64, output no-widen
+mmau.[w].mm     md, ms1, ms2        # uint32, output no-widen
+mmau.[h].mm     md, ms1, ms2        # uint16, output no-widen
+mwmau.[w].mm    md, ms1, ms2        # uint32, output double-widen
+mwmau.[h].mm    md, ms1, ms2        # uint16, output double-widen
+mqmau.[b].mm    md, ms1, ms2        # uint8, output quad-widen
+momau.[hb].mm   md, ms1, ms2        # uint4, output oct-widen
+
+msmau.[dw].mm   md, ms1, ms2        # uint64, output no-widen and saturated
+msmau.[w].mm    md, ms1, ms2        # uint32, output no-widen and saturated
+msmau.[h].mm    md, ms1, ms2        # uint16, output no-widen and saturated
+mswmau.[w].mm   md, ms1, ms2        # uint32, output double-widen and saturated
+mswmau.[h].mm   md, ms1, ms2        # uint16, output double-widen and saturated
+msqmau.[b].mm   md, ms1, ms2        # uint8, output quad-widen and saturated
+msomau.[hb].mm  md, ms1, ms2        # uint4, output oct-widen and saturated
+
+# Signed integer matrix multiplication and add, md = md + ms1 * ms2.
+mma.[dw].mm     md, ms1, ms2        # int64, output no-widen
+mma.[w].mm      md, ms1, ms2        # int32, output no-widen
+mma.[h].mm      md, ms1, ms2        # int16, output no-widen
+mwma.[w].mm     md, ms1, ms2        # int32, output double-widen
+mwma.[h].mm     md, ms1, ms2        # int16, output double-widen
+mqma.[b].mm     md, ms1, ms2        # int8, output quad-widen
+moma.[hb].mm    md, ms1, ms2        # int4, output oct-widen
+
+msma.[dw].mm    md, ms1, ms2        # int64, output no-widen and saturated
+msma.[w].mm     md, ms1, ms2        # int32, output no-widen and saturated
+msma.[h].mm     md, ms1, ms2        # int16, output no-widen and saturated
+mswma.[w].mm    md, ms1, ms2        # int32, output double-widen and saturated
+mswma.[h].mm    md, ms1, ms2        # int16, output double-widen and saturated
+msqma.[b].mm    md, ms1, ms2        # int8, output quad-widen and saturated
+msoma.[hb].mm   md, ms1, ms2        # int4, output oct-widen and saturated
+
+# Float point matrix multiplication and add, md = md + ms1 * ms2.
+mfma.[d].mm     md, ms1, ms2        # 64-bit float point
+mfma.[f].mm     md, ms1, ms2        # 32-bit float point
+mfma.[hf].mm    md, ms1, ms2        # 16-bit float point
+
+mfwma.[f].mm    md, ms1, ms2        # 32-bit float point, output double-widen
+mfwma.[hf].mm   md, ms1, ms2        # 16-bit float point, output double-widen
+mfwma.[cf].mm   md, ms1, ms2        # 8-bit float point, output double-widen
+mfqma.[cf].mm   md, ms1, ms2        # 8-bit float point, output quad-widen
+```
+
+// # W4A8 quantification.
+// mqomau.b.hb.mm  md, ms1, ms2        # unsigned W4A8
+// msqomau.b.hb.mm md, ms1, ms2        # unsigned W4A8, output saturated
+// 
+// mqoma.b.hb.mm   md, ms1, ms2        # signed W4A8
+// msqoma.b.hb.mm  md, ms1, ms2        # signed W4A8, output saturated
+
+A subset of these instructions is supported according to the implemented standard extensions (Zmi4, Zmi8, etc.).
+
+The field `frm` from `fcsr` indicates the rounding mode of float-point matrix instructions. The encoding is shown below.
+
+[cols="^1,^1,<4"]
+|===
+| *frm* | *Mnemonic* | *Meaning*
+|  000  |  RNE       | Round to Nearest, ties to Even
+|  001  |  RTZ       | Round towards Zero
+|  010  |  RDN       | Round Down (towards stem:[-\infty])
+|  011  |  RUP       | Round Up (towards stem:[+\infty])
+|  100  |  RMM       | Round to Nearest, ties to Max Magnitude
+|  101  |            | Invalid
+|  110  |            | Invalid
+|  111  |            | Invalid
+|===

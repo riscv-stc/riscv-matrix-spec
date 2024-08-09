@@ -1,14 +1,19 @@
-The `mtype` register has 5 fields, `mill`, `mfp64`, `mba`, `msew[2:0]` and `mlmul[1:0]`. Bits `mtype[XLEN-2:7]` should be written with zero, and non-zero values of this field are reserved.
-
 .`mtype` register layout
 [cols="^2,^2,8"]
 |===
-|     Bits | Name       | Description
+|     Bits  | Name       | Description
 
-|   XLEN-1 | mill       | Illegal value if set.
-| XLEN-2:7 | 0          | Reserved if non-zero.
-|        6 | mfp64      | Support 64-bit float point.
-|        5 | mba        | Matrix out of bound agnostic.
-|      4:2 | msew[2:0]  | Selected element width (SEW) setting.
-|      1:0 | mlmul[1:0] | Register group multiplier (LMUL) setting.
+|    XLEN-1 | mill       | Illegal value if set.
+| XLEN-2:16 | 0          | Reserved if non-zero.
+|        15 | mba        | Matrix out of bound agnostic.
+|        14 | mfp64      | 64-bit float point enabling.
+|     13:12 | mfp32[1:0] | 32-bit float point enabling.
+|     11:10 | mfp16[1:0] | 16-bit float point enabling.
+|       9:8 | mfp8[1:0]  | 8-bit float point enabling.
+|         7 | mint64     | 64-bit integer enabling.
+|         6 | mint32     | 32-bit integer enabling.
+|         5 | mint16     | 16-bit integer enabling.
+|         4 | mint8      | 8-bit integer enabling.
+|         3 | mint4      | 4-bit integer enabling.
+|       2:0 | msew[2:0]  | Selected element width (SEW) setting.
 |===
