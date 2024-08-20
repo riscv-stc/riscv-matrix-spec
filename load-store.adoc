@@ -115,40 +115,40 @@ mscte64.m ms3, (rs1), rs2       # 64-bit output tile store
 
 ==== Whole Matrix Load & Store Instructions
 
-Load a whole matrix from memory without considering the tile size.
+Load a whole tile matrix from memory without considering the size.
 
 ```
-mlre8.m   md, (rs1), rs2        #  8-bit whole matrix load
-mlre16.m  md, (rs1), rs2        # 16-bit whole matrix load
-mlre32.m  md, (rs1), rs2        # 32-bit whole matrix load
-mlre64.m  md, (rs1), rs2        # 64-bit whole matrix load
+mltre8.m   md, (rs1), rs2       #  8-bit whole matrix load
+mltre16.m  md, (rs1), rs2       # 16-bit whole matrix load
+mltre32.m  md, (rs1), rs2       # 32-bit whole matrix load
+mltre64.m  md, (rs1), rs2       # 64-bit whole matrix load
 ```
 
-Load a whole matrix from memory without considering the tile size, where the matrix on memory is transposed.
+Load a whole accumulation matrix from memory without considering the size.
 
 ```
-mlrte8.m  md, (rs1), rs2        #  8-bit whole matrix load
-mlrte16.m md, (rs1), rs2        # 16-bit whole matrix load
-mlrte32.m md, (rs1), rs2        # 32-bit whole matrix load
-mlrte64.m md, (rs1), rs2        # 64-bit whole matrix load
+mlacce8.m  md, (rs1), rs2       #  8-bit whole matrix load
+mlacce16.m md, (rs1), rs2       # 16-bit whole matrix load
+mlacce32.m md, (rs1), rs2       # 32-bit whole matrix load
+mlacce64.m md, (rs1), rs2       # 64-bit whole matrix load
 ```
 
-Store a whole matrix to memory without considering the tile size.
+Store a whole tile matrix to memory without considering the size.
 
 ```
-msre8.m   ms3, (rs1), rs2       #  8-bit whole matrix store
-msre16.m  ms3, (rs1), rs2       # 16-bit whole matrix store
-msre32.m  ms3, (rs1), rs2       # 32-bit whole matrix store
-msre64.m  ms3, (rs1), rs2       # 64-bit whole matrix store
+mstre8.m   ms3, (rs1), rs2      #  8-bit whole matrix store
+mstre16.m  ms3, (rs1), rs2      # 16-bit whole matrix store
+mstre32.m  ms3, (rs1), rs2      # 32-bit whole matrix store
+mstre64.m  ms3, (rs1), rs2      # 64-bit whole matrix store
 ```
 
-Store a whole matrix to memory without considering the tile size, where the matrix on memory is transposed.
+Store a whole accumulation matrix to memory without considering the size.
 
 ```
-msrte8.m  ms3, (rs1), rs2       #  8-bit whole matrix store
-msrte16.m ms3, (rs1), rs2       # 16-bit whole matrix store
-msrte32.m ms3, (rs1), rs2       # 32-bit whole matrix store
-msrte64.m ms3, (rs1), rs2       # 64-bit whole matrix store
+msacce8.m  ms3, (rs1), rs2      #  8-bit whole matrix store
+msacce16.m ms3, (rs1), rs2      # 16-bit whole matrix store
+msacce32.m ms3, (rs1), rs2      # 32-bit whole matrix store
+msacce64.m ms3, (rs1), rs2      # 64-bit whole matrix store
 ```
 
 NOTE: Whole matrix load and store instructions are usually used for context saving and restoring.

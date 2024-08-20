@@ -19,8 +19,16 @@ msettype   rd, rs1      # rd = new mtype, rs1 = new mtype value.
 The `mset*` instructions set the specified field of `mtype` without affecting other fields.
 ```
 # Set msew field.
-msetsew rd, imm         # rd = new mtype, msew = imm[2:0].
-msetba  rd, imm         # rd = new mtype, mba = imm[0].
+msetsew rd, imm         # rd = new mtype, set msew to imm[2:0].
+msetsew rd, e8          # rd = new mtype, imm = 0.
+msetsew rd, e16         # rd = new mtype, imm = 1.
+msetsew rd, e32         # rd = new mtype, imm = 2.
+msetsew rd, e64         # rd = new mtype, imm = 3.
+
+# Set mba field.
+msetba  rd, imm         # rd = new mtype, set mba to imm[0].
+msetba  rd, bu          # rd = new mtype, imm = 0.
+msetba  rd, ba          # rd = new mtype, imm = 1.
 
 # Set integer type fields.
 msetint rd, int4        # rd = new mtype, set mint4 = 1 to enable INT4 type.
