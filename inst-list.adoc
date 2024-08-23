@@ -23,10 +23,12 @@
 
       | msettsp     |  000000  |  0   |  00000  |  rs1  |   111    |  rd  |  OP-M32
       | msettspi    |  000000  |  1   |  00000  |  imm  |   111    |  rd  |  OP-M32
+      | msetdsp     |  000001  |  0   |  00000  |  rs1  |   111    |  rd  |  OP-M32
+      | msetdspi    |  000001  |  1   |  00000  |  imm  |   111    |  rd  |  OP-M32
 
-      | msetoutsh   |  000010  |  0   |  00000  |  rs1  |   100    |  rd  |  OP-M32
-      | msetinsh    |  000010  |  0   |  00000  |  rs1  |   101    |  rd  |  OP-M32
-      | msetsk      |  000010  |  0   |  00000  |  rs1  |   110    |  rd  |  OP-M32
+      | msetoutsh   |  000010  |  0   |   rs2   |  rs1  |   100    |  rd  |  OP-M32
+      | msetinsh    |  000010  |  0   |   rs2   |  rs1  |   101    |  rd  |  OP-M32
+      | msetsk      |  000010  |  0   |   rs2   |  rs1  |   110    |  rd  |  OP-M32
       | msetpadval  |  000010  |  0   |  00000  |  rs1  |   111    |  rd  |  OP-M32
 |===
 
@@ -841,20 +843,12 @@
       | mfwcvt.dw.f.m   |  011001  |  0   |  010  |   01   |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
 
       | mfncvtu.x.fw.m  |  011001  |  0   |  010  |   10   |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
-      | mfncvtu.x.fw.m  |  011001  |  0   |  010  |   10   |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
-      | mfncvtu.b.hf.m  |  011001  |  0   |  010  |   10   |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfncvtu.b.hf.m  |  011001  |  0   |  010  |   10   |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfncvtu.h.f.m   |  011001  |  0   |  010  |   10   |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
-      | mfncvtu.h.f.m   |  011001  |  0   |  010  |   10   |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
-      | mfncvtu.w.d.m   |  011001  |  0   |  010  |   10   |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mfncvtu.w.d.m   |  011001  |  0   |  010  |   10   |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mfncvt.x.fw.m   |  011001  |  0   |  010  |   10   |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
-      | mfncvt.x.fw.m   |  011001  |  0   |  010  |   10   |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
-      | mfncvt.b.hf.m   |  011001  |  0   |  010  |   10   |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfncvt.b.hf.m   |  011001  |  0   |  010  |   10   |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfncvt.h.f.m    |  011001  |  0   |  010  |   10   |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
-      | mfncvt.h.f.m    |  011001  |  0   |  010  |   10   |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
-      | mfncvt.w.d.m    |  011001  |  0   |  010  |   10   |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mfncvt.w.d.m    |  011001  |  0   |  010  |   10   |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mfwcvtu.fq.x.m  |  011001  |  1   |  110  |   01   |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
