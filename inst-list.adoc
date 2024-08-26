@@ -210,14 +210,14 @@
       | mfmve32.t.x |  000110  |  1   |  rs2  |  rs1  |  010  |  md  |  OP-M32
       | mfmve64.t.x |  000110  |  1   |  rs2  |  rs1  |  011  |  md  |  OP-M32
 
-      | mfmve8.x.a  |  000110  |  0   |  rs2  |  ms1  |  100  |  rd  |  OP-M32
-      | mfmve16.x.a |  000110  |  0   |  rs2  |  ms1  |  101  |  rd  |  OP-M32
-      | mfmve32.x.a |  000110  |  0   |  rs2  |  ms1  |  110  |  rd  |  OP-M32
-      | mfmve64.x.a |  000110  |  0   |  rs2  |  ms1  |  111  |  rd  |  OP-M32
-      | mfmve8.a.x  |  000110  |  1   |  rs2  |  rs1  |  100  |  md  |  OP-M32
-      | mfmve16.a.x |  000110  |  1   |  rs2  |  rs1  |  101  |  md  |  OP-M32
-      | mfmve32.a.x |  000110  |  1   |  rs2  |  rs1  |  110  |  md  |  OP-M32
-      | mfmve64.a.x |  000110  |  1   |  rs2  |  rs1  |  111  |  md  |  OP-M32
+      | mfmve8.f.a  |  000110  |  0   |  rs2  |  ms1  |  100  |  rd  |  OP-M32
+      | mfmve16.f.a |  000110  |  0   |  rs2  |  ms1  |  101  |  rd  |  OP-M32
+      | mfmve32.f.a |  000110  |  0   |  rs2  |  ms1  |  110  |  rd  |  OP-M32
+      | mfmve64.f.a |  000110  |  0   |  rs2  |  ms1  |  111  |  rd  |  OP-M32
+      | mfmve8.a.f  |  000110  |  1   |  rs2  |  rs1  |  100  |  md  |  OP-M32
+      | mfmve16.a.f |  000110  |  1   |  rs2  |  rs1  |  101  |  md  |  OP-M32
+      | mfmve32.a.f |  000110  |  1   |  rs2  |  rs1  |  110  |  md  |  OP-M32
+      | mfmve64.a.f |  000110  |  1   |  rs2  |  rs1  |  111  |  md  |  OP-M32
 
       | mmve8.t.t   |  000111  |  0   | 00000 |  ms1  |  000  |  md  |  OP-M32
       | mmve16.t.t  |  000111  |  0   | 00000 |  ms1  |  001  |  md  |  OP-M32
