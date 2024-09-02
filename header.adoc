@@ -1,7 +1,7 @@
 [[header]]
 :description: RISC-V Matrix Specification
 :company: RISC-V.org
-:revdate: 08/2024
+:revdate: 09/2024
 :revnumber: 0.5a
 :revremark: This document is in development.
 :url-riscv: http://riscv.org

@@ -534,171 +534,210 @@
 .2+^.^| *Format*      |  31  26  |  25  |  24  | 23 20 |  19  | 18 15 | 14 12 |  11  | 10 7 |  6    0
                       | *funct6* | *fp* | *sa* | *ms2* | *sn* | *ms1* | *eew* | *ma* | *md* | *opcode*
       | maddu.mm      |  001000  |  0   |  0   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | maddu.hb.mm   |  001000  |  0   |  0   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | maddu.b.mm    |  001000  |  0   |  0   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | maddu.h.mm    |  001000  |  0   |  0   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | maddu.w.mm    |  001000  |  0   |  0   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | maddu.dw.mm   |  001000  |  0   |  0   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | msaddu.mm     |  001000  |  0   |  1   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msaddu.hb.mm  |  001000  |  0   |  1   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msaddu.b.mm   |  001000  |  0   |  1   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msaddu.h.mm   |  001000  |  0   |  1   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msaddu.w.mm   |  001000  |  0   |  1   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | msaddu.dw.mm  |  001000  |  0   |  1   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | madd.mm       |  001000  |  0   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | madd.hb.mm    |  001000  |  0   |  0   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | madd.b.mm     |  001000  |  0   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | madd.h.mm     |  001000  |  0   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | madd.w.mm     |  001000  |  0   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | madd.dw.mm    |  001000  |  0   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
       | msadd.mm      |  001000  |  0   |  1   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msadd.hb.mm   |  001000  |  0   |  1   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msadd.b.mm    |  001000  |  0   |  1   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msadd.h.mm    |  001000  |  0   |  1   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msadd.w.mm    |  001000  |  0   |  1   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | msadd.dw.mm   |  001000  |  0   |  1   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mfadd.mm      |  001000  |  1   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfadd.cf.mm   |  001000  |  1   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfadd.hf.mm   |  001000  |  1   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfadd.f.mm    |  001000  |  1   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mfadd.d.mm    |  001000  |  1   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mwaddu.mm     |  001001  |  0   |  0   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mwaddu.hb.mm  |  001001  |  0   |  0   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mwaddu.b.mm   |  001001  |  0   |  0   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mwaddu.h.mm   |  001001  |  0   |  0   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mwaddu.w.mm   |  001001  |  0   |  0   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mwadd.mm      |  001001  |  0   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mwadd.hb.mm   |  001001  |  0   |  0   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mwadd.b.mm    |  001001  |  0   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mwadd.h.mm    |  001001  |  0   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mwadd.w.mm    |  001001  |  0   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
 
       | mfwadd.mm     |  001001  |  1   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfwadd.cf.mm  |  001001  |  1   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfwadd.hf.mm  |  001001  |  1   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfwadd.f.mm   |  001001  |  1   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
 
       | msubu.mm      |  001010  |  0   |  0   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msubu.hb.mm   |  001010  |  0   |  0   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msubu.b.mm    |  001010  |  0   |  0   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msubu.h.mm    |  001010  |  0   |  0   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msubu.w.mm    |  001010  |  0   |  0   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | msubu.dw.mm   |  001010  |  0   |  0   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mssubu.mm     |  001010  |  0   |  1   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mssubu.hb.mm  |  001010  |  0   |  1   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mssubu.b.mm   |  001010  |  0   |  1   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mssubu.h.mm   |  001010  |  0   |  1   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mssubu.w.mm   |  001010  |  0   |  1   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mssubu.dw.mm  |  001010  |  0   |  1   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | msub.mm       |  001010  |  0   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msub.hb.mm    |  001010  |  0   |  0   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msub.b.mm     |  001010  |  0   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msub.h.mm     |  001010  |  0   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msub.w.mm     |  001010  |  0   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | msub.dw.mm    |  001010  |  0   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mssub.mm      |  001010  |  0   |  1   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
       | mssub.b.mm    |  001010  |  0   |  1   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
+      | mssub.hb.mm   |  001010  |  0   |  1   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mssub.h.mm    |  001010  |  0   |  1   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mssub.w.mm    |  001010  |  0   |  1   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mssub.dw.mm   |  001010  |  0   |  1   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mfsub.mm      |  001010  |  1   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfsub.cf.mm   |  001010  |  1   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfsub.hf.mm   |  001010  |  1   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfsub.f.mm    |  001010  |  1   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mfsub.d.mm    |  001010  |  1   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mwsubu.mm     |  001011  |  0   |  0   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mwsubu.hb.mm  |  001011  |  0   |  0   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mwsubu.b.mm   |  001011  |  0   |  0   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mwsubu.h.mm   |  001011  |  0   |  0   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mwsubu.w.mm   |  001011  |  0   |  0   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mwsub.mm      |  001011  |  0   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mwsub.hb.mm   |  001011  |  0   |  0   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mwsub.b.mm    |  001011  |  0   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mwsub.h.mm    |  001011  |  0   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mwsub.w.mm    |  001011  |  0   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
 
       | mfwsub.mm     |  001011  |  1   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfwsub.cf.mm  |  001011  |  1   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfwsub.hf.mm  |  001011  |  1   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfwsub.f.mm   |  001011  |  1   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
 
       | mminu.mm      |  001100  |  0   |  0   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mminu.hb.mm   |  001100  |  0   |  0   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mminu.b.mm    |  001100  |  0   |  0   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mminu.h.mm    |  001100  |  0   |  0   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mminu.w.mm    |  001100  |  0   |  0   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mminu.dw.mm   |  001100  |  0   |  0   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mmaxu.mm      |  001100  |  0   |  1   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mmaxu.hb.mm   |  001100  |  0   |  1   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mmaxu.b.mm    |  001100  |  0   |  1   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mmaxu.h.mm    |  001100  |  0   |  1   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mmaxu.w.mm    |  001100  |  0   |  1   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mmaxu.dw.mm   |  001100  |  0   |  1   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mmin.mm       |  001100  |  0   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mmin.hb.mm    |  001100  |  0   |  0   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mmin.b.mm     |  001100  |  0   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mmin.h.mm     |  001100  |  0   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mmin.w.mm     |  001100  |  0   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mmin.dw.mm    |  001100  |  0   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mmax.mm       |  001100  |  0   |  1   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mmax.hb.mm    |  001100  |  0   |  1   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mmax.b.mm     |  001100  |  0   |  1   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mmax.h.mm     |  001100  |  0   |  1   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mmax.w.mm     |  001100  |  0   |  1   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mmax.dw.mm    |  001100  |  0   |  1   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mfmin.mm      |  001100  |  1   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfmin.cf.mm   |  001100  |  1   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfmin.hf.mm   |  001100  |  1   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfmin.f.mm    |  001100  |  1   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mfmin.d.mm    |  001100  |  1   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mfmax.mm      |  001100  |  1   |  1   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfmax.cf.mm   |  001100  |  1   |  1   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfmax.hf.mm   |  001100  |  1   |  1   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfmax.f.mm    |  001100  |  1   |  1   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mfmax.d.mm    |  001100  |  1   |  1   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | msmulu.mm     |  001101  |  0   |  1   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msmulu.hb.mm  |  001101  |  0   |  1   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msmulu.b.mm   |  001101  |  0   |  1   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msmulu.h.mm   |  001101  |  0   |  1   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msmulu.w.mm   |  001101  |  0   |  1   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | msmulu.dw.mm  |  001101  |  0   |  1   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mmul.mm       |  001101  |  0   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mmul.hb.mm    |  001101  |  0   |  0   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mmul.b.mm     |  001101  |  0   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mmul.h.mm     |  001101  |  0   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mmul.w.mm     |  001101  |  0   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mmul.dw.mm    |  001101  |  0   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
       | msmul.mm      |  001101  |  0   |  1   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msmul.hb.mm   |  001101  |  0   |  1   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msmul.b.mm    |  001101  |  0   |  1   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msmul.h.mm    |  001101  |  0   |  1   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msmul.w.mm    |  001101  |  0   |  1   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | msmul.dw.mm   |  001101  |  0   |  1   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mfmul.mm      |  001101  |  1   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfmul.cf.mm   |  001101  |  1   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfmul.hf.mm   |  001101  |  1   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfmul.f.mm    |  001101  |  1   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mfmul.d.mm    |  001101  |  1   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mmulhu.mm     |  001110  |  0   |  0   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mmulhu.hb.mm  |  001110  |  0   |  0   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mmulhu.b.mm   |  001110  |  0   |  0   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mmulhu.h.mm   |  001110  |  0   |  0   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mmulhu.w.mm   |  001110  |  0   |  0   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mmulhu.dw.mm  |  001110  |  0   |  0   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mmulh.mm      |  001110  |  0   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mmulh.hb.mm   |  001110  |  0   |  0   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mmulh.b.mm    |  001110  |  0   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mmulh.h.mm    |  001110  |  0   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mmulh.w.mm    |  001110  |  0   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mmulh.dw.mm   |  001110  |  0   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
       | mmulhsu.mm    |  001110  |  0   |  1   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mmulhsu.hb.mm |  001110  |  0   |  1   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mmulhsu.b.mm  |  001110  |  0   |  1   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mmulhsu.h.mm  |  001110  |  0   |  1   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mmulhsu.w.mm  |  001110  |  0   |  1   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mmulhsu.dw.mm |  001110  |  0   |  1   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | msmulsu.mm    |  001110  |  0   |  1   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msmulsu.hb.mm |  001110  |  0   |  1   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msmulsu.b.mm  |  001110  |  0   |  1   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msmulsu.h.mm  |  001110  |  0   |  1   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msmulsu.w.mm  |  001110  |  0   |  1   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | msmulsu.dw.mm |  001110  |  0   |  1   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mfdiv.mm      |  001110  |  1   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfdiv.cf.mm   |  001110  |  1   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfdiv.hf.mm   |  001110  |  1   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfdiv.f.mm    |  001110  |  1   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mfdiv.d.mm    |  001110  |  1   |  0   |  ms2  |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | mwmulu.mm     |  001111  |  0   |  0   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mwmulu.hb.mm  |  001111  |  0   |  0   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mwmulu.b.mm   |  001111  |  0   |  0   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mwmulu.h.mm   |  001111  |  0   |  0   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mwmulu.w.mm   |  001111  |  0   |  0   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mwmul.mm      |  001111  |  0   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mwmul.hb.mm   |  001111  |  0   |  0   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | mwmul.b.mm    |  001111  |  0   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mwmul.h.mm    |  001111  |  0   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mwmul.w.mm    |  001111  |  0   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
+      | mwmulsu.mm    |  001111  |  0   |  1   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mwmulsu.hb.mm |  001111  |  0   |  1   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
+      | mwmulsu.b.mm  |  001111  |  0   |  1   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
+      | mwmulsu.h.mm  |  001111  |  0   |  1   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
+      | mwmulsu.w.mm  |  001111  |  0   |  1   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
 
       | mfwmul.mm     |  001111  |  1   |  0   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfwmul.cf.mm  |  001111  |  1   |  0   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfwmul.hf.mm  |  001111  |  1   |  0   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfwmul.f.mm   |  001111  |  1   |  0   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
 
@@ -707,21 +746,25 @@
       | mxor.mm       |  010000  |  0   |  1   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
 
       | mfsqrt.mm     |  010000  |  1   |  0   |   0   |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | mfsqrt.cf.mm  |  010000  |  1   |  0   |   0   |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | mfsqrt.hf.mm  |  010000  |  1   |  0   |   0   |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | mfsqrt.f.mm   |  010000  |  1   |  0   |   0   |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
       | mfsqrt.d.mm   |  010000  |  1   |  0   |   0   |  1   |  ms1  |  011  |  0   |  md  |  OP-M32
 
       | msll.mm       |  010001  |  0   |  0   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msll.hb.mm    |  010001  |  0   |  0   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msll.b.mm     |  010001  |  0   |  0   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msll.h.mm     |  010001  |  0   |  0   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msll.w.mm     |  010001  |  0   |  0   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | msll.dw.mm    |  010001  |  0   |  0   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | msrl.mm       |  010001  |  0   |  1   |  ms2  |  0   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msrl.hb.mm    |  010001  |  0   |  1   |  ms2  |  0   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msrl.b.mm     |  010001  |  0   |  1   |  ms2  |  0   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msrl.h.mm     |  010001  |  0   |  1   |  ms2  |  0   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msrl.w.mm     |  010001  |  0   |  1   |  ms2  |  0   |  ms1  |  010  |  0   |  md  |  OP-M32
       | msrl.dw.mm    |  010001  |  0   |  1   |  ms2  |  0   |  ms1  |  011  |  0   |  md  |  OP-M32
       | msra.mm       |  010001  |  0   |  1   |  ms2  |  1   |  ms1  |  100  |  0   |  md  |  OP-M32
+      | msra.hb.mm    |  010001  |  0   |  1   |  ms2  |  1   |  ms1  |  111  |  0   |  md  |  OP-M32
       | msra.b.mm     |  010001  |  0   |  1   |  ms2  |  1   |  ms1  |  000  |  0   |  md  |  OP-M32
       | msra.h.mm     |  010001  |  0   |  1   |  ms2  |  1   |  ms1  |  001  |  0   |  md  |  OP-M32
       | msra.w.mm     |  010001  |  0   |  1   |  ms2  |  1   |  ms1  |  010  |  0   |  md  |  OP-M32
