@@ -105,57 +105,57 @@
       | msacce32.m  |  000011  |  1   |  rs2  |  rs1  |  010  |  1   | ms3  | OP-M32
       | msacce64.m  |  000011  |  1   |  rs2  |  rs1  |  011  |  1   | ms3  | OP-M32
 
-      | mlae8.v     |  100001  |  0   |  rs2  |  rs1  |  000  |  0   |  md  | OP-M32
-      | mlae16.v    |  100001  |  0   |  rs2  |  rs1  |  001  |  0   |  md  | OP-M32
-      | mlae32.v    |  100001  |  0   |  rs2  |  rs1  |  010  |  0   |  md  | OP-M32
-      | mlae64.v    |  100001  |  0   |  rs2  |  rs1  |  011  |  0   |  md  | OP-M32
-      | mlbe8.v     |  100010  |  0   |  rs2  |  rs1  |  000  |  0   |  md  | OP-M32
-      | mlbe16.v    |  100010  |  0   |  rs2  |  rs1  |  001  |  0   |  md  | OP-M32
-      | mlbe32.v    |  100010  |  0   |  rs2  |  rs1  |  010  |  0   |  md  | OP-M32
-      | mlbe64.v    |  100010  |  0   |  rs2  |  rs1  |  011  |  0   |  md  | OP-M32
-      | mlce8.v     |  100000  |  0   |  rs2  |  rs1  |  000  |  0   |  md  | OP-M32
-      | mlce16.v    |  100000  |  0   |  rs2  |  rs1  |  001  |  0   |  md  | OP-M32
-      | mlce32.v    |  100000  |  0   |  rs2  |  rs1  |  010  |  0   |  md  | OP-M32
-      | mlce64.v    |  100000  |  0   |  rs2  |  rs1  |  011  |  0   |  md  | OP-M32
+      | mlae8.v     |  100001  |  0   |  rs2  |  rs1  |  000       2+|  vd  | OP-M32
+      | mlae16.v    |  100001  |  0   |  rs2  |  rs1  |  001       2+|  vd  | OP-M32
+      | mlae32.v    |  100001  |  0   |  rs2  |  rs1  |  010       2+|  vd  | OP-M32
+      | mlae64.v    |  100001  |  0   |  rs2  |  rs1  |  011       2+|  vd  | OP-M32
+      | mlbe8.v     |  100010  |  0   |  rs2  |  rs1  |  000       2+|  vd  | OP-M32
+      | mlbe16.v    |  100010  |  0   |  rs2  |  rs1  |  001       2+|  vd  | OP-M32
+      | mlbe32.v    |  100010  |  0   |  rs2  |  rs1  |  010       2+|  vd  | OP-M32
+      | mlbe64.v    |  100010  |  0   |  rs2  |  rs1  |  011       2+|  vd  | OP-M32
+      | mlce8.v     |  100000  |  0   |  rs2  |  rs1  |  000       2+|  vd  | OP-M32
+      | mlce16.v    |  100000  |  0   |  rs2  |  rs1  |  001       2+|  vd  | OP-M32
+      | mlce32.v    |  100000  |  0   |  rs2  |  rs1  |  010       2+|  vd  | OP-M32
+      | mlce64.v    |  100000  |  0   |  rs2  |  rs1  |  011       2+|  vd  | OP-M32
       
-      | msae8.v     |  100001  |  1   |  rs2  |  rs1  |  000  |  0   | ms3  | OP-M32
-      | msae16.v    |  100001  |  1   |  rs2  |  rs1  |  001  |  0   | ms3  | OP-M32
-      | msae32.v    |  100001  |  1   |  rs2  |  rs1  |  010  |  0   | ms3  | OP-M32
-      | msae64.v    |  100001  |  1   |  rs2  |  rs1  |  011  |  0   | ms3  | OP-M32
-      | msbe8.v     |  100010  |  1   |  rs2  |  rs1  |  000  |  0   | ms3  | OP-M32
-      | msbe16.v    |  100010  |  1   |  rs2  |  rs1  |  001  |  0   | ms3  | OP-M32
-      | msbe32.v    |  100010  |  1   |  rs2  |  rs1  |  010  |  0   | ms3  | OP-M32
-      | msbe64.v    |  100010  |  1   |  rs2  |  rs1  |  011  |  0   | ms3  | OP-M32
-      | msce8.v     |  100000  |  1   |  rs2  |  rs1  |  000  |  0   | ms3  | OP-M32
-      | msce16.v    |  100000  |  1   |  rs2  |  rs1  |  001  |  0   | ms3  | OP-M32
-      | msce32.v    |  100000  |  1   |  rs2  |  rs1  |  010  |  0   | ms3  | OP-M32
-      | msce64.v    |  100000  |  1   |  rs2  |  rs1  |  011  |  0   | ms3  | OP-M32
+      | msae8.v     |  100001  |  1   |  rs2  |  rs1  |  000       2+| vs3  | OP-M32
+      | msae16.v    |  100001  |  1   |  rs2  |  rs1  |  001       2+| vs3  | OP-M32
+      | msae32.v    |  100001  |  1   |  rs2  |  rs1  |  010       2+| vs3  | OP-M32
+      | msae64.v    |  100001  |  1   |  rs2  |  rs1  |  011       2+| vs3  | OP-M32
+      | msbe8.v     |  100010  |  1   |  rs2  |  rs1  |  000       2+| vs3  | OP-M32
+      | msbe16.v    |  100010  |  1   |  rs2  |  rs1  |  001       2+| vs3  | OP-M32
+      | msbe32.v    |  100010  |  1   |  rs2  |  rs1  |  010       2+| vs3  | OP-M32
+      | msbe64.v    |  100010  |  1   |  rs2  |  rs1  |  011       2+| vs3  | OP-M32
+      | msce8.v     |  100000  |  1   |  rs2  |  rs1  |  000       2+| vs3  | OP-M32
+      | msce16.v    |  100000  |  1   |  rs2  |  rs1  |  001       2+| vs3  | OP-M32
+      | msce32.v    |  100000  |  1   |  rs2  |  rs1  |  010       2+| vs3  | OP-M32
+      | msce64.v    |  100000  |  1   |  rs2  |  rs1  |  011       2+| vs3  | OP-M32
 
-      | mlufae8.m   |  100001  |  0   |  rs2  |  rs1  |  000  |  1   |  md  | OP-M32
-      | mlufae16.m  |  100001  |  0   |  rs2  |  rs1  |  001  |  1   |  md  | OP-M32
-      | mlufae32.m  |  100001  |  0   |  rs2  |  rs1  |  010  |  1   |  md  | OP-M32
-      | mlufae64.m  |  100001  |  0   |  rs2  |  rs1  |  011  |  1   |  md  | OP-M32
-      | mlufbe8.m   |  100010  |  0   |  rs2  |  rs1  |  000  |  1   |  md  | OP-M32
-      | mlufbe16.m  |  100010  |  0   |  rs2  |  rs1  |  001  |  1   |  md  | OP-M32
-      | mlufbe32.m  |  100010  |  0   |  rs2  |  rs1  |  010  |  1   |  md  | OP-M32
-      | mlufbe64.m  |  100010  |  0   |  rs2  |  rs1  |  011  |  1   |  md  | OP-M32
-      | mlufce8.m   |  100000  |  0   |  rs2  |  rs1  |  000  |  1   |  md  | OP-M32
-      | mlufce16.m  |  100000  |  0   |  rs2  |  rs1  |  001  |  1   |  md  | OP-M32
-      | mlufce32.m  |  100000  |  0   |  rs2  |  rs1  |  010  |  1   |  md  | OP-M32
-      | mlufce64.m  |  100000  |  0   |  rs2  |  rs1  |  011  |  1   |  md  | OP-M32
+      | mlufae8.m   |  100001  |  0   |  rs2  |  rs1  |  100  |  0   |  md  | OP-M32
+      | mlufae16.m  |  100001  |  0   |  rs2  |  rs1  |  101  |  0   |  md  | OP-M32
+      | mlufae32.m  |  100001  |  0   |  rs2  |  rs1  |  110  |  0   |  md  | OP-M32
+      | mlufae64.m  |  100001  |  0   |  rs2  |  rs1  |  111  |  0   |  md  | OP-M32
+      | mlufbe8.m   |  100010  |  0   |  rs2  |  rs1  |  100  |  0   |  md  | OP-M32
+      | mlufbe16.m  |  100010  |  0   |  rs2  |  rs1  |  101  |  0   |  md  | OP-M32
+      | mlufbe32.m  |  100010  |  0   |  rs2  |  rs1  |  110  |  0   |  md  | OP-M32
+      | mlufbe64.m  |  100010  |  0   |  rs2  |  rs1  |  111  |  0   |  md  | OP-M32
+      | mlufce8.m   |  100000  |  0   |  rs2  |  rs1  |  100  |  0   |  md  | OP-M32
+      | mlufce16.m  |  100000  |  0   |  rs2  |  rs1  |  101  |  0   |  md  | OP-M32
+      | mlufce32.m  |  100000  |  0   |  rs2  |  rs1  |  110  |  0   |  md  | OP-M32
+      | mlufce64.m  |  100000  |  0   |  rs2  |  rs1  |  111  |  0   |  md  | OP-M32
 
-      | msfdae8.m   |  100001  |  1   |  rs2  |  rs1  |  000  |  1   | ms3  | OP-M32
-      | msfdae16.m  |  100001  |  1   |  rs2  |  rs1  |  001  |  1   | ms3  | OP-M32
-      | msfdae32.m  |  100001  |  1   |  rs2  |  rs1  |  010  |  1   | ms3  | OP-M32
-      | msfdae64.m  |  100001  |  1   |  rs2  |  rs1  |  011  |  1   | ms3  | OP-M32
-      | msfdbe8.m   |  100010  |  1   |  rs2  |  rs1  |  000  |  1   | ms3  | OP-M32
-      | msfdbe16.m  |  100010  |  1   |  rs2  |  rs1  |  001  |  1   | ms3  | OP-M32
-      | msfdbe32.m  |  100010  |  1   |  rs2  |  rs1  |  010  |  1   | ms3  | OP-M32
-      | msfdbe64.m  |  100010  |  1   |  rs2  |  rs1  |  011  |  1   | ms3  | OP-M32
-      | msfdce8.m   |  100000  |  1   |  rs2  |  rs1  |  000  |  1   | ms3  | OP-M32
-      | msfdce16.m  |  100000  |  1   |  rs2  |  rs1  |  001  |  1   | ms3  | OP-M32
-      | msfdce32.m  |  100000  |  1   |  rs2  |  rs1  |  010  |  1   | ms3  | OP-M32
-      | msfdce64.m  |  100000  |  1   |  rs2  |  rs1  |  011  |  1   | ms3  | OP-M32
+      | msfdae8.m   |  100001  |  1   |  rs2  |  rs1  |  100  |  0   | ms3  | OP-M32
+      | msfdae16.m  |  100001  |  1   |  rs2  |  rs1  |  101  |  0   | ms3  | OP-M32
+      | msfdae32.m  |  100001  |  1   |  rs2  |  rs1  |  110  |  0   | ms3  | OP-M32
+      | msfdae64.m  |  100001  |  1   |  rs2  |  rs1  |  111  |  0   | ms3  | OP-M32
+      | msfdbe8.m   |  100010  |  1   |  rs2  |  rs1  |  100  |  0   | ms3  | OP-M32
+      | msfdbe16.m  |  100010  |  1   |  rs2  |  rs1  |  101  |  0   | ms3  | OP-M32
+      | msfdbe32.m  |  100010  |  1   |  rs2  |  rs1  |  110  |  0   | ms3  | OP-M32
+      | msfdbe64.m  |  100010  |  1   |  rs2  |  rs1  |  111  |  0   | ms3  | OP-M32
+      | msfdce8.m   |  100000  |  1   |  rs2  |  rs1  |  100  |  0   | ms3  | OP-M32
+      | msfdce16.m  |  100000  |  1   |  rs2  |  rs1  |  101  |  0   | ms3  | OP-M32
+      | msfdce32.m  |  100000  |  1   |  rs2  |  rs1  |  110  |  0   | ms3  | OP-M32
+      | msfdce64.m  |  100000  |  1   |  rs2  |  rs1  |  111  |  0   | ms3  | OP-M32
 |===
 
 .Data Move Instructions
