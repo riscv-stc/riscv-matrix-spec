@@ -2,7 +2,7 @@ Due to hardware resource constraints, one of the common ways to handle large-siz
 
 The block processing of matrix multiplication requires three levels of loops to iterate in the direction of the number of rows of the left matrix (m), the number of columns of the left matrix (k, also the number of rows of the right matrix), and the number of columns of the right matrix (n), given by the application.
 
-The shapes of the matrix tiles to be processed, m (application tile length m or `ATM`), k (`ATK`), n (`ATN`), is used as candidates for `mtilem` / `mtilek` / `mtilen`. Based on microarchitecture implementation and `mmode` setting, hardware returns a new `mtilem` / `mtilek` / `mtilen` value via a general purpose register (usually smaller), also stored in `mtilem` / `mtilek` / `mtilen` CSR, which is the shape of tile per iteration handled by hardware. 
+The shapes of the matrix tiles to be processed, m (application tile length m or `ATM`), k (`ATK`), n (`ATN`), is used as candidates for `mtilem` / `mtilek` / `mtilen`. Based on microarchitecture implementation, hardware returns a new `mtilem` / `mtilek` / `mtilen` value via a general purpose register (usually smaller), also stored in `mtilem` / `mtilek` / `mtilen` CSR, which is the shape of tile per iteration handled by hardware. 
 
 For a simple matrix multiplication example, check out the Section Intrinsic Example, which describes how the code keeps track of the matrices processed by the hardware each iteration.
 
@@ -104,27 +104,29 @@ The new `mtype` value is encoded in the immediate fields of `msettypei` / `msett
 
 There are three values, `TMMAX`, `TKMAX` and `TNMAX`, represent the maximum shapes of the matrix tiles that could be stored in matrix registers, and can be operated on with a single matrix instruction given the current SEW settings.
 
-The values of `TMMAX`, `TKMAX` and `TNMAX` are related to MLEN, RLEN and the configuration of `mmode`.
+// The values of `TMMAX`, `TKMAX` and `TNMAX` are related to MLEN, RLEN and the configuration of `mmode`.
+The values of `TMMAX`, `TKMAX` and `TNMAX` are related to MLEN and RLEN.
 
-For `A x B` mode (`mmode=00`),
+// For `A x B` mode (`mmode=00`),
 
 * TMMAX = MLEN / RLEN
 * TKMAX = min(MLEN / RLEN, RLEN / SEW)
 * TNMAX = RLEN / SEW
 
-For `A x BT` mode (`mmode=01`),
+// For `A x BT` mode (`mmode=01`),
 
-* TMMAX = MLEN / RLEN
-* TKMAX = RLEN / SEW
-* TNMAX = MLEN / RLEN
+// * TMMAX = MLEN / RLEN
+// * TKMAX = RLEN / SEW
+// * TNMAX = MLEN / RLEN
 
-For `AT x B` mode (`mmode=10`),
+// For `AT x B` mode (`mmode=10`),
 
-* TMMAX = min(MLEN / RLEN, RLEN / SEW)
-* TKMAX = MLEN / RLEN
-* TNMAX = RLEN / SEW
+// * TMMAX = min(MLEN / RLEN, RLEN / SEW)
+// * TKMAX = MLEN / RLEN
+// * TNMAX = RLEN / SEW
 
-For examples, with `MLEN=256`, `RLEN=64` and `mmode=00`, `TMMAX`, `TKMAX` and `TNMAX` values are shown below.
+//For examples, with `MLEN=256`, `RLEN=64` and `mmode=00`, `TMMAX`, `TKMAX` and `TNMAX` values are shown below.
+For examples, with `MLEN=256` and `RLEN=64`, `TMMAX`, `TKMAX` and `TNMAX` values are shown below.
 
 ```
 SEW=8,  TMMAX=4, TKMAX=4, TNMAX=8       # 4x4x8 8-bit matmul
@@ -161,7 +163,7 @@ The `msettile{m|k|n}[i]` instructions first set `TMMAX/TKMAX/TNMAX` according to
 value in `mtilem`, provided the resultant TMMAX equals the value of TMMAX at the time that `mtilem` was read.
 
 
-Continue to use `MLEN=256`, `RLEN=64` and `mmode=00` as a example. When SEW=16, TMMAX=4, TKMAX=4, TNMAX=8.
+Continue to use `MLEN=256` and `RLEN=64` as an example. When SEW=16, TMMAX=4, TKMAX=4, TNMAX=8.
 
 If A is a 7 x 8 matrix and B is a 8 x 14 matrix, we could get `mtilem/mtilek/mtilen` values as show below, in the last loop of tiling.
 
