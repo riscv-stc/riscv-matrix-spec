@@ -64,16 +64,18 @@ The `mcsr` register has 2 fields, and other bits with non-zero value are reserve
 |===
 |     Bits | Name       | Description
 
-| XLEN-1:3 | 0          | Reserved if non-zero.
-|      2:1 | mmode[1:0] | The mode of matrix multiplication.
+| XLEN-1:1 | 0          | Reserved if non-zero.
+// |      2:1 | mmode[1:0] | The mode of matrix multiplication.
 |        0 | msat       | Integer arithmetic instruction accrued saturation flag.
 |===
 
-`mmode` field indicates the mode of matrix multiplication. `mmode = 00` means `C = A x B`, where the source matrices, `A` and `B`, are both organized as the original order. `mmode = 01` means `C = A x BT`, where `B` is transposed. `mmode = 10` means `C = AT x B`, where `A` is transposed.
+//`mmode` field indicates the mode of matrix multiplication. `mmode = 00` means `C = A x B`, where the source matrices, `A` and `B`, are both organized as the original order. `mmode = 01` means `C = A x BT`, where `B` is transposed. `mmode = 10` means `C = AT x B`, where `A` is transposed.
 
-An implementation can support any combination of these modes, with extensions Zmab, Zmabt and Zmatb.
+//An implementation can support any combination of these modes, with extensions Zmab, Zmabt and Zmatb.
 
-If an unsupported `mmode` is set, then any attempt to execute a matrix multiplication instruction will raise an illegal instruction exception.
+//If an unsupported `mmode` is set, then any attempt to execute a matrix multiplication instruction will raise an illegal instruction exception.
+
+If `msat` bit is set, the results of integer and FP8 will be saturated to the border values of corresponding type.
 
 === Matrix Context Status in mstatus and sstatus
 

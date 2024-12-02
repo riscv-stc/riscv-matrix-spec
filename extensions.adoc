@@ -1,6 +1,6 @@
 == Standard Matrix Extensions
 
-include::ext-mode.adoc[]
+//include::ext-mode.adoc[]
 
 include::ext-type.adoc[]
 

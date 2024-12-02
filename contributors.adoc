@@ -4,23 +4,14 @@ This RISC-V specification has been contributed to directly or indirectly by:
 
 [%hardbreaks]
 * Chaoqun Wang
-* Chen Chen
 * Fujie Fan
 * Hui Yao
-* Jing Qiu
+* Jie Feng
 * Kening Zhang
 * Kun Hu
-* Mingxin Zhao
-* Wengan Shao
-* Wenmeng Zhang
-* Xianmiao Qu
-* Xiaoyan Xiang
 * Xin Ouyang
 * Xin Yang
-* Yunhai Shang
-* Zhao Jiang
 * Zhiqiang Liu
-* Zhiwei liu
 * Zhiyong Zhang
 
 * *Your name here*
